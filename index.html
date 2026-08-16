@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perfumaria Eloá — Catálogo digital</title>
+<meta name="description" content="Catálogo digital da Perfumaria Eloá, na Cidade Tiradentes. Perfumes, maquiagem, cabelo, cílios e unhas. Peça pelo WhatsApp.">
+<meta name="theme-color" content="#140E10">
+<link rel="icon" href="assets/img/logo-eloa-96.png">
+<link rel="apple-touch-icon" href="assets/img/logo-eloa.png">
+
+<!-- Fontes e Tailwind são servidos do próprio projeto: sem CDN, a página
+     renderiza igual mesmo em conexão ruim ou offline. Ver DECISOES.md. -->
+<!-- Ordem importa: componentes primeiro, utilitárias do Tailwind depois.
+     Assim uma classe como `text-white` consegue sobrescrever o componente. -->
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/tailwind.css">
+</head>
+
+<body class="bg-white text-ink-800">
+
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-3 focus:left-3 focus:bg-ink-900 focus:text-white focus:px-4 focus:py-2 focus:rounded-full">Pular para o conteúdo</a>
+
+<!-- ══ Faixa de aviso ══════════════════════════════════════════════════ -->
+<div class="bg-ink-900 text-sand-50 text-center text-[11px] sm:text-xs tracking-wide py-2 px-4">
+  Entrega em toda a Zona Leste · Pedidos pelo WhatsApp
+</div>
+
+<!-- ══ Cabeçalho ═══════════════════════════════════════════════════════ -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-[#EAE0E3]">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center gap-3 h-[68px]">
+
+      <a href="#/" class="flex items-center gap-2.5 shrink-0" aria-label="Perfumaria Eloá — página inicial">
+        <img src="assets/img/logo-eloa.png" alt="" width="44" height="44" class="w-11 h-11 rounded-full" decoding="async">
+        <span class="leading-none">
+          <span class="block font-display text-[17px] sm:text-[19px] font-semibold text-ink-900 tracking-tight">Perfumaria Eloá</span>
+          <span class="hidden sm:block text-[10px] tracking-[.16em] uppercase text-rose-700 mt-1">Sua beleza, nossa essência</span>
+        </span>
+      </a>
+
+      <!-- Busca: inline no desktop -->
+      <form class="hidden md:flex flex-1 max-w-md mx-auto" role="search" onsubmit="return App.submitSearch(event)">
+        <label for="search-desktop" class="sr-only">Buscar produtos</label>
+        <div class="relative w-full">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ink-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search-desktop" type="search" name="q" placeholder="Buscar por produto ou marca"
+                 autocomplete="off"
+                 class="w-full h-11 pl-11 pr-4 rounded-full bg-sand-100 border border-transparent text-sm placeholder:text-ink-400 focus:bg-white focus:border-rose-300 outline-none transition"
+                 oninput="App.onSearchInput(this.value)">
+        </div>
+      </form>
+
+      <div class="flex items-center gap-1 ml-auto">
+        <button class="icon-btn md:hidden" onclick="App.toggleMobileSearch()" aria-label="Buscar produtos" aria-expanded="false" id="btn-mobile-search">
+          <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        </button>
+
+        <a href="#/sobre" class="hidden md:inline-flex items-center h-11 px-4 rounded-full text-sm font-medium text-ink-600 hover:text-rose-700 hover:bg-rose-50 transition">Sobre a loja</a>
+
+        <button class="icon-btn" onclick="App.openCart()" aria-label="Abrir carrinho" id="btn-cart">
+          <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span id="cart-count" class="hidden absolute -top-0.5 -right-0.5 min-w-[19px] h-[19px] px-1 grid place-items-center rounded-full bg-rose-500 text-ink-900 text-[10px] font-bold tabular-nums">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Busca: expansível no celular -->
+    <div id="mobile-search" class="md:hidden hidden pb-3">
+      <form role="search" onsubmit="return App.submitSearch(event)">
+        <label for="search-mobile" class="sr-only">Buscar produtos</label>
+        <div class="relative">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ink-400 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search-mobile" type="search" name="q" placeholder="Buscar por produto ou marca"
+                 autocomplete="off"
+                 class="w-full h-12 pl-11 pr-4 rounded-full bg-sand-100 border border-transparent text-base placeholder:text-ink-400 focus:bg-white focus:border-rose-300 outline-none transition"
+                 oninput="App.onSearchInput(this.value)">
+        </div>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="pb-24 md:pb-0">
+
+  <!-- ══ VIEW: Início ═════════════════════════════════════════════════ -->
+  <section data-view="home" hidden>
+
+    <div class="hero">
+      <div class="relative max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_.85fr] gap-12 items-center">
+        <div>
+          <p class="eyebrow text-rose-300">Cidade Tiradentes · São Paulo</p>
+          <h1 class="font-display text-[2.15rem] sm:text-5xl lg:text-[3.5rem] leading-[1.08] font-semibold mt-4 text-white">
+            Beleza que combina<br class="hidden sm:block"> com você
+          </h1>
+          <p class="mt-5 text-[15px] sm:text-lg text-sand-50/75 max-w-lg leading-relaxed">
+            Perfumes, maquiagem, cuidados com o cabelo e a pele. Escolha com calma pelo catálogo
+            e finalize o pedido em segundos pelo WhatsApp.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="#/catalogo" class="btn btn-rose">
+              Ver catálogo
+              <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="#/sobre" class="btn text-sand-50 border border-white/25 hover:bg-white/10">Sobre a loja</a>
+          </div>
+          <dl class="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm">
+            <div><dt class="text-sand-50/50 text-xs uppercase tracking-widest">Entrega</dt><dd class="mt-1 text-sand-50 font-medium">Zona Leste</dd></div>
+            <div><dt class="text-sand-50/50 text-xs uppercase tracking-widest">Aberto</dt><dd class="mt-1 text-sand-50 font-medium">Todos os dias, 9h–18h</dd></div>
+            <div><dt class="text-sand-50/50 text-xs uppercase tracking-widest">Pedidos</dt><dd class="mt-1 text-sand-50 font-medium">Pelo WhatsApp</dd></div>
+          </dl>
+        </div>
+
+        <div class="hidden lg:flex justify-center">
+          <div class="relative">
+            <div class="absolute inset-0 rounded-full bg-rose-500/15 blur-3xl scale-110" aria-hidden="true"></div>
+            <img src="assets/img/logo-eloa.png" alt="Logotipo da Perfumaria Eloá"
+                 width="300" height="300"
+                 class="relative w-[300px] h-[300px] rounded-full ring-1 ring-rose-500/30">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categorias -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+      <div class="reveal">
+        <p class="eyebrow">Navegue por</p>
+        <h2 class="section-title mt-2">Categorias</h2>
+      </div>
+      <div id="home-categories" class="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 reveal"></div>
+    </div>
+
+    <!-- Destaques -->
+    <div class="bg-sand-50 border-y border-[#EAE0E3]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+        <div class="flex items-end justify-between gap-4 reveal">
+          <div>
+            <p class="eyebrow">Seleção da loja</p>
+            <h2 class="section-title mt-2">Destaques</h2>
+          </div>
+          <a href="#/catalogo" class="text-sm font-semibold text-rose-700 hover:text-rose-600 whitespace-nowrap inline-flex items-center gap-1.5">
+            Ver tudo
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+        <div id="home-featured" class="mt-8 grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 reveal"></div>
+      </div>
+    </div>
+
+    <!-- Como funciona -->
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+      <div class="reveal">
+        <p class="eyebrow">Simples assim</p>
+        <h2 class="section-title mt-2">Como pedir</h2>
+      </div>
+      <ol class="mt-8 grid sm:grid-cols-3 gap-4 reveal">
+        <li class="p-6 rounded-[14px] border border-[#EAE0E3] bg-white">
+          <span class="font-display text-3xl text-rose-500">01</span>
+          <h3 class="mt-3 font-semibold text-ink-900">Escolha os produtos</h3>
+          <p class="mt-1.5 text-sm text-ink-500 leading-relaxed">Navegue pelo catálogo e adicione ao carrinho o que quiser levar.</p>
+        </li>
+        <li class="p-6 rounded-[14px] border border-[#EAE0E3] bg-white">
+          <span class="font-display text-3xl text-rose-500">02</span>
+          <h3 class="mt-3 font-semibold text-ink-900">Revise o carrinho</h3>
+          <p class="mt-1.5 text-sm text-ink-500 leading-relaxed">Ajuste as quantidades e confira o total estimado do pedido.</p>
+        </li>
+        <li class="p-6 rounded-[14px] border border-[#EAE0E3] bg-white">
+          <span class="font-display text-3xl text-rose-500">03</span>
+          <h3 class="mt-3 font-semibold text-ink-900">Finalize no WhatsApp</h3>
+          <p class="mt-1.5 text-sm text-ink-500 leading-relaxed">O pedido chega pronto na conversa. O frete é combinado no atendimento.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══ VIEW: Catálogo ═══════════════════════════════════════════════ -->
+  <section data-view="catalogo" hidden>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-16">
+      <p class="eyebrow">Catálogo</p>
+      <h1 class="section-title mt-2">Nossos produtos</h1>
+
+      <!-- Filtros por categoria -->
+      <div class="mt-6 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto">
+        <div id="catalog-chips" class="flex gap-2 pb-1 w-max sm:w-auto sm:flex-wrap" role="group" aria-label="Filtrar por categoria"></div>
+      </div>
+
+      <p id="catalog-count" class="mt-6 text-sm text-ink-500" role="status" aria-live="polite"></p>
+      <div id="catalog-grid" class="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+
+      <div id="catalog-empty" class="hidden py-20 text-center">
+        <svg class="w-12 h-12 mx-auto text-rose-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <p class="mt-4 font-display text-xl text-ink-900">Nenhum produto encontrado</p>
+        <p class="mt-2 text-sm text-ink-500">Tente outro termo ou veja todas as categorias.</p>
+        <button class="btn btn-outline mt-6" onclick="App.clearFilters()">Limpar filtros</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ VIEW: Produto ════════════════════════════════════════════════ -->
+  <section data-view="produto" hidden>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-16">
+      <nav class="text-sm" aria-label="Você está em">
+        <ol class="flex items-center gap-1.5 text-ink-500 flex-wrap">
+          <li><a href="#/" class="hover:text-rose-700">Início</a></li>
+          <li aria-hidden="true" class="text-ink-400">/</li>
+          <li><a href="#/catalogo" class="hover:text-rose-700">Catálogo</a></li>
+          <li aria-hidden="true" class="text-ink-400">/</li>
+          <li id="pd-crumb" class="text-ink-800 font-medium"></li>
+        </ol>
+      </nav>
+      <div id="product-detail" class="mt-6"></div>
+
+      <div class="mt-16">
+        <h2 class="section-title">Você também pode gostar</h2>
+        <div id="product-related" class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ VIEW: Sobre a loja ═══════════════════════════════════════════ -->
+  <section data-view="sobre" hidden>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-16">
+      <p class="eyebrow">Sobre</p>
+      <h1 class="section-title mt-2">Perfumaria Eloá</h1>
+      <p class="mt-4 text-[15px] sm:text-base text-ink-500 leading-relaxed max-w-2xl">
+        Somos uma perfumaria de bairro na Cidade Tiradentes. Trabalhamos com perfumes, maquiagem,
+        produtos para cabelo, cuidados com a pele, cílios e unhas — com atendimento próximo e
+        pedidos finalizados pelo WhatsApp.
+      </p>
+
+      <dl class="mt-10 grid sm:grid-cols-2 gap-4">
+        <div class="p-6 rounded-[14px] border border-[#EAE0E3]">
+          <dt class="flex items-center gap-2 text-sm font-semibold text-ink-900">
+            <svg class="w-[18px] h-[18px] text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            Endereço
+          </dt>
+          <dd class="mt-2 text-[15px] text-ink-600 leading-relaxed" id="about-address"></dd>
+          <a id="about-map" href="#" target="_blank" rel="noopener"
+             class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-rose-700 hover:text-rose-600">
+            Ver no mapa
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+
+        <div class="p-6 rounded-[14px] border border-[#EAE0E3]">
+          <dt class="flex items-center gap-2 text-sm font-semibold text-ink-900">
+            <svg class="w-[18px] h-[18px] text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            Horário de funcionamento
+          </dt>
+          <dd class="mt-2 text-[15px] text-ink-600 leading-relaxed" id="about-hours"></dd>
+        </div>
+
+        <div class="p-6 rounded-[14px] border border-[#EAE0E3]">
+          <dt class="flex items-center gap-2 text-sm font-semibold text-ink-900">
+            <svg class="w-[18px] h-[18px] text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v10H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>
+            Entrega
+          </dt>
+          <dd class="mt-2 text-[15px] text-ink-600 leading-relaxed" id="about-delivery"></dd>
+        </div>
+
+        <div class="p-6 rounded-[14px] border border-[#EAE0E3] bg-rose-50">
+          <dt class="flex items-center gap-2 text-sm font-semibold text-ink-900">
+            <svg class="w-[18px] h-[18px] text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            Frete
+          </dt>
+          <dd class="mt-2 text-[15px] text-ink-600 leading-relaxed" id="about-shipping"></dd>
+        </div>
+      </dl>
+
+      <div class="mt-8 p-6 sm:p-8 rounded-[22px] bg-ink-900 text-sand-50 text-center">
+        <h2 class="font-display text-2xl">Ficou com dúvida?</h2>
+        <p class="mt-2 text-sand-50/70 text-[15px]">Fale com a gente pelo WhatsApp. Respondemos no horário da loja.</p>
+        <a id="about-whats" href="#" target="_blank" rel="noopener" class="btn btn-whats mt-6">
+          <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.17c-.25.7-1.44 1.33-1.99 1.38-.53.05-1.02.24-3.44-.72-2.9-1.14-4.74-4.11-4.88-4.3-.14-.19-1.16-1.55-1.16-2.95 0-1.4.73-2.09.99-2.37.26-.29.57-.36.76-.36l.54.01c.17.01.41-.07.64.49.25.6.83 2.06.9 2.21.07.14.12.31.02.5-.09.19-.14.31-.28.48l-.42.49c-.14.14-.28.3-.12.58.16.29.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.19.7-.81.88-1.09.19-.29.37-.24.63-.14.26.09 1.65.78 1.93.92.28.14.47.21.54.33.07.12.07.68-.18 1.34Z"/></svg>
+          <span id="about-whats-label"></span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══ Rodapé ═══════════════════════════════════════════════════════════ -->
+<footer class="border-t border-[#EAE0E3] bg-sand-50 mt-8">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 grid sm:grid-cols-[auto_1fr] gap-8 items-start">
+    <img src="assets/img/logo-eloa.png" alt="" width="64" height="64" class="w-16 h-16 rounded-full" loading="lazy" decoding="async">
+    <div>
+      <p class="font-display text-lg text-ink-900">Perfumaria Eloá</p>
+      <p class="text-sm text-ink-500 mt-1" id="footer-address"></p>
+      <p class="text-sm text-ink-500" id="footer-hours"></p>
+      <nav class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        <a href="#/" class="text-ink-600 hover:text-rose-700">Início</a>
+        <a href="#/catalogo" class="text-ink-600 hover:text-rose-700">Catálogo</a>
+        <a href="#/sobre" class="text-ink-600 hover:text-rose-700">Sobre a loja</a>
+        <a id="footer-whats" href="#" target="_blank" rel="noopener" class="text-ink-600 hover:text-rose-700">WhatsApp</a>
+      </nav>
+      <p class="mt-6 text-xs text-ink-400">
+        Protótipo do Projeto Atlas · Imagens ilustrativas · Preços e disponibilidade confirmados no atendimento.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ Navegação inferior (celular) ═════════════════════════════════════ -->
+<nav class="tabbar md:hidden" aria-label="Navegação principal">
+  <a href="#/" data-tab="home">
+    <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+    Início
+  </a>
+  <a href="#/catalogo" data-tab="catalogo">
+    <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+    Catálogo
+  </a>
+  <a href="#/sobre" data-tab="sobre">
+    <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+    Loja
+  </a>
+  <a href="#" data-tab="carrinho" onclick="App.openCart(); return false;">
+    <span class="relative">
+      <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span id="tab-cart-count" class="hidden absolute -top-1 -right-2 min-w-[17px] h-[17px] px-1 grid place-items-center rounded-full bg-rose-500 text-ink-900 text-[10px] font-bold tabular-nums">0</span>
+    </span>
+    Carrinho
+  </a>
+</nav>
+
+<!-- ══ Carrinho ═════════════════════════════════════════════════════════ -->
+<div class="overlay" id="cart-overlay" onclick="App.closeCart()"></div>
+
+<aside class="panel" id="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+  <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#EAE0E3] shrink-0">
+    <h2 id="cart-title" class="font-display text-xl text-ink-900">Seu carrinho</h2>
+    <button class="icon-btn" onclick="App.closeCart()" aria-label="Fechar carrinho">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div id="cart-items" class="flex-1 overflow-y-auto px-5 py-4"></div>
+
+  <div id="cart-footer" class="border-t border-[#EAE0E3] px-5 py-4 shrink-0 bg-white" style="padding-bottom: max(16px, env(safe-area-inset-bottom));">
+    <div class="flex items-baseline justify-between">
+      <span class="text-sm text-ink-500">Total estimado</span>
+      <span id="cart-total" class="font-display text-2xl text-ink-900 tnum">R$ 0,00</span>
+    </div>
+    <p class="mt-1.5 text-xs text-ink-400 leading-relaxed">
+      Valor sem frete. O frete é calculado durante o atendimento. Disponibilidade confirmada no WhatsApp.
+    </p>
+    <button id="cart-checkout" class="btn btn-whats w-full mt-4" onclick="App.checkout()">
+      <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm5.8 14.17c-.25.7-1.44 1.33-1.99 1.38-.53.05-1.02.24-3.44-.72-2.9-1.14-4.74-4.11-4.88-4.3-.14-.19-1.16-1.55-1.16-2.95 0-1.4.73-2.09.99-2.37.26-.29.57-.36.76-.36l.54.01c.17.01.41-.07.64.49.25.6.83 2.06.9 2.21.07.14.12.31.02.5-.09.19-.14.31-.28.48l-.42.49c-.14.14-.28.3-.12.58.16.29.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.22 1.37.28.14.44.12.6-.07.17-.19.7-.81.88-1.09.19-.29.37-.24.63-.14.26.09 1.65.78 1.93.92.28.14.47.21.54.33.07.12.07.68-.18 1.34Z"/></svg>
+      Finalizar pelo WhatsApp
+    </button>
+    <button class="btn btn-outline w-full mt-2" onclick="App.closeCart()">Continuar comprando</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <svg class="w-[18px] h-[18px] text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 12 5 5L20 6"/></svg>
+  <span id="toast-msg"></span>
+</div>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

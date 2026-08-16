@@ -1,0 +1,396 @@
+/* =========================================================================
+   Perfumaria Eloá — design tokens e componentes
+   Arquitetura de tokens em 3 camadas: primitivo → semântico → componente
+   (skill: design-system). Paleta extraída do logotipo oficial (skill: brand).
+   ========================================================================= */
+
+/* --- 0. FONTES (self-hosted, subconjunto latino) ------------------------ */
+/* font-display: swap evita texto invisível enquanto a fonte carrega. */
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap;
+  src: url('../fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('../fonts/inter-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('../fonts/inter-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Inter'; font-style: normal; font-weight: 700; font-display: swap;
+  src: url('../fonts/inter-latin-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display'; font-style: normal; font-weight: 500; font-display: swap;
+  src: url('../fonts/playfair-display-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display'; font-style: normal; font-weight: 600; font-display: swap;
+  src: url('../fonts/playfair-display-latin-600-normal.woff2') format('woff2');
+}
+
+/* --- 1. PRIMITIVOS ------------------------------------------------------ */
+:root {
+  /* Rosa amostrado do logotipo oficial: #D88898 */
+  --rose-50:  #FDF7F8;
+  --rose-100: #F9EBEF;
+  --rose-200: #F1D6DD;
+  --rose-300: #E7B8C3;
+  --rose-400: #DE9CAB;
+  --rose-500: #D88898; /* cor da marca */
+  --rose-600: #C06D80;
+  --rose-700: #A0566A;
+
+  /* Preto quente, para não brigar com o rosa */
+  --ink-900: #140E10;
+  --ink-800: #1F1519;
+  --ink-700: #2A1D22;
+  --ink-600: #453238;
+  --ink-500: #6B545B;
+  --ink-400: #867179;
+
+  --white: #FFFFFF;
+  --sand-50: #FBF8F8;
+  --sand-100: #F4EFF0;
+
+  /* Escala de espaçamento 4pt */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(20,14,16,.06), 0 1px 3px rgba(20,14,16,.05);
+  --shadow-md: 0 4px 12px rgba(20,14,16,.07), 0 2px 4px rgba(20,14,16,.04);
+  --shadow-lg: 0 12px 32px rgba(20,14,16,.10), 0 4px 10px rgba(20,14,16,.05);
+  --shadow-xl: 0 24px 60px rgba(20,14,16,.16);
+
+  --dur-fast: 150ms;
+  --dur: 240ms;
+  --dur-slow: 340ms;
+  --ease: cubic-bezier(.22,.61,.36,1);
+
+  /* Escala z-index (evita empilhamento acidental) */
+  --z-header: 40;
+  --z-overlay: 60;
+  --z-panel: 70;
+  --z-toast: 90;
+
+  /* --- 2. SEMÂNTICOS ---------------------------------------------------- */
+  --color-primary: var(--rose-500);
+  --color-primary-hover: var(--rose-600);
+  --color-on-primary: var(--ink-900);
+  --color-bg: var(--white);
+  --color-bg-alt: var(--sand-50);
+  --color-surface: var(--white);
+  --color-fg: var(--ink-800);
+  --color-fg-muted: var(--ink-500);
+  --color-border: #EAE0E3;
+  --color-inverse-bg: var(--ink-900);
+  --color-inverse-fg: var(--sand-50);
+  --color-focus: var(--rose-600);
+  --color-success: #2E7D5B;
+  --color-danger: #B3261E;
+
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* --- Base --------------------------------------------------------------- */
+* { -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-fg);
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-wrap: anywhere;
+}
+
+.font-display { font-family: var(--font-display); }
+
+/* Foco visível e consistente em tudo que é interativo */
+:where(a, button, input, select, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Preços: algarismos alinhados e de mesma largura.
+   Sem `lining-nums` o Playfair usa algarismos antigos (o 9 desce da linha),
+   que ficam bonitos em texto corrido mas atrapalham a leitura de preço. */
+.tnum { font-variant-numeric: lining-nums tabular-nums; }
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4.2vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  color: var(--ink-900);
+}
+
+.eyebrow {
+  font-size: .6875rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--rose-700);
+}
+
+/* --- 3. COMPONENTES ----------------------------------------------------- */
+
+/* Botões */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--sp-2);
+  min-height: 48px; padding: 0 var(--sp-6);
+  border-radius: var(--radius-pill);
+  font-weight: 600; font-size: .9375rem;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease),
+              color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              transform var(--dur-fast) var(--ease);
+  touch-action: manipulation;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+.btn-primary { background: var(--ink-900); color: var(--white); border: 1px solid var(--ink-900); }
+.btn-primary:hover:not(:disabled) { background: var(--ink-700); border-color: var(--ink-700); }
+
+.btn-rose { background: var(--rose-500); color: var(--ink-900); border: 1px solid var(--rose-500); }
+.btn-rose:hover:not(:disabled) { background: var(--rose-600); color: var(--white); border-color: var(--rose-600); }
+
+.btn-outline { background: transparent; color: var(--ink-800); border: 1px solid var(--color-border); }
+.btn-outline:hover:not(:disabled) { border-color: var(--rose-500); color: var(--rose-700); background: var(--rose-50); }
+
+.btn-whats { background: var(--color-success); color: var(--white); border: 1px solid var(--color-success); }
+.btn-whats:hover:not(:disabled) { background: #24664A; border-color: #24664A; }
+
+/* Botão-ícone (header) */
+.icon-btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: var(--radius-pill);
+  color: var(--ink-800);
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.icon-btn:hover { background: var(--rose-100); color: var(--rose-700); }
+
+/* Chips de categoria */
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 40px; padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--white);
+  color: var(--ink-600);
+  font-size: .875rem; font-weight: 500;
+  white-space: nowrap; cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.chip:hover { border-color: var(--rose-400); color: var(--rose-700); background: var(--rose-50); }
+.chip[aria-pressed="true"] {
+  background: var(--ink-900); border-color: var(--ink-900); color: var(--white);
+}
+
+/* Card de produto */
+.card {
+  position: relative;
+  display: flex; flex-direction: column;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
+}
+@media (hover: hover) {
+  .card:hover { box-shadow: var(--shadow-lg); border-color: var(--rose-200); transform: translateY(-3px); }
+  .card:hover .card-img img { transform: scale(1.05); }
+}
+.card-img {
+  position: relative;
+  aspect-ratio: 1 / 1;         /* reserva espaço: evita layout shift */
+  background: var(--sand-100);
+  overflow: hidden;
+}
+.card-img img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.badge {
+  position: absolute; top: 10px; left: 10px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--ink-900); color: var(--white);
+  font-size: .625rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* Painel deslizante (carrinho) */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(20,14,16,.5);
+  backdrop-filter: blur(2px);
+  z-index: var(--z-overlay);
+  opacity: 0; visibility: hidden;
+  transition: opacity var(--dur) var(--ease), visibility var(--dur) var(--ease);
+}
+.overlay.is-open { opacity: 1; visibility: visible; }
+
+.panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: min(440px, 100%);
+  display: flex; flex-direction: column;
+  background: var(--white);
+  z-index: var(--z-panel);
+  box-shadow: var(--shadow-xl);
+  transform: translateX(100%);
+  /* visibility evita que o painel fechado receba foco por Tab */
+  visibility: hidden;
+  transition: transform var(--dur-slow) var(--ease), visibility var(--dur-slow);
+}
+.panel.is-open { transform: translateX(0); visibility: visible; }
+
+/* No celular o carrinho vira bottom sheet (padrão nativo) */
+@media (max-width: 640px) {
+  .panel {
+    top: auto; left: 0; width: 100%;
+    height: 88dvh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    transform: translateY(100%);
+  }
+  .panel.is-open { transform: translateY(0); }
+}
+
+/* Stepper de quantidade */
+.stepper {
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.stepper button {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  color: var(--ink-700); cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.stepper button:hover:not(:disabled) { background: var(--rose-100); }
+.stepper button:disabled { opacity: .35; cursor: not-allowed; }
+.stepper output { min-width: 34px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Barra inferior de navegação (somente celular).
+   O display fica dentro do media query: fora dele, `display: grid` venceria
+   a utilitária `md:hidden` do Tailwind por ordem de carregamento. */
+.tabbar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: var(--z-header);
+  display: none;
+  background: rgba(255,255,255,.94);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-border);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@media (max-width: 767px) {
+  .tabbar { display: grid; grid-template-columns: repeat(4, 1fr); }
+}
+.tabbar a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 3px; min-height: 58px;
+  font-size: .6875rem; font-weight: 500;
+  color: var(--ink-500);
+  transition: color var(--dur) var(--ease);
+}
+.tabbar a[aria-current="page"] { color: var(--rose-700); font-weight: 600; }
+.tabbar a:hover { color: var(--rose-700); }
+
+/* Aviso (toast).
+   No celular entra pelo topo: embaixo ele cobriria o botão de finalizar do
+   carrinho e a barra de navegação — justamente os alvos que o cliente quer. */
+.toast {
+  position: fixed; left: 50%;
+  z-index: var(--z-toast);
+  display: flex; align-items: center; gap: var(--sp-2);
+  max-width: calc(100vw - 32px);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-pill);
+  background: var(--ink-900); color: var(--white);
+  font-size: .875rem; font-weight: 500;
+  box-shadow: var(--shadow-xl);
+  opacity: 0; visibility: hidden;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease), visibility var(--dur);
+}
+.toast { top: 16px; transform: translate(-50%, -16px); }
+.toast.is-open { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
+
+@media (min-width: 768px) {
+  .toast { top: auto; bottom: 32px; transform: translate(-50%, 16px); }
+  .toast.is-open { transform: translate(-50%, 0); }
+}
+
+/* Hero */
+/* Halos pintados como background do próprio hero: aplicados a um
+   pseudo-elemento eles eram recortados e deixavam uma emenda visível. */
+.hero {
+  position: relative;
+  color: var(--sand-50);
+  overflow: hidden;
+  background-color: var(--ink-900);
+  background-image:
+    radial-gradient(60% 70% at 18% 42%, rgba(216,136,152,.26), transparent 70%),
+    radial-gradient(46% 60% at 88% 8%,  rgba(216,136,152,.18), transparent 70%);
+}
+
+/* Entrada suave dos blocos ao rolar (motion sutil: 3/10) */
+.reveal { opacity: 0; transform: translateY(12px); }
+.reveal.is-visible {
+  opacity: 1; transform: none;
+  transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+}
+
+/* Skeleton para imagens ainda não carregadas */
+.card-img.is-loading::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--sand-100) 25%, #EDE4E6 50%, var(--sand-100) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+.no-scroll { overflow: hidden; }
+
+/* O atributo [hidden] precisa vencer as utilitárias de display do Tailwind
+   (.grid, .flex, .block têm a mesma especificidade e vêm depois no CSS). */
+[hidden] { display: none !important; }
+
+/* Reserva espaço para a barra inferior fixa: nenhum conteúdo pode ficar
+   embaixo dela (diretriz fixed-element-offset). */
+@media (max-width: 767px) {
+  main, footer { padding-bottom: calc(58px + 16px + env(safe-area-inset-bottom)); }
+  footer { padding-bottom: calc(58px + 24px + env(safe-area-inset-bottom)); }
+}
+
+/* Respeita quem pediu menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}

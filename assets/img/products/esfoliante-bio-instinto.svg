@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img">
+<defs>
+  <linearGradient id="bg14" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#F8F5F6"/><stop offset="1" stop-color="#EBE1E4"/>
+  </linearGradient>
+  <linearGradient id="lit14" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity=".34"/>
+    <stop offset=".34" stop-color="#FFFFFF" stop-opacity=".06"/>
+    <stop offset=".72" stop-color="#000000" stop-opacity=".05"/>
+    <stop offset="1" stop-color="#000000" stop-opacity=".20"/>
+  </linearGradient>
+  <radialGradient id="halo14" cx=".5" cy=".42" r=".62">
+    <stop offset="0" stop-color="#FFFFFF" stop-opacity=".55"/>
+    <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+<rect width="800" height="800" fill="url(#bg14)"/>
+<ellipse cx="400" cy="330" rx="300" ry="300" fill="url(#halo14)"/>
+<ellipse cx="400" cy="662" rx="188" ry="26" fill="rgba(42,26,32,0.16)"/>
+<rect x="266" y="278" width="268" height="76" rx="22" fill="#A38189"/>
+<rect x="266" y="278" width="268" height="76" rx="22" fill="url(#lit14)"/>
+<path d="M282 350 h236 v206 q0 92-118 92 t-118-92z" fill="#E9B9C4"/>
+<path d="M282 350 h236 v206 q0 92-118 92 t-118-92z" fill="url(#lit14)"/>
+<rect x="322" y="424" width="156" height="116" rx="10" fill="#F3E9E6" opacity=".95"/><rect x="350.08" y="471.0" width="99.84" height="6" rx="3" fill="#D98A9C" opacity=".55"/><rect x="365.68" y="485.0" width="68.64" height="4" rx="2" fill="#2A1D22" opacity=".26"/>
+</svg>
