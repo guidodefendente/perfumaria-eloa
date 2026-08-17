@@ -82,7 +82,7 @@ const App = (() => {
           <p class="text-sm text-ink-500">${escapeHtml(product.brand)}</p>
           <div class="mt-auto pt-3 border-t border-[#EAE0E3] flex items-center justify-between gap-2">
             <span class="font-display text-lg text-ink-900 tnum">${brl(product.price)}</span>
-            <button class="icon-btn bg-ink-900 text-white hover:bg-rose-500 hover:text-ink-900 w-10 h-10 shrink-0"
+            <button class="icon-btn bg-ink-900 text-white hover:bg-rose-500 hover:text-ink-900 shrink-0"
                     onclick="App.addToCart('${product.id}')"
                     aria-label="Adicionar ${escapeHtml(product.name)} ${escapeHtml(product.brand)} ao carrinho">
               <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -117,6 +117,23 @@ const App = (() => {
       <button class="chip" aria-pressed="${filterCategory === c.id}" onclick="App.setCategory('${c.id}')">
         ${escapeHtml(c.name)}
       </button>`).join('');
+    updateChipFade();
+  }
+
+  /**
+   * Mostra/esconde o fade lateral da lista de categorias conforme há
+   * conteúdo para rolar em cada direção. No desktop os chips quebram linha
+   * (scrollWidth ≈ clientWidth), então os dois fades ficam sempre ocultos.
+   */
+  function updateChipFade() {
+    const scroller = $('#catalog-chips-scroll');
+    const left = $('#chip-fade-left');
+    const right = $('#chip-fade-right');
+    if (!scroller || !left || !right) return;
+    const { scrollLeft, scrollWidth, clientWidth } = scroller;
+    const maxScroll = scrollWidth - clientWidth;
+    left.classList.toggle('is-visible', scrollLeft > 4);
+    right.classList.toggle('is-visible', maxScroll > 4 && scrollLeft < maxScroll - 4);
   }
 
   function filteredProducts() {
@@ -306,7 +323,7 @@ const App = (() => {
                 <p class="font-medium text-ink-900 leading-snug truncate">${escapeHtml(p.name)}</p>
                 <p class="text-sm text-ink-500 truncate">${escapeHtml(p.brand)}</p>
               </div>
-              <button class="icon-btn w-9 h-9 text-ink-400 hover:text-[#B3261E] hover:bg-[#FBEAE9] shrink-0"
+              <button class="icon-btn text-ink-400 hover:text-[#B3261E] hover:bg-[#FBEAE9] shrink-0"
                       onclick="App.removeFromCart('${p.id}')"
                       aria-label="Remover ${escapeHtml(p.name)} ${escapeHtml(p.brand)} do carrinho">
                 <svg class="w-[17px] h-[17px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13"/></svg>
@@ -403,7 +420,7 @@ const App = (() => {
   // ── Roteamento ──────────────────────────────────────────────────────────
   function showView(name) {
     $$('[data-view]').forEach((section) => { section.hidden = section.dataset.view !== name; });
-    $$('.tabbar a').forEach((tab) => {
+    $$('.tabbar a, .hdr-nav a, .hdr-nav-compact').forEach((tab) => {
       if (tab.dataset.tab === name) tab.setAttribute('aria-current', 'page');
       else tab.removeAttribute('aria-current');
     });
@@ -429,8 +446,29 @@ const App = (() => {
       showView('home');
     }
 
-    window.scrollTo({ top: 0, behavior: 'auto' });
+    scrollToTop();
     observeReveals();
+  }
+
+  /**
+   * Leva a página para o topo de forma instantânea ao trocar de rota.
+   *
+   * `window.scrollTo({ top: 0, behavior: 'auto' })` parece o jeito óbvio, mas
+   * `behavior: 'auto'` delega para o `scroll-behavior` do CSS — que é
+   * `smooth` neste projeto (para os links de âncora) — e o scroll acaba
+   * animando por ~300ms em vez de saltar. Numa troca de rota isso lê como
+   * "a página não voltou pro topo". Alternar o `scroll-behavior` para
+   * `auto` via inline style (maior especificidade que a regra do CSS) força
+   * o salto instantâneo, e o valor original é restaurado logo em seguida
+   * para não afetar o scroll suave usado em outros lugares.
+   */
+  function scrollToTop() {
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    void root.offsetHeight; // força o navegador a aplicar o estilo antes do scrollTo (sem isso o scrollTo abaixo às vezes ainda lia o `smooth` antigo, a troca de volta interrompia a animação no meio, e a página ficava presa na posição de rolagem anterior)
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = previous;
   }
 
   // ── Entrada suave ao rolar ──────────────────────────────────────────────
@@ -498,6 +536,7 @@ const App = (() => {
 
     openCart,
     closeCart,
+    updateChipFade,
 
     setCategory(id) {
       filterCategory = id;
@@ -556,6 +595,7 @@ const App = (() => {
       router();
 
       window.addEventListener('hashchange', router);
+      window.addEventListener('resize', updateChipFade);
       document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && isCartOpen()) closeCart();
         trapFocus(event);

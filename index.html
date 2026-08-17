@@ -56,7 +56,17 @@
           <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         </button>
 
-        <a href="#/sobre" class="hidden md:inline-flex items-center h-11 px-4 rounded-full text-sm font-medium text-ink-600 hover:text-rose-700 hover:bg-rose-50 transition">Sobre a loja</a>
+        <!-- Entre 768–1023px só "Sobre a loja" cabe com folga ao lado da busca;
+             Início e Catálogo entram a partir de 1024px (ver DECISOES.md).
+             Visibilidade por breakpoint definida em styles.css (.hdr-nav /
+             .hdr-nav-compact), não por utilitária hidden/md:/lg: do Tailwind:
+             o build local não estava gerando md:inline-flex nem lg:hidden. -->
+        <a href="#/sobre" data-tab="sobre" class="hdr-nav-compact">Sobre a loja</a>
+        <nav class="hdr-nav" aria-label="Navegação principal">
+          <a href="#/" data-tab="home">Início</a>
+          <a href="#/catalogo" data-tab="catalogo">Catálogo</a>
+          <a href="#/sobre" data-tab="sobre">Sobre a loja</a>
+        </nav>
 
         <button class="icon-btn" onclick="App.openCart()" aria-label="Abrir carrinho" id="btn-cart">
           <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
@@ -181,8 +191,12 @@
       <h1 class="section-title mt-2">Nossos produtos</h1>
 
       <!-- Filtros por categoria -->
-      <div class="mt-6 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto">
-        <div id="catalog-chips" class="flex gap-2 pb-1 w-max sm:w-auto sm:flex-wrap" role="group" aria-label="Filtrar por categoria"></div>
+      <div class="relative mt-6 -mx-4 sm:mx-0">
+        <div id="catalog-chips-scroll" class="overflow-x-auto px-4 sm:px-0" onscroll="App.updateChipFade()">
+          <div id="catalog-chips" class="flex gap-2 pb-1 w-max sm:w-auto sm:flex-wrap" role="group" aria-label="Filtrar por categoria"></div>
+        </div>
+        <div id="chip-fade-left" class="chip-fade chip-fade-left" aria-hidden="true"></div>
+        <div id="chip-fade-right" class="chip-fade chip-fade-right" aria-hidden="true"></div>
       </div>
 
       <p id="catalog-count" class="mt-6 text-sm text-ink-500" role="status" aria-live="polite"></p>

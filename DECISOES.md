@@ -109,6 +109,22 @@ Para trocar por foto real, basta alterar o campo `image` do produto em `products
 Nenhuma outra mudança é necessária.
 → **Ação:** fotografar os produtos.
 
+**Atualização — Sprint 2 (16/08/2026):** as 17 ilustrações foram refeitas com tratamento de
+"packshot" — fundo de estúdio, sombra suave desfocada, leve reflexo no chão, sheen de
+vidro/plástico — usando 12 arquétipos de embalagem por tipo de produto (flaconete, pote,
+tubo, caixa etc.). Não havia, nesta sessão, uma ferramenta de geração de imagem fotorrealista
+disponível: continuavam sendo ilustrações vetoriais, só que com um acabamento editorial mais
+próximo de foto de estúdio. A regra de não inventar embalagem oficial, rótulo ou logotipo se
+manteve. Essas ilustrações foram substituídas pelo padrão descrito a seguir.
+
+**Atualização — catálogo fotográfico (17/08/2026):** as ilustrações foram substituídas por
+imagens de catálogo tratadas a partir de referências públicas dos produtos. O padrão da
+Perfumaria Eloá é fundo marfim, luz de estúdio, sombra suave e reflexo discreto, mantendo a
+embalagem e a identidade visual do item. **Os 17 produtos do catálogo usam PNG nesse padrão**
+(`assets/img/products/*.png`) — é o único formato de imagem usado pelo catálogo hoje. As
+ilustrações SVG da Sprint 2 voltaram ao estado original do Git e não são referenciadas por
+nenhum produto em `products.js`.
+
 ### 4. Produtos em destaque
 
 Seis produtos marcados com `featured: true`, escolhidos por nós para cobrir categorias
@@ -192,3 +208,67 @@ Problemas encontrados testando o protótipo em 375px, 768px e 1440px, e o que fo
 Todos os pares de texto do protótipo passam em 4,5:1. Os principais:
 corpo sobre branco 6,90:1 · título sobre branco 19,09:1 · rosa-700 sobre branco 5,21:1 ·
 preto sobre rosa da marca 7,18:1 · branco sobre verde do WhatsApp 5,00:1.
+
+---
+
+## Sprint 2 (16/08/2026)
+
+Refinamento sobre o protótipo validado na Sprint 1, a partir do relatório de validação no
+Claude in Chrome. Sem mudança de stack, sem dados novos inventados (ver seção "Provisório"
+acima — nada ali mudou de status nesta sprint).
+
+### Scroll ao trocar de rota — causa raiz
+
+O `router()` já chamava `window.scrollTo({ top: 0, behavior: 'auto' })` desde a Sprint 1 —
+por que ainda parecia não funcionar? `behavior: 'auto'` **delega para o `scroll-behavior` do
+CSS**, que neste projeto é `smooth` (para os links de âncora). O scroll ficava animando por
+~300ms em vez de saltar, e em telas mais altas (rodapé → topo) a demora era grande o
+suficiente para ler como "não voltou pro topo".
+
+A correção óbvia — trocar o `scroll-behavior` do `<html>` para `auto` por um instante,
+`scrollTo(0,0)`, e restaurar — **também falhava**, por um motivo mais sutil: alternar a
+propriedade via inline style e chamar `scrollTo` na sequência seguinte, sem forçar o
+navegador a recalcular o estilo entre as duas linhas, deixava a chamada de scroll ainda
+lendo `smooth`; a restauração do estilo original interrompia a animação que mal tinha
+começado, e a página ficava presa na posição antiga. A função `scrollToTop()` em `app.js`
+agora força um reflow (`void root.offsetHeight`) entre trocar o estilo e chamar `scrollTo`,
+o que garante o salto instantâneo. Validado nas quatro transições de rota (Home↔Catálogo↔
+Produto↔Sobre) e por rodapé, breadcrumb e navegação do header, em desktop e mobile.
+
+### Navegação do header desktop
+
+Adicionados "Início" e "Catálogo" ao lado de "Sobre a loja", só visíveis a partir de
+1024px — abaixo disso (768–1023px) só "Sobre a loja" cabe com folga ao lado da busca; entre
+768 e 1023px o header já ficava justo mesmo antes da Sprint 2, e três links a mais não
+caberiam sem apertar o campo de busca. A tabbar do celular cobre a navegação abaixo de
+768px, então não há perda de acesso — só uma faixa intermediária em que o header mostra
+menos itens.
+
+Essa visibilidade por breakpoint é feita em `styles.css` (classes `.hdr-nav` /
+`.hdr-nav-compact`), **não** com as utilitárias `hidden`/`md:`/`lg:` do Tailwind: nesta
+sessão, `npx tailwindcss@3` não estava emitindo `md:inline-flex` nem `lg:hidden` no bloco de
+regras responsivas final do `tailwind.css` (raiz não identificada — o seletor aparecia no
+CSS bruto do arquivo mas não no `CSSStyleSheet` que o navegador realmente aplicava).
+Escrever essas duas regras como componente, fora do CSS gerado, contorna o problema e evita
+depender de reproduzir o bug para mantê-lo funcionando.
+
+### Áreas de toque
+
+`w-10 h-10` (40px) e `w-9 h-9` (36px) que sobrescreviam o `.icon-btn` removidos — os botões
+voltam ao tamanho padrão do componente (44×44px). O stepper de quantidade do carrinho foi de
+40px para 44px. Nenhum dos três precisou de classe nova: só remoção de overrides ou ajuste de
+um valor já existente em `styles.css`.
+
+### Fade nas categorias do catálogo (mobile)
+
+`#catalog-chips-scroll` ganhou dois elementos de fade (`#chip-fade-left/right`,
+`pointer-events: none`) que aparecem/somem conforme `scrollLeft` e `scrollWidth` do
+container, atualizados em `onscroll` e no `resize`. No desktop os chips quebram linha
+(`sm:flex-wrap`) e `scrollWidth === clientWidth`, então os dois fades ficam sempre ocultos
+sem precisar de media query própria. Um primeiro rascunho usava um gradiente para a cor de
+fundo (branco → transparente) — invisível sobre fundo branco; virou uma sombra sutil
+(`rgba(20,14,16,.05)`), mais parecida com o "scroll shadow" de apps nativos.
+
+### Imagens dos produtos
+
+Ver seção "3. Imagens dos produtos" acima.

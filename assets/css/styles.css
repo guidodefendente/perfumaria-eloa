@@ -187,6 +187,20 @@ body {
 }
 .icon-btn:hover { background: var(--rose-100); color: var(--rose-700); }
 
+/* Fade lateral da lista de categorias roláveis (só celular — no desktop os
+   chips quebram linha via sm:flex-wrap e o JS nunca marca overflow).
+   pointer-events: none para nunca atrapalhar o toque nos chips por baixo. */
+.chip-fade {
+  position: absolute; top: 0; bottom: 4px;
+  width: 32px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+.chip-fade-left { left: 0; background: linear-gradient(to right, var(--color-bg), var(--color-bg) 15%, rgba(20,14,16,.05) 55%, transparent); }
+.chip-fade-right { right: 0; background: linear-gradient(to left, var(--color-bg), var(--color-bg) 15%, rgba(20,14,16,.05) 55%, transparent); }
+.chip-fade.is-visible { opacity: 1; }
+
 /* Chips de categoria */
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
@@ -284,14 +298,52 @@ body {
   overflow: hidden;
 }
 .stepper button {
-  width: 40px; height: 40px;
+  width: 44px; height: 44px;
   display: grid; place-items: center;
   color: var(--ink-700); cursor: pointer;
   transition: background-color var(--dur-fast) var(--ease);
 }
 .stepper button:hover:not(:disabled) { background: var(--rose-100); }
 .stepper button:disabled { opacity: .35; cursor: not-allowed; }
-.stepper output { min-width: 34px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stepper output { min-width: 30px; text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Navegação do header (desktop).
+   Escrita como componente (não com utilitárias hidden/md:/lg: do Tailwind):
+   o build local do Tailwind não estava emitindo `md:inline-flex` nem
+   `lg:hidden` no bloco de regras responsivas final, então a visibilidade por
+   breakpoint fica garantida aqui, fora do CSS gerado.
+   Abaixo de 768px: nada (a tabbar do celular já cobre a navegação).
+   768–1023px: só "Sobre a loja" — é o que cabe com folga ao lado da busca.
+   1024px+: Início / Catálogo / Sobre a loja. */
+.hdr-nav-compact,
+.hdr-nav a {
+  align-items: center;
+  height: 44px; padding: 0 var(--sp-4);
+  border-radius: var(--radius-pill);
+  font-size: .875rem; font-weight: 500;
+  color: var(--ink-600); white-space: nowrap;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.hdr-nav-compact:hover,
+.hdr-nav a:hover { color: var(--rose-700); background: var(--rose-50); }
+
+.hdr-nav-compact { display: none; }
+.hdr-nav { display: none; align-items: center; gap: 2px; }
+.hdr-nav a { display: inline-flex; }
+
+@media (min-width: 768px) {
+  .hdr-nav-compact { display: inline-flex; }
+}
+@media (min-width: 1024px) {
+  .hdr-nav-compact { display: none; }
+  .hdr-nav { display: flex; }
+}
+
+.hdr-nav a[aria-current="page"],
+.hdr-nav-compact[aria-current="page"] {
+  color: var(--rose-700);
+  font-weight: 600;
+}
 
 /* Barra inferior de navegação (somente celular).
    O display fica dentro do media query: fora dele, `display: grid` venceria

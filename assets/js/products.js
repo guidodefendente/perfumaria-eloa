@@ -30,7 +30,7 @@ const PRODUCTS = [
     price: 129.90,
     featured: true,
     description: 'Perfume da linha O Boticário. Consulte no atendimento as fragrâncias disponíveis na loja.',
-    image: 'assets/img/products/perfume-o-boticario.svg',
+    image: 'assets/img/products/perfume-o-boticario.png',
   },
   {
     id: 'perfume-sea-blue',
@@ -40,7 +40,7 @@ const PRODUCTS = [
     price: 89.90,
     featured: true,
     description: 'Perfume da marca Sea Blue. Consulte no atendimento as fragrâncias disponíveis na loja.',
-    image: 'assets/img/products/perfume-sea-blue.svg',
+    image: 'assets/img/products/perfume-sea-blue.png',
   },
   {
     id: 'base-belle-angel',
@@ -50,7 +50,7 @@ const PRODUCTS = [
     price: 34.90,
     featured: true,
     description: 'Base facial Belle Angel. Consulte os tons disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/base-belle-angel.svg',
+    image: 'assets/img/products/base-belle-angel.png',
   },
   {
     id: 'base-alleva',
@@ -59,7 +59,7 @@ const PRODUCTS = [
     category: 'maquiagem',
     price: 29.90,
     description: 'Base facial Alleva. Consulte os tons disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/base-alleva.svg',
+    image: 'assets/img/products/base-alleva.png',
   },
   {
     id: 'lip-gloss-holding-morning',
@@ -69,7 +69,7 @@ const PRODUCTS = [
     price: 19.90,
     featured: true,
     description: 'Gloss labial Holding Morning. Consulte as cores disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/lip-gloss-holding-morning.svg',
+    image: 'assets/img/products/lip-gloss-holding-morning.png',
   },
   {
     id: 'rimel-panda-yalami',
@@ -78,7 +78,7 @@ const PRODUCTS = [
     category: 'maquiagem',
     price: 22.90,
     description: 'Rímel Panda Yalami para volume e definição dos cílios.',
-    image: 'assets/img/products/rimel-panda-yalami.svg',
+    image: 'assets/img/products/rimel-panda-yalami.png',
   },
   {
     id: 'delineador-lua-e-neve',
@@ -87,7 +87,7 @@ const PRODUCTS = [
     category: 'maquiagem',
     price: 14.90,
     description: 'Delineador Lua e Neve para traços precisos no olhar.',
-    image: 'assets/img/products/delineador-lua-e-neve.svg',
+    image: 'assets/img/products/delineador-lua-e-neve.png',
   },
   {
     id: 'esponja-base-mango',
@@ -96,7 +96,7 @@ const PRODUCTS = [
     category: 'maquiagem',
     price: 11.90,
     description: 'Esponja Mango para aplicação e acabamento da base.',
-    image: 'assets/img/products/esponja-base-mango.svg',
+    image: 'assets/img/products/esponja-base-mango.png',
   },
   {
     id: 'shampoo-alquimia',
@@ -106,7 +106,7 @@ const PRODUCTS = [
     price: 32.90,
     featured: true,
     description: 'Shampoo Alquimia para a limpeza diária dos fios.',
-    image: 'assets/img/products/shampoo-alquimia.svg',
+    image: 'assets/img/products/shampoo-alquimia.png',
   },
   {
     id: 'condicionador-alquimia',
@@ -115,7 +115,7 @@ const PRODUCTS = [
     category: 'cabelo',
     price: 32.90,
     description: 'Condicionador Alquimia para maciez e maleabilidade dos fios.',
-    image: 'assets/img/products/condicionador-alquimia.svg',
+    image: 'assets/img/products/condicionador-alquimia.png',
   },
   {
     id: 'tinta-cabelo-probelle',
@@ -124,7 +124,7 @@ const PRODUCTS = [
     category: 'cabelo',
     price: 24.90,
     description: 'Coloração capilar Probelle. Consulte os tons disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/tinta-cabelo-probelle.svg',
+    image: 'assets/img/products/tinta-cabelo-probelle.png',
   },
   {
     id: 'tinta-cabelo-e-cor-e-tom',
@@ -133,7 +133,7 @@ const PRODUCTS = [
     category: 'cabelo',
     price: 18.90,
     description: 'Coloração capilar E Cor e Tom. Consulte os tons disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/tinta-cabelo-e-cor-e-tom.svg',
+    image: 'assets/img/products/tinta-cabelo-e-cor-e-tom.png',
   },
   {
     id: 'esfoliante-bio-instinto',
@@ -143,7 +143,7 @@ const PRODUCTS = [
     price: 26.90,
     featured: true,
     description: 'Esfoliante corporal Bio Instinto para a rotina de cuidados com a pele.',
-    image: 'assets/img/products/esfoliante-bio-instinto.svg',
+    image: 'assets/img/products/esfoliante-bio-instinto.png',
   },
   {
     id: 'esfoliante-apiderm',
@@ -152,7 +152,7 @@ const PRODUCTS = [
     category: 'pele',
     price: 28.90,
     description: 'Esfoliante Apiderm para a rotina de cuidados com a pele.',
-    image: 'assets/img/products/esfoliante-apiderm.svg',
+    image: 'assets/img/products/esfoliante-apiderm.png',
   },
   {
     id: 'cilios-new-how',
@@ -162,7 +162,7 @@ const PRODUCTS = [
     price: 12.90,
     featured: true,
     description: 'Cílios postiços New How. Consulte os modelos disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/cilios-new-how.svg',
+    image: 'assets/img/products/cilios-new-how.png',
   },
   {
     id: 'cola-cilios-hair-bonding',
@@ -171,7 +171,7 @@ const PRODUCTS = [
     category: 'cilios',
     price: 9.90,
     description: 'Cola Hair Bonding para fixação de cílios postiços.',
-    image: 'assets/img/products/cola-cilios-hair-bonding.svg',
+    image: 'assets/img/products/cola-cilios-hair-bonding.png',
   },
   {
     id: 'unha-postica-dafu',
@@ -180,7 +180,7 @@ const PRODUCTS = [
     category: 'unhas',
     price: 15.90,
     description: 'Kit de unhas postiças Dafu. Consulte os modelos disponíveis pelo WhatsApp.',
-    image: 'assets/img/products/unha-postica-dafu.svg',
+    image: 'assets/img/products/unha-postica-dafu.png',
   },
 ];
 

@@ -31,7 +31,7 @@ assets/
   js/products.js              catálogo e dados da loja  ← edite aqui para mudar produtos
   js/app.js                   estado, roteamento e interações
   img/logo-eloa.png           logotipo oficial
-  img/products/*.svg          imagens dos produtos (provisórias)
+  img/products/*.png          imagens de catálogo tratadas dos produtos (provisórias)
   fonts/*.woff2               Inter e Playfair Display (subconjunto latino)
 build/                        config para regerar o tailwind.css
 DECISOES.md                   decisões tomadas e o que ainda é provisório
@@ -44,6 +44,10 @@ que ainda não aparecia no projeto:
 ```bash
 cd build && npx tailwindcss@3 -c tailwind.config.js -i input.css -o ../assets/css/tailwind.css --minify
 ```
+
+As imagens dos produtos (`assets/img/products/*.png`) são fotos de catálogo tratadas —
+fundo marfim, luz de estúdio, sombra suave e reflexo discreto — mantendo a embalagem e a
+identidade visual de cada item. Os 17 produtos do catálogo usam esse padrão.
 
 ## Telas
 
