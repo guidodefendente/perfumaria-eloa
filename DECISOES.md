@@ -272,3 +272,127 @@ fundo (branco → transparente) — invisível sobre fundo branco; virou uma som
 ### Imagens dos produtos
 
 Ver seção "3. Imagens dos produtos" acima.
+
+---
+
+## Sprint 4 — Catálogo fotográfico de agosto (20/08/2026)
+
+As 25 fotos/grupos enviados pela loja viraram 32 produtos no catálogo. O catálogo
+passou de 17 para **45 produtos** e de 6 para **7 categorias**.
+
+### Como as imagens foram feitas
+
+O padrão visual foi **medido** nas imagens já publicadas, não escolhido de novo:
+fundo marfim `rgb(252, 238, 220)`, halo de luz atrás do produto, vinheta discreta,
+sombra de contato e reflexo de piso, em 1254 × 1254 PNG. As 32 novas peças usam
+uma única placa de fundo gerada por programa, então os cantos das 32 medem
+`rgb(244, 226, 205)` com desvio máximo de 3,0 entre canais — o conjunto novo é
+internamente mais uniforme que o antigo, e encosta no tom das imagens da Sprint 2.
+
+O processo foi **recorte + limpeza + iluminação + fundo + sombra + reflexo**. As
+imagens são as fotografias recebidas; nenhuma embalagem, rótulo, texto, logotipo,
+cor ou proporção foi redesenhado. Isso é a diferença central em relação às
+imagens da Sprint 2, que eram ilustrações com rótulo inventado (ver seção 3).
+
+**Por que não usamos um removedor de fundo genérico nos perfumes.** As fotos de
+perfume são flyers do distribuidor: produto sobre painel branco, cercado de
+moldura rosa, preço de atacado e logotipo da importadora. O `rembg` apagava as
+caixas claras junto com o fundo — VIP, Victory e Sea Blue SB saíam sem caixa.
+Trocamos por uma **chave de branco**: o painel é branco puro, então o produto é
+exatamente o que não é branco, com preenchimento de furos para recuperar o miolo
+das caixas claras. É exato e preserva embalagem branca.
+
+**Dependências.** O tratamento usou Pillow, numpy, scipy e rembg num *virtualenv
+descartável fora do repositório*. O projeto continua sem `package.json`, sem
+`node_modules` e sem dependências de execução.
+
+### Ficha do produto e perfil olfativo
+
+`products.js` ganhou dois campos opcionais: `specs` (peso, volume, variantes) e
+`fragrance` (dados olfativos). Ambos são renderizados na página de produto por
+`specsBlock()` e `fragranceBlock()` em `app.js`.
+
+O CSS desses blocos (`.specs`) foi escrito como **componente em `styles.css`**, e
+não com utilitárias do Tailwind, pelo mesmo motivo já registrado na Sprint 2: o
+`tailwind.css` é versionado pronto e não há passo de build disponível para emitir
+classes novas. Mesma razão para a regra `#home-categories` — com 7 categorias, o
+`lg:grid-cols-6` deixava um card órfão sozinho na segunda linha.
+
+### Notas dos perfumes — o que foi publicado e o que não foi
+
+Os flyers do distribuidor (Sea Blue Importadora Top Paris) trazem o campo
+"AROMAS" de cada fragrância. Daí saíram **família olfativa e acordes dos 17
+perfumes** — dado de fonte identificada, publicado no site com a fonte citada.
+
+**A pirâmide olfativa não foi publicada.** O distribuidor não informa notas de
+saída e de coração. Buscar essas notas na web retorna só texto de marketing de
+revendedores, sem origem no fabricante e divergente entre lojas — um varejista
+lista o Virtus sob outra marca. Preencher os campos com isso seria transformar
+informação incerta em fato, então os três campos aparecem como *"Pendente de
+confirmação com o fabricante"*. Nenhum perfume foi descrito como "inspirado em"
+outra fragrância.
+
+### Fotos sem unidade isolável
+
+Pó Compacto Bella Femme e Corretivo Lua & Neve foram fotografados só como
+expositor, sem nenhuma unidade recortável em resolução utilizável. Em vez de
+publicar um recorte irreconhecível, usamos **o expositor inteiro** no padrão da
+loja e a descrição diz que a venda é por unidade. Fica como melhoria pendente
+uma foto individual desses itens — junto com Jelly Blush, Blush Fiore e
+Iluminador Toque Special, cujas unidades recortadas ficaram entre 110 e 175 px e
+são visivelmente mais macias que as demais.
+
+### Skala: um registro com variantes
+
+A foto reúne 12 potes diferentes da Skala Expert, todos de 1 kg e todos a
+R$ 15,00. Sete variantes são legíveis; cinco não são. Criar 12 registros exigiria
+recortar cada pote a ~180 px — quebrando o padrão visual — e adivinhar cinco
+nomes. Ficou **um registro** com as sete variantes identificadas na ficha e as
+demais marcadas como pendentes, seguindo o padrão que o catálogo já usa para
+tintas de cabelo. O documento do Obsidian também registra essa orientação.
+
+### IDs preservados
+
+Quatro registros da Sprint 1 foram **atualizados, não duplicados**, mantendo o
+`id` para não quebrar referências e não deixar item vago ao lado do item real:
+
+| ID | Antes | Agora |
+|---|---|---|
+| `base-belle-angel` | Base, R$ 34,90 | Base Líquida Matte 30 ml, R$ 10,00 |
+| `base-alleva` | Base, R$ 29,90 | Base Skin Bliss 25 g, R$ 10,00 |
+| `esfoliante-bio-instinto` | Esfoliante, R$ 26,90 | Esfoliante Melancia 180 g, R$ 10,00 |
+| `perfume-sea-blue` | Perfume, R$ 89,90 | Sea Blue Eau de Toilette 100 ml, R$ 80,00 |
+
+Preços dos 13 produtos antigos restantes **não foram tocados**, e a curadoria de
+destaques da Home ficou exatamente como estava — continua sendo decisão da loja
+(seção 4), agora com 45 produtos para escolher.
+
+### Divergências de nome resolvidas pela embalagem
+
+"VIP Season**s**" (não "Season"), "Belli**s**ima Donna" (um s), "Virtus **X**",
+"Toque **Special**" (não "Especial"). O VIP Seasons Pour Homme traz **Eau de
+Parfum** na caixa e no frasco, embora o briefing dissesse Eau de Toilette;
+seguimos a embalagem e sinalizamos na ficha.
+
+Os flyers trazem preço de atacado (R$ 35,00 a R$ 80,00). Foi ignorado — valem os
+preços de venda informados pela loja.
+
+### Nova categoria
+
+`higiene` — "Cuidados pessoais", com o lenço umedecido, seguindo a classificação
+do documento do Obsidian. Ícone novo (`wipe`) para não repetir o de "Cuidados com
+a pele", pelo mesmo motivo da Sprint 1 (ícones quase idênticos confundem).
+
+### Validação
+
+Playwright MCP em 1440 px e 390 px, com checagem extra em 768 px: Home,
+catálogo, filtros, busca, 45 páginas de produto, carrinho e geração do link do
+WhatsApp. **0 erros de console, 0 requisições com falha, nenhuma imagem quebrada,
+nenhuma rolagem horizontal.** Nenhuma mensagem de WhatsApp foi enviada — a URL
+foi capturada interceptando `window.open`.
+
+### Ainda provisório
+
+As 13 ilustrações da Sprint 2 que sobraram no catálogo continuam sendo
+ilustrações, e o rodapé continua avisando "imagens ilustrativas". Os preços e as
+descrições desses 13 produtos seguem como descrito na seção "Provisório".

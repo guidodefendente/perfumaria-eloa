@@ -2,14 +2,21 @@
  * Catálogo da Perfumaria Eloá.
  *
  * FONTE DE VERDADE: "Projeto - Perfumaria Eloá.md" (Obsidian Vault).
- * Produtos, marcas e categorias foram transcritos exatamente do documento.
- * Nenhum produto ou marca foi inventado.
+ * Produtos, marcas e categorias são transcritos do documento e das fotos
+ * enviadas pela loja. Nenhum produto, marca ou característica foi inventado.
  *
- * PROVISÓRIO nesta versão (ver DECISOES.md):
- *   - `price`      → o documento não define preços. Valores plausíveis, a validar com a loja.
- *   - `description`→ redigida por nós, genérica por categoria, sem alegações de marca.
- *   - `image`      → ilustração provisória. Para usar a foto real, basta trocar o caminho
- *                    deste campo (ex.: 'assets/img/products/foto-real.jpg').
+ * Campos opcionais:
+ *   `specs`     → ficha do produto (peso, volume, variantes). Só entra o que
+ *                 está legível na embalagem ou confirmado em fonte do
+ *                 fabricante/distribuidor. O que não deu para confirmar fica
+ *                 com o texto "Pendente de confirmação".
+ *   `fragrance` → dados olfativos dos perfumes. A família e os acordes vêm do
+ *                 material do distribuidor (Sea Blue Importadora Top Paris).
+ *                 A pirâmide completa (saída/coração/fundo) NÃO é publicada
+ *                 por não haver fonte confiável — ver DECISOES.md.
+ *
+ * PROVISÓRIO (ver DECISOES.md): preços e descrições dos 17 produtos da
+ * Sprint 1 que ainda não passaram pela remessa fotográfica de agosto/2026.
  */
 
 const CATEGORIES = [
@@ -17,11 +24,417 @@ const CATEGORIES = [
   { id: 'maquiagem', name: 'Maquiagem',           icon: 'lipstick' },
   { id: 'cabelo',    name: 'Cabelo',              icon: 'hair' },
   { id: 'pele',      name: 'Cuidados com a pele', icon: 'sparkle' },
+  { id: 'higiene',   name: 'Cuidados pessoais',   icon: 'wipe' },
   { id: 'cilios',    name: 'Cílios',              icon: 'eye' },
   { id: 'unhas',     name: 'Unhas',               icon: 'nail' },
 ];
 
+/** Origem dos dados olfativos publicados. */
+const FRAGRANCE_SOURCE = 'Material do distribuidor Sea Blue Importadora Top Paris';
+
+/** Notas de saída/coração/fundo: sem fonte confiável para esta linha. */
+const NOTAS_PENDENTES = 'Pendente de confirmação com o fabricante';
+
 const PRODUCTS = [
+  // ── Perfumes femininos ────────────────────────────────────────────────
+  {
+    id: 'vip-seasons-pour-femme',
+    name: 'VIP Seasons Pour Femme Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição oriental floral doce, com toque de baunilha e fundo ambarado.',
+    image: 'assets/img/products/vip-seasons-pour-femme.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Oriental floral',
+      acordes: 'Doce, baunilha e âmbar',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Ambarado',
+      sensacao: 'Envolvente e marcante.',
+      ocasiao: 'Noite e ocasiões especiais.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'one-sea-blue',
+    name: 'One Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição oriental floral doce, com toque de baunilha e fundo ambarado.',
+    image: 'assets/img/products/one-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Oriental floral',
+      acordes: 'Doce, baunilha e âmbar',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Ambarado',
+      sensacao: 'Envolvente e aconchegante.',
+      ocasiao: 'Noite e ocasiões especiais.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'diamond-sea-blue',
+    name: 'Diamond Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição floral frutada fresca, com toque cítrico e fundo suave.',
+    image: 'assets/img/products/diamond-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Floral frutado',
+      acordes: 'Frutado, fresco e cítrico',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Suave',
+      sensacao: 'Leve e luminosa.',
+      ocasiao: 'Dia a dia e uso diurno.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'sexy-sea-blue',
+    name: 'Sexy Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce oriental floral, com toque de baunilha e fundo quente.',
+    image: 'assets/img/products/sexy-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Oriental floral',
+      acordes: 'Doce e baunilha',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Quente',
+      sensacao: 'Intensa e sensual.',
+      ocasiao: 'Noite e encontros.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'vip-sea-blue-femme',
+    name: 'VIP Eau de Parfum Feminino',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce oriental floral, com toque de baunilha e fundo suave.',
+    image: 'assets/img/products/vip-sea-blue-femme.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Oriental floral',
+      acordes: 'Doce e baunilha',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Suave',
+      sensacao: 'Elegante e discreta.',
+      ocasiao: 'Dia a dia e trabalho.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'bellisima-donna-sea-blue',
+    name: 'Bellisima Donna Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce gourmand, com toque de baunilha e praliné.',
+    image: 'assets/img/products/bellisima-donna-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Gourmand',
+      acordes: 'Baunilha e praliné',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: NOTAS_PENDENTES,
+      sensacao: 'Doce e envolvente.',
+      ocasiao: 'Noite e dias frios.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'pretty-girl-sea-blue',
+    name: 'Pretty Girl Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce floral, com toque de baunilha e fundo ambarado.',
+    image: 'assets/img/products/pretty-girl-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Floral doce',
+      acordes: 'Doce, baunilha e âmbar',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Ambarado',
+      sensacao: 'Jovem e delicada.',
+      ocasiao: 'Dia a dia e programas à tarde.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'angel-sea-blue',
+    name: 'Angel Eau de Parfum',
+    brand: 'Sea Blue Paris',
+    category: 'perfumes',
+    price: 150.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue Paris. Composição doce, com toque de baunilha.',
+    image: 'assets/img/products/angel-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Doce',
+      acordes: 'Baunilha',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: NOTAS_PENDENTES,
+      sensacao: 'Suave e aconchegante.',
+      ocasiao: 'Uso diário e noite.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'alice-sea-blue',
+    name: 'Alice Eau de Parfum',
+    brand: 'Sea Blue Paris',
+    category: 'perfumes',
+    price: 150.00,
+    description: 'Eau de parfum feminino de 100 ml da Sea Blue Paris. Composição floral frutada, com nuances frescas e efervescentes e fundo suavemente adocicado.',
+    image: 'assets/img/products/alice-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Floral frutado',
+      acordes: 'Frescor efervescente e frutas',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Suavemente adocicado',
+      sensacao: 'Fresca e alegre.',
+      ocasiao: 'Dia a dia e uso diurno.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+
+  // ── Perfumes masculinos ───────────────────────────────────────────────
+  {
+    id: 'black-sea-blue',
+    name: 'Black Eau de Toilette',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição aromática fresca, com toque frutado e fundo amadeirado.',
+    image: 'assets/img/products/black-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+    ],
+    fragrance: {
+      familia: 'Aromático fresco',
+      acordes: 'Frutado e madeiras',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Amadeirado',
+      sensacao: 'Moderna e versátil.',
+      ocasiao: 'Dia a dia e trabalho.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'vip-seasons-pour-homme',
+    name: 'VIP Seasons Pour Homme Eau de Parfum',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de parfum masculino de 100 ml da Sea Blue. Composição aromática fresca, com toque cítrico e fundo amadeirado suave.',
+    image: 'assets/img/products/vip-seasons-pour-homme.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum (conforme a embalagem)' },
+    ],
+    fragrance: {
+      familia: 'Aromático fresco',
+      acordes: 'Cítrico e madeiras',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Amadeirado suave',
+      sensacao: 'Limpa e elegante.',
+      ocasiao: 'Dia a dia e trabalho.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'vip-sea-blue-homme',
+    name: 'VIP Eau de Toilette Masculino',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição oriental amadeirada, com toque fresco e levemente doce.',
+    image: 'assets/img/products/vip-sea-blue-homme.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+    ],
+    fragrance: {
+      familia: 'Oriental amadeirado',
+      acordes: 'Fresco e levemente doce',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: NOTAS_PENDENTES,
+      sensacao: 'Marcante e sofisticada.',
+      ocasiao: 'Noite e ocasiões especiais.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    // ID preservado: era o registro genérico "Perfume — Sea Blue" da Sprint 1,
+    // agora identificado pela foto como o Sea Blue Eau de Toilette (monograma SB).
+    id: 'perfume-sea-blue',
+    name: 'Sea Blue Eau de Toilette',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    featured: true,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição oriental amadeirada, com toque doce e levemente especiado.',
+    image: 'assets/img/products/perfume-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+    ],
+    fragrance: {
+      familia: 'Oriental amadeirado',
+      acordes: 'Doce e levemente especiado',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: NOTAS_PENDENTES,
+      sensacao: 'Quente e envolvente.',
+      ocasiao: 'Noite e dias frios.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'victory-sea-blue',
+    name: 'Victory Eau de Toilette',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição fresca aquática, com toque cítrico e fundo amadeirado.',
+    image: 'assets/img/products/victory-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+    ],
+    fragrance: {
+      familia: 'Aquático fresco',
+      acordes: 'Cítrico e madeiras',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Amadeirado',
+      sensacao: 'Leve e refrescante.',
+      ocasiao: 'Dia a dia e dias quentes.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'gold-pour-homme-sea-blue',
+    name: 'Gold Pour Homme Eau de Toilette',
+    brand: 'Sea Blue',
+    category: 'perfumes',
+    price: 80.00,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição amadeirada especiada, com toque doce e quente.',
+    image: 'assets/img/products/gold-pour-homme-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+    ],
+    fragrance: {
+      familia: 'Amadeirado especiado',
+      acordes: 'Especiarias, doce e calor',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: NOTAS_PENDENTES,
+      sensacao: 'Intensa e sofisticada.',
+      ocasiao: 'Noite e ocasiões especiais.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'virtus-sea-blue',
+    name: 'Virtus X Eau de Toilette',
+    brand: 'Sea Blue Paris',
+    category: 'perfumes',
+    price: 150.00,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue Paris, em frasco com tampa magnética. Composição oriental amadeirada, com toque aromático e especiado adocicado.',
+    image: 'assets/img/products/virtus-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+      { label: 'Embalagem', value: 'Frasco com tampa magnética' },
+    ],
+    fragrance: {
+      familia: 'Oriental amadeirado',
+      acordes: 'Aromático, especiado e doce',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: NOTAS_PENDENTES,
+      sensacao: 'Forte e imponente.',
+      ocasiao: 'Noite e ocasiões especiais.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
+  {
+    id: 'indomable-sea-blue',
+    name: 'Indomable Eau de Toilette',
+    brand: 'Sea Blue Paris',
+    category: 'perfumes',
+    price: 150.00,
+    description: 'Eau de toilette masculino de 100 ml da Sea Blue Paris, em frasco com tampa magnética. Composição amadeirada aromática, com toque especiado e fundo quente.',
+    image: 'assets/img/products/indomable-sea-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Toilette' },
+      { label: 'Embalagem', value: 'Frasco com tampa magnética' },
+    ],
+    fragrance: {
+      familia: 'Amadeirado aromático',
+      acordes: 'Especiarias e madeiras',
+      saida: NOTAS_PENDENTES,
+      coracao: NOTAS_PENDENTES,
+      fundo: 'Quente',
+      sensacao: 'Intensa e marcante.',
+      ocasiao: 'Noite e dias frios.',
+      fonte: FRAGRANCE_SOURCE,
+    },
+  },
   {
     id: 'perfume-o-boticario',
     name: 'Perfume',
@@ -32,34 +445,142 @@ const PRODUCTS = [
     description: 'Perfume da linha O Boticário. Consulte no atendimento as fragrâncias disponíveis na loja.',
     image: 'assets/img/products/perfume-o-boticario.png',
   },
+
+  // ── Maquiagem ─────────────────────────────────────────────────────────
   {
-    id: 'perfume-sea-blue',
-    name: 'Perfume',
-    brand: 'Sea Blue',
-    category: 'perfumes',
-    price: 89.90,
-    featured: true,
-    description: 'Perfume da marca Sea Blue. Consulte no atendimento as fragrâncias disponíveis na loja.',
-    image: 'assets/img/products/perfume-sea-blue.png',
+    id: 'base-lua-e-neve-matte',
+    name: 'Base Líquida Matte',
+    brand: 'Lua & Neve',
+    category: 'maquiagem',
+    price: 10.00,
+    description: 'Base líquida Lua & Neve com acabamento matte, em bisnaga com tampa de rosca. Consulte os tons disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/base-lua-e-neve-matte.png',
+    specs: [
+      { label: 'Acabamento', value: 'Matte' },
+      { label: 'Volume', value: 'Pendente de confirmação' },
+    ],
   },
   {
+    // ID preservado do registro "Base — Belle Angel" da Sprint 1.
     id: 'base-belle-angel',
-    name: 'Base',
+    name: 'Base Líquida Matte',
     brand: 'Belle Angel',
     category: 'maquiagem',
-    price: 34.90,
+    price: 10.00,
     featured: true,
-    description: 'Base facial Belle Angel. Consulte os tons disponíveis pelo WhatsApp.',
+    description: 'Base líquida Belle Angel com acabamento matte, em bisnaga de 30 ml. Consulte os tons disponíveis pelo WhatsApp.',
     image: 'assets/img/products/base-belle-angel.png',
+    specs: [
+      { label: 'Acabamento', value: 'Matte' },
+      { label: 'Volume', value: '30 ml' },
+    ],
   },
   {
+    // ID preservado do registro "Base — Alleva" da Sprint 1.
     id: 'base-alleva',
-    name: 'Base',
-    brand: 'Alleva',
+    name: 'Base Líquida Soft Matte Skin Bliss',
+    brand: 'Alleva Beauty',
     category: 'maquiagem',
-    price: 29.90,
-    description: 'Base facial Alleva. Consulte os tons disponíveis pelo WhatsApp.',
+    price: 10.00,
+    description: 'Base líquida Skin Bliss, da Alleva Beauty, com proposta de acabamento soft matte, em bisnaga de 25 g. Consulte os tons disponíveis pelo WhatsApp.',
     image: 'assets/img/products/base-alleva.png',
+    specs: [
+      { label: 'Linha', value: 'Skin Bliss' },
+      { label: 'Acabamento', value: 'Soft matte' },
+      { label: 'Peso', value: '25 g' },
+    ],
+  },
+  {
+    id: 'po-compacto-bella-femme',
+    name: 'Pó Compacto',
+    brand: 'Bella Femme',
+    category: 'maquiagem',
+    price: 10.00,
+    description: 'Pó compacto Bella Femme para finalização da maquiagem, disponível em quatro tonalidades de tons médios. Vendido por unidade — a foto mostra o expositor do fornecedor. Consulte o tom pelo WhatsApp.',
+    image: 'assets/img/products/po-compacto-bella-femme.png',
+    specs: [
+      { label: 'Referência', value: 'BF10006B' },
+      { label: 'Tons', value: '4 tonalidades — tons médios' },
+    ],
+  },
+  {
+    id: 'po-banana-fenzza',
+    name: 'Pó Banana',
+    brand: 'Fenzza Make Up',
+    category: 'maquiagem',
+    price: 10.00,
+    description: 'Pó Banana Fenzza Make Up de 15 g, em pote solto com peneira, para acabamento e finalização da maquiagem.',
+    image: 'assets/img/products/po-banana-fenzza.png',
+    specs: [
+      { label: 'Peso', value: '15 g' },
+      { label: 'Tipo', value: 'Pó solto' },
+    ],
+  },
+  {
+    id: 'iluminador-toque-special',
+    name: 'Iluminador Compacto',
+    brand: 'Toque Special',
+    category: 'maquiagem',
+    price: 15.00,
+    description: 'Iluminador compacto Toque Special para acabamento luminoso da maquiagem. Consulte os tons disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/iluminador-toque-special.png',
+    specs: [
+      { label: 'Tipo', value: 'Iluminador compacto' },
+      { label: 'Peso', value: 'Pendente de confirmação' },
+    ],
+  },
+  {
+    id: 'jelly-blush-belle-angel',
+    name: 'Jelly Blush',
+    brand: 'Belle Angel',
+    category: 'maquiagem',
+    price: 12.00,
+    description: 'Jelly Blush Belle Angel em bastão, para adicionar cor às maçãs do rosto. Disponível nas cores 01 e 02.',
+    image: 'assets/img/products/jelly-blush-belle-angel.png',
+    specs: [
+      { label: 'Formato', value: 'Bastão' },
+      { label: 'Cores', value: '01 e 02' },
+    ],
+  },
+  {
+    id: 'paleta-sombras-rave',
+    name: 'Paleta de Sombras e Iluminador Rave',
+    brand: 'Vivai',
+    category: 'maquiagem',
+    price: 22.00,
+    description: 'Paleta Rave da Vivai com 20 sombras entre acabamentos opacos, cintilantes e glitter, e iluminador. Estojo com espelho interno.',
+    image: 'assets/img/products/paleta-sombras-rave.png',
+    specs: [
+      { label: 'Referência', value: '4055.1.1' },
+      { label: 'Cores', value: '20 sombras + iluminador' },
+    ],
+  },
+  {
+    id: 'blush-fiore-fenzza',
+    name: 'Blush Compacto Fiore',
+    brand: 'Fenzza',
+    category: 'maquiagem',
+    price: 10.00,
+    description: 'Blush compacto da linha Fiore, da Fenzza, com alta pigmentação e acabamento acetinado, conforme a embalagem. Consulte as cores disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/blush-fiore-fenzza.png',
+    specs: [
+      { label: 'Linha', value: 'Fiore' },
+      { label: 'Acabamento', value: 'Acetinado' },
+      { label: 'Peso', value: '5 g' },
+    ],
+  },
+  {
+    id: 'corretivo-lua-e-neve',
+    name: 'Corretivo Líquido Matte',
+    brand: 'Lua & Neve',
+    category: 'maquiagem',
+    price: 10.00,
+    description: 'Corretivo líquido Lua & Neve com acabamento matte e aplicador próprio. Vendido por unidade — a foto mostra o expositor do fornecedor. Consulte os tons pelo WhatsApp.',
+    image: 'assets/img/products/corretivo-lua-e-neve.png',
+    specs: [
+      { label: 'Acabamento', value: 'Matte' },
+      { label: 'Volume', value: 'Pendente de confirmação' },
+    ],
   },
   {
     id: 'lip-gloss-holding-morning',
@@ -98,6 +619,38 @@ const PRODUCTS = [
     description: 'Esponja Mango para aplicação e acabamento da base.',
     image: 'assets/img/products/esponja-base-mango.png',
   },
+
+  // ── Cabelo ────────────────────────────────────────────────────────────
+  {
+    id: 'inoar-meu-cacho-teen',
+    name: 'Gelatina Capilar Meu Cacho, Meu Crush Teen',
+    brand: 'Inoar',
+    category: 'cabelo',
+    price: 25.00,
+    description: 'Gelatina capilar da linha Meu Cacho, Meu Crush Teen, da Inoar, para modelar e definir os cachos. Pote de 500 g. Consulte as fragrâncias disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/inoar-meu-cacho-teen.png',
+    specs: [
+      { label: 'Linha', value: 'Meu Cacho, Meu Crush Teen' },
+      { label: 'Tipo', value: 'Gelatina capilar (hair jelly)' },
+      { label: 'Peso', value: '500 g' },
+      { label: 'Fragrâncias na foto', value: 'Maracujá, melancia e uva' },
+    ],
+  },
+  {
+    id: 'creme-skala-expert',
+    name: 'Creme de Tratamento Skala Expert 1 kg',
+    brand: 'Skala',
+    category: 'cabelo',
+    price: 15.00,
+    description: 'Creme de tratamento Skala Expert em pote de 1 kg. A loja trabalha com várias variantes da linha — consulte a disponibilidade pelo WhatsApp.',
+    image: 'assets/img/products/creme-skala-expert.png',
+    specs: [
+      { label: 'Linha', value: 'Skala Expert' },
+      { label: 'Peso', value: '1 kg (1000 g)' },
+      { label: 'Variantes identificadas', value: 'Babosa, #MaisCrespos, #MaisLisos, Amido de Milho, Óleo de Coco, Divino Potão e Coquetel de Frutas' },
+      { label: 'Demais variantes da foto', value: 'Pendente de confirmação' },
+    ],
+  },
   {
     id: 'shampoo-alquimia',
     name: 'Shampoo',
@@ -135,15 +688,38 @@ const PRODUCTS = [
     description: 'Coloração capilar E Cor e Tom. Consulte os tons disponíveis pelo WhatsApp.',
     image: 'assets/img/products/tinta-cabelo-e-cor-e-tom.png',
   },
+
+  // ── Cuidados com a pele ───────────────────────────────────────────────
   {
+    // ID preservado do registro "Esfoliante — Bio Instinto" da Sprint 1,
+    // agora identificado pela foto como o esfoliante Melancia de 180 g.
     id: 'esfoliante-bio-instinto',
-    name: 'Esfoliante',
+    name: 'Esfoliante Melancia',
     brand: 'Bio Instinto',
     category: 'pele',
-    price: 26.90,
+    price: 10.00,
     featured: true,
-    description: 'Esfoliante corporal Bio Instinto para a rotina de cuidados com a pele.',
+    description: 'Esfoliante Bio Instinto de melancia para rosto e corpo, em pote de 180 g, para a rotina de cuidados com a pele.',
     image: 'assets/img/products/esfoliante-bio-instinto.png',
+    specs: [
+      { label: 'Linha', value: 'Melancia' },
+      { label: 'Uso', value: 'Rosto e corpo' },
+      { label: 'Peso', value: '180 g' },
+    ],
+  },
+  {
+    id: 'hidratante-paixao',
+    name: 'Loção Deo Hidratante Inspiradora',
+    brand: 'Paixão',
+    category: 'pele',
+    price: 12.99,
+    description: 'Loção deo hidratante Paixão Inspiradora, na fragrância Rosas Brancas, com óleo de amêndoas. Frasco de 200 ml.',
+    image: 'assets/img/products/hidratante-paixao.png',
+    specs: [
+      { label: 'Fragrância', value: 'Inspiradora — Rosas Brancas' },
+      { label: 'Volume', value: '200 ml' },
+      { label: 'Na embalagem', value: '24 h de hidratação, com óleo de amêndoas' },
+    ],
   },
   {
     id: 'esfoliante-apiderm',
@@ -154,6 +730,25 @@ const PRODUCTS = [
     description: 'Esfoliante Apiderm para a rotina de cuidados com a pele.',
     image: 'assets/img/products/esfoliante-apiderm.png',
   },
+
+  // ── Cuidados pessoais ─────────────────────────────────────────────────
+  {
+    id: 'lenco-umedecido',
+    name: 'Lenço Umedecido Portátil',
+    brand: 'Marca a confirmar',
+    category: 'higiene',
+    price: 10.00,
+    description: 'Lenço umedecido portátil em embalagem de lata com chaveiro, em estampas variadas. Consulte os modelos disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/lenco-umedecido.png',
+    specs: [
+      { label: 'Embalagem', value: 'Lata portátil com chaveiro' },
+      { label: 'Estampas na foto', value: 'Shiba Inu, Meow e astronauta' },
+      { label: 'Marca', value: 'Pendente de confirmação' },
+      { label: 'Quantidade por embalagem', value: 'Pendente de confirmação' },
+    ],
+  },
+
+  // ── Cílios ────────────────────────────────────────────────────────────
   {
     id: 'cilios-new-how',
     name: 'Cílios',
@@ -173,6 +768,8 @@ const PRODUCTS = [
     description: 'Cola Hair Bonding para fixação de cílios postiços.',
     image: 'assets/img/products/cola-cilios-hair-bonding.png',
   },
+
+  // ── Unhas ─────────────────────────────────────────────────────────────
   {
     id: 'unha-postica-dafu',
     name: 'Unha postiça',

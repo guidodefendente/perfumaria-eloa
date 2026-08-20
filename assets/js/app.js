@@ -57,12 +57,52 @@ const App = (() => {
     sparkle:  '<path d="M12 3l1.9 5.3L19 10l-5.1 1.7L12 17l-1.9-5.3L5 10l5.1-1.7z"/><path d="M18.5 16.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/>',
     eye:      '<path d="M2.5 12S6 6 12 6s9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.6"/>',
     // Unhas: esmalte — corpo largo e baixo, com pincel comprido
+    // Cuidados pessoais: sachê de lenço umedecido com a aba de abertura
+    wipe:     '<rect x="3.5" y="6" width="17" height="14" rx="2.5"/><path d="M7.5 6V4.6a1.6 1.6 0 0 1 1.6-1.6h5.8a1.6 1.6 0 0 1 1.6 1.6V6"/><path d="M8.5 10.5h7a1.5 1.5 0 0 1 0 3h-4"/>',
     nail:     '<path d="M11 2h2v5h-2z"/><path d="M10.4 7h3.2a1 1 0 0 1 1 1v.7l1.6 2.2a2 2 0 0 1 .4 1.2V20a2 2 0 0 1-2 2H9.4a2 2 0 0 1-2-2v-7.9a2 2 0 0 1 .4-1.2L9.4 8.7V8a1 1 0 0 1 1-1Z"/><path d="M8 15h8"/>',
   };
 
   const icon = (name, cls = 'w-6 h-6') =>
     `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
+
+  /** Linha da ficha; o que não foi confirmado fica marcado como pendente. */
+  const specRow = (label, value) => {
+    const pending = /^pendente/i.test(String(value));
+    return `<dt>${escapeHtml(label)}</dt>
+            <dd${pending ? ' class="is-pending"' : ''}>${escapeHtml(value)}</dd>`;
+  };
+
+  /** Ficha do produto (peso, volume, variantes). Só renderiza se houver dados. */
+  function specsBlock(product) {
+    if (!product.specs || !product.specs.length) return '';
+    return `
+      <section class="specs" aria-label="Ficha do produto">
+        <p class="specs-title">Sobre o produto</p>
+        <dl>${product.specs.map((s) => specRow(s.label, s.value)).join('')}</dl>
+      </section>`;
+  }
+
+  /** Dados olfativos dos perfumes. */
+  function fragranceBlock(product) {
+    const f = product.fragrance;
+    if (!f) return '';
+    const rows = [
+      ['Família olfativa', f.familia],
+      ['Acordes principais', f.acordes],
+      ['Notas de saída', f.saida],
+      ['Notas de coração', f.coracao],
+      ['Notas de fundo', f.fundo],
+      ['Sensação', f.sensacao],
+      ['Ocasião de uso', f.ocasiao],
+    ].filter(([, value]) => value);
+    return `
+      <section class="specs" aria-label="Perfil olfativo">
+        <p class="specs-title">Perfil olfativo</p>
+        <dl>${rows.map(([label, value]) => specRow(label, value)).join('')}</dl>
+        ${f.fonte ? `<p class="specs-note">Fonte: ${escapeHtml(f.fonte)}.</p>` : ''}
+      </section>`;
+  }
 
   // ── Componente: card de produto ─────────────────────────────────────────
   function productCard(product) {
@@ -207,6 +247,7 @@ const App = (() => {
           <p class="mt-6 font-display text-3xl sm:text-4xl text-ink-900 tnum">${brl(product.price)}</p>
 
           <p class="mt-5 text-[15px] text-ink-600 leading-relaxed max-w-prose">${escapeHtml(product.description)}</p>
+          ${specsBlock(product)}${fragranceBlock(product)}
 
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <button class="btn btn-primary flex-1" onclick="App.addToCart('${product.id}', true)">

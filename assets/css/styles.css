@@ -254,6 +254,55 @@ body {
   letter-spacing: .1em; text-transform: uppercase;
 }
 
+/* Grade de categorias da Home: com 7 categorias, o `lg:grid-cols-6` deixava
+   um card órfão sozinho na segunda linha. Regra por id (especificidade maior
+   que a utilitária) para as sete caberem numa linha só no desktop. */
+@media (min-width: 1024px) {
+  #home-categories { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+}
+
+/* Ficha do produto e pirâmide olfativa (página de produto).
+   Escrito como componente, e não com utilitárias do Tailwind, pelo mesmo
+   motivo documentado em DECISOES.md: o tailwind.css é versionado pronto e
+   não há passo de build disponível para emitir classes novas. */
+.specs {
+  margin-top: var(--sp-6);
+  border: 1px solid var(--rose-200);
+  border-radius: 16px;
+  background: var(--rose-50);
+  padding: var(--sp-4) var(--sp-5);
+}
+.specs + .specs { margin-top: var(--sp-4); }
+.specs-title {
+  font-size: .6875rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--rose-700);
+  margin-bottom: var(--sp-3);
+}
+.specs dl {
+  display: grid;
+  grid-template-columns: minmax(9rem, auto) 1fr;
+  gap: var(--sp-2) var(--sp-4);
+  margin: 0;
+  font-size: .875rem;
+  line-height: 1.45;
+}
+.specs dt { color: var(--ink-500); }
+.specs dd { color: var(--ink-700); margin: 0; }
+.specs .is-pending { color: var(--ink-400); font-style: italic; }
+.specs-note {
+  margin-top: var(--sp-3);
+  font-size: .75rem;
+  color: var(--ink-400);
+}
+@media (max-width: 480px) {
+  .specs dl { grid-template-columns: 1fr; gap: 2px var(--sp-4); }
+  .specs dt { font-size: .75rem; }
+  .specs dd { margin-bottom: var(--sp-2); }
+}
+
 /* Painel deslizante (carrinho) */
 .overlay {
   position: fixed; inset: 0;

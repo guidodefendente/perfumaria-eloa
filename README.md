@@ -47,7 +47,11 @@ cd build && npx tailwindcss@3 -c tailwind.config.js -i input.css -o ../assets/cs
 
 As imagens dos produtos (`assets/img/products/*.png`) são fotos de catálogo tratadas —
 fundo marfim, luz de estúdio, sombra suave e reflexo discreto — mantendo a embalagem e a
-identidade visual de cada item. Os 17 produtos do catálogo usam esse padrão.
+identidade visual de cada item. Todos os 45 produtos usam esse padrão, em 1254 × 1254 PNG.
+
+As 32 imagens da Sprint 4 vêm das fotografias reais enviadas pela loja: o tratamento é
+recorte, limpeza, iluminação, fundo, sombra e reflexo. Nenhuma embalagem ou rótulo foi
+redesenhado. As 13 restantes ainda são ilustrações da Sprint 2 — ver `DECISOES.md`.
 
 ## Telas
 
@@ -76,6 +80,13 @@ image: 'assets/img/products/perfume-o-boticario.jpg',
 **Adicionar um produto:** copie um bloco existente, troque os campos e use um `id` único.
 O `category` precisa ser um dos ids de `CATEGORIES`.
 
+**Ficha do produto:** o campo opcional `specs` é uma lista de `{ label, value }` que vira o
+bloco "Sobre o produto" na página do produto. Um valor que comece com "Pendente" aparece em
+itálico e cinza — use isso em vez de inventar o dado.
+
+**Perfumes:** o campo opcional `fragrance` (`familia`, `acordes`, `saida`, `coracao`,
+`fundo`, `sensacao`, `ocasiao`, `fonte`) vira o bloco "Perfil olfativo".
+
 **Destacar na página inicial:** adicione `featured: true`.
 
 ## Estado atual
@@ -83,5 +94,7 @@ O `category` precisa ser um dos ids de `CATEGORIES`.
 Protótipo navegável, com o fluxo completo funcionando: encontrar produto → adicionar ao
 carrinho → ajustar quantidade → finalizar no WhatsApp.
 
-Preços, descrições, imagens e a curadoria dos destaques ainda são provisórios.
-Ver `DECISOES.md`.
+**45 produtos em 7 categorias.** Os 32 produtos da remessa fotográfica de agosto/2026 têm
+preço, nome e ficha confirmados pela loja ou pela embalagem. Os 13 produtos restantes da
+Sprint 1 continuam com preço, descrição e imagem provisórios, e a curadoria dos destaques
+ainda é nossa. Ver `DECISOES.md`.
