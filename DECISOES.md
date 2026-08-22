@@ -396,3 +396,125 @@ foi capturada interceptando `window.open`.
 As 13 ilustrações da Sprint 2 que sobraram no catálogo continuam sendo
 ilustrações, e o rodapé continua avisando "imagens ilustrativas". Os preços e as
 descrições desses 13 produtos seguem como descrito na seção "Provisório".
+
+---
+
+## Sprint 5 — Nova remessa de perfumes (22/08/2026)
+
+15 produtos de perfumaria entraram no catálogo (4 Hinode, 10 O Boticário, 1 AURA
+Beauty Club). O catálogo foi de 45 para **59 produtos**; a perfumaria, de 18 para
+**32**. Nenhuma categoria nova.
+
+### Imagens vieram da página oficial de cada fabricante
+
+Diferente das sprints anteriores, esta remessa não veio com fotografias: as
+imagens foram buscadas na internet, sempre na **página oficial do fabricante**
+(hinode.com.br, boticario.com.br, aurabeautyclub.com.br) — nenhuma de varejista
+terceiro, nenhuma de produto semelhante ou de volume diferente.
+
+O tratamento é o mesmo da Sprint 4 e os parâmetros foram reconstruídos a partir
+desta documentação: fundo marfim `rgb(252, 238, 220)`, halo, vinheta, sombra de
+contato, reflexo de piso, 1254 × 1254 PNG. **Os cantos das 15 novas imagens
+medem `rgb(244, 226, 205)`** — idênticos aos das 32 imagens da Sprint 4.
+
+O `www.boticario.com.br` responde 403 a `curl` e ao WebFetch. As páginas foram
+lidas pelo navegador do Playwright; de lá, um `fetch` de mesma origem trouxe as
+outras nove páginas de uma vez, e os JSON-LD deram nome, SKU e URL da imagem
+oficial. As imagens em si estão num CDN aberto e foram baixadas direto.
+
+#### Três armadilhas no recorte, e o que resolveu
+
+1. **PNG com canal alfa (Hinode).** A chave de branco devolvia um retângulo
+   cinza-azulado — a cor crua sob o alfa. O carregador passou a usar o alfa da
+   própria imagem quando ele existe, e só cai na chave de branco quando não há.
+2. **Sombra de estúdio virando produto (Boticário, AURA).** A sombra suave sob o
+   frasco passava no limiar padrão (`thr=10`) e virava uma mancha branca opaca.
+   Subir para `thr=32` descarta a sombra sem comer a base do frasco — testado
+   contra `10/22/32/45` antes de fixar.
+3. **Selo de premiação (AURA).** A imagem oficial do Afrodite Garden traz um
+   selo "Prêmio Glamour de Beleza 2025" ao lado do frasco. Não faz parte da
+   embalagem, então o recorte foi fechado só no frasco.
+
+A Hinode publica sobretudo fotos de composição e peças com texto; para os quatro
+produtos foi preciso garimpar o packshot limpo dentro da própria galeria oficial.
+
+### Nada de bastidor na vitrine
+
+Esta sprint mudou a regra editorial do catálogo, e a mudança vale para trás:
+
+- saiu a linha **"Fonte: Material do distribuidor Sea Blue Importadora Top
+  Paris"** das 17 fichas Sea Blue;
+- saíram os **46 campos "Pendente de confirmação com o fabricante"** e os 6
+  campos de ficha marcados como pendentes;
+- o lenço umedecido deixou de mostrar "Marca a confirmar" e passou a "Sem marca".
+
+O que não foi confirmado simplesmente não é publicado — e também não é anunciado
+como faltando. A rastreabilidade continua inteira no documento do Obsidian.
+
+Consequência prática: `specRow()` perdeu a marcação `is-pending`, a classe
+`.specs .is-pending` saiu do CSS e `fragranceBlock()` não renderiza mais `fonte`.
+
+### Ficha de perfume em três blocos
+
+`fragranceBlock()` foi dividido. A página do perfume agora mostra:
+
+1. **Sobre o produto** — linha, volume, concentração, fixação e público;
+2. **Perfil olfativo** — família, acordes, sensação, ocasião sugerida;
+3. **Notas olfativas** — pirâmide vertical de saída/coração/fundo, com legenda
+   curta por etapa e barra lateral que escurece de cima para baixo.
+
+O bloco 3 só existe quando há pirâmide confirmada — 7 dos 15 produtos novos. Nos
+outros 8 o fabricante divulga apenas família e acordes, e a ficha fecha no bloco 2
+sem qualquer aviso de dado faltando.
+
+### Filtro feminino/masculino sem mexer nas categorias
+
+Os produtos de perfumaria ganharam `audience: 'feminino' | 'masculino'`. Dentro
+de Perfumes aparece uma segunda linha de chips (Todos / Feminino / Masculino);
+fora dela a linha fica escondida, porque maquiagem, cabelo e unhas não têm
+público definido — um filtro de gênero para batom seria ruído. Trocar de
+categoria zera o filtro. O campo também entra na busca, então "masculino"
+devolve os 19 masculinos.
+
+Optou-se por isso em vez de dividir `perfumes` em duas categorias: dividir
+quebraria os links `?cat=perfumes`, levaria a Home a 8 categorias e reclassificaria
+18 produtos já publicados, sem ganho real para o cliente.
+
+### Divergências de pesquisa
+
+**O Enigma da Hinode é masculino, e o briefing dizia feminino.** Cadastrado como
+masculino, com base na arte oficial de notas (couro da Toscana, patchouli), no
+próprio texto de benefícios da Hinode ("desenvolvida para homens"), nas peças de
+campanha da marca, no desenho do frasco e na classificação da Beleza na Web.
+Está sinalizado para a loja confirmar antes de publicar.
+
+**A página da Hinode se contradiz sozinha** em Stamina, Origini e Enigma: o bloco
+principal dá uma família olfativa e a arte oficial de notas dá outra. Publicou-se
+a versão da arte, que é específica de cada produto e coincide com o FAQ da mesma
+página — o bloco principal aparenta ser texto templatizado.
+
+### IDs e duplicidade
+
+`perfume-o-boticario` era o registro genérico "Perfume — O Boticário" (R$ 129,90)
+e sua imagem de catálogo já era o frasco redondo vermelho do Floratta Red. O `id`
+foi preservado e o registro virou **Floratta Red Desodorante Colônia 75 ml**, a
+R$ 134,90, com ficha, perfil olfativo e imagem oficial.
+
+O **Floratta Red Passion** aparecia duas vezes no briefing (itens 7 e 11) e foi
+cadastrado uma vez só.
+
+### Rodapé
+
+Saiu "Protótipo do Projeto Atlas · Imagens ilustrativas"; ficou "Preços e
+disponibilidade confirmados no atendimento." Entrou o Instagram
+**@perfumariap_eloa** com ícone, `target="_blank"` e `rel="noopener"`. Não há
+mais nenhuma ocorrência de "Atlas" ou "protótipo" no HTML entregue ao navegador.
+
+### Validação
+
+Playwright MCP em 1440 px e 390 px: Home, catálogo, filtros de categoria e de
+público, busca (Malbec, Floratta, Quasar, Lattitude, Uomini, Arbo, Egeo, Hinode,
+"body splash", "masculino"), 59 páginas de produto, carrinho, link do WhatsApp e
+link do Instagram. **0 erros de console, 0 requisições com falha, nenhuma imagem
+quebrada, nenhuma rolagem horizontal.** Nenhuma mensagem de WhatsApp foi
+enviada — a URL foi capturada interceptando `window.open`.

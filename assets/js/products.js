@@ -2,21 +2,21 @@
  * Catálogo da Perfumaria Eloá.
  *
  * FONTE DE VERDADE: "Projeto - Perfumaria Eloá.md" (Obsidian Vault).
- * Produtos, marcas e categorias são transcritos do documento e das fotos
- * enviadas pela loja. Nenhum produto, marca ou característica foi inventado.
+ * Produtos, marcas e características são transcritos da embalagem, das fotos
+ * enviadas pela loja ou da página oficial do fabricante. Nada foi inventado.
+ *
+ * REGRA EDITORIAL: este arquivo alimenta a vitrine do cliente. Não entra aqui
+ * nada de bastidor — fontes, links de pesquisa, códigos internos, divergências
+ * entre fontes ou avisos de "pendente de confirmação". O que não foi
+ * confirmado simplesmente não é publicado; a rastreabilidade da pesquisa fica
+ * em DECISOES.md e no documento do Obsidian.
  *
  * Campos opcionais:
- *   `specs`     → ficha do produto (peso, volume, variantes). Só entra o que
- *                 está legível na embalagem ou confirmado em fonte do
- *                 fabricante/distribuidor. O que não deu para confirmar fica
- *                 com o texto "Pendente de confirmação".
- *   `fragrance` → dados olfativos dos perfumes. A família e os acordes vêm do
- *                 material do distribuidor (Sea Blue Importadora Top Paris).
- *                 A pirâmide completa (saída/coração/fundo) NÃO é publicada
- *                 por não haver fonte confiável — ver DECISOES.md.
- *
- * PROVISÓRIO (ver DECISOES.md): preços e descrições dos 17 produtos da
- * Sprint 1 que ainda não passaram pela remessa fotográfica de agosto/2026.
+ *   `audience`  → 'feminino' | 'masculino'. Usado no filtro de perfumaria e na
+ *                 ficha do produto.
+ *   `specs`     → ficha do produto (volume, concentração, peso, variantes).
+ *   `fragrance` → perfil olfativo: familia, acordes, saida, coracao, fundo,
+ *                 sensacao, ocasiao. Chaves sem dado confirmado são omitidas.
  */
 
 const CATEGORIES = [
@@ -29,12 +29,6 @@ const CATEGORIES = [
   { id: 'unhas',     name: 'Unhas',               icon: 'nail' },
 ];
 
-/** Origem dos dados olfativos publicados. */
-const FRAGRANCE_SOURCE = 'Material do distribuidor Sea Blue Importadora Top Paris';
-
-/** Notas de saída/coração/fundo: sem fonte confiável para esta linha. */
-const NOTAS_PENDENTES = 'Pendente de confirmação com o fabricante';
-
 const PRODUCTS = [
   // ── Perfumes femininos ────────────────────────────────────────────────
   {
@@ -42,6 +36,7 @@ const PRODUCTS = [
     name: 'VIP Seasons Pour Femme Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição oriental floral doce, com toque de baunilha e fundo ambarado.',
     image: 'assets/img/products/vip-seasons-pour-femme.png',
@@ -52,12 +47,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental floral',
       acordes: 'Doce, baunilha e âmbar',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Ambarado',
       sensacao: 'Envolvente e marcante.',
       ocasiao: 'Noite e ocasiões especiais.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -65,6 +57,7 @@ const PRODUCTS = [
     name: 'One Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição oriental floral doce, com toque de baunilha e fundo ambarado.',
     image: 'assets/img/products/one-sea-blue.png',
@@ -75,12 +68,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental floral',
       acordes: 'Doce, baunilha e âmbar',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Ambarado',
       sensacao: 'Envolvente e aconchegante.',
       ocasiao: 'Noite e ocasiões especiais.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -88,6 +78,7 @@ const PRODUCTS = [
     name: 'Diamond Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição floral frutada fresca, com toque cítrico e fundo suave.',
     image: 'assets/img/products/diamond-sea-blue.png',
@@ -98,12 +89,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Floral frutado',
       acordes: 'Frutado, fresco e cítrico',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Suave',
       sensacao: 'Leve e luminosa.',
       ocasiao: 'Dia a dia e uso diurno.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -111,6 +99,7 @@ const PRODUCTS = [
     name: 'Sexy Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce oriental floral, com toque de baunilha e fundo quente.',
     image: 'assets/img/products/sexy-sea-blue.png',
@@ -121,12 +110,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental floral',
       acordes: 'Doce e baunilha',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Quente',
       sensacao: 'Intensa e sensual.',
       ocasiao: 'Noite e encontros.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -134,6 +120,7 @@ const PRODUCTS = [
     name: 'VIP Eau de Parfum Feminino',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce oriental floral, com toque de baunilha e fundo suave.',
     image: 'assets/img/products/vip-sea-blue-femme.png',
@@ -144,12 +131,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental floral',
       acordes: 'Doce e baunilha',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Suave',
       sensacao: 'Elegante e discreta.',
       ocasiao: 'Dia a dia e trabalho.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -157,6 +141,7 @@ const PRODUCTS = [
     name: 'Bellisima Donna Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce gourmand, com toque de baunilha e praliné.',
     image: 'assets/img/products/bellisima-donna-sea-blue.png',
@@ -167,12 +152,8 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Gourmand',
       acordes: 'Baunilha e praliné',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
-      fundo: NOTAS_PENDENTES,
       sensacao: 'Doce e envolvente.',
       ocasiao: 'Noite e dias frios.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -180,6 +161,7 @@ const PRODUCTS = [
     name: 'Pretty Girl Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'feminino',
     price: 80.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue. Composição doce floral, com toque de baunilha e fundo ambarado.',
     image: 'assets/img/products/pretty-girl-sea-blue.png',
@@ -190,12 +172,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Floral doce',
       acordes: 'Doce, baunilha e âmbar',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Ambarado',
       sensacao: 'Jovem e delicada.',
       ocasiao: 'Dia a dia e programas à tarde.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -203,6 +182,7 @@ const PRODUCTS = [
     name: 'Angel Eau de Parfum',
     brand: 'Sea Blue Paris',
     category: 'perfumes',
+    audience: 'feminino',
     price: 150.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue Paris. Composição doce, com toque de baunilha.',
     image: 'assets/img/products/angel-sea-blue.png',
@@ -213,12 +193,8 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Doce',
       acordes: 'Baunilha',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
-      fundo: NOTAS_PENDENTES,
       sensacao: 'Suave e aconchegante.',
       ocasiao: 'Uso diário e noite.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -226,6 +202,7 @@ const PRODUCTS = [
     name: 'Alice Eau de Parfum',
     brand: 'Sea Blue Paris',
     category: 'perfumes',
+    audience: 'feminino',
     price: 150.00,
     description: 'Eau de parfum feminino de 100 ml da Sea Blue Paris. Composição floral frutada, com nuances frescas e efervescentes e fundo suavemente adocicado.',
     image: 'assets/img/products/alice-sea-blue.png',
@@ -236,12 +213,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Floral frutado',
       acordes: 'Frescor efervescente e frutas',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Suavemente adocicado',
       sensacao: 'Fresca e alegre.',
       ocasiao: 'Dia a dia e uso diurno.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
 
@@ -251,6 +225,7 @@ const PRODUCTS = [
     name: 'Black Eau de Toilette',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'masculino',
     price: 80.00,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição aromática fresca, com toque frutado e fundo amadeirado.',
     image: 'assets/img/products/black-sea-blue.png',
@@ -261,12 +236,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Aromático fresco',
       acordes: 'Frutado e madeiras',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Amadeirado',
       sensacao: 'Moderna e versátil.',
       ocasiao: 'Dia a dia e trabalho.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -274,6 +246,7 @@ const PRODUCTS = [
     name: 'VIP Seasons Pour Homme Eau de Parfum',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'masculino',
     price: 80.00,
     description: 'Eau de parfum masculino de 100 ml da Sea Blue. Composição aromática fresca, com toque cítrico e fundo amadeirado suave.',
     image: 'assets/img/products/vip-seasons-pour-homme.png',
@@ -284,12 +257,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Aromático fresco',
       acordes: 'Cítrico e madeiras',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Amadeirado suave',
       sensacao: 'Limpa e elegante.',
       ocasiao: 'Dia a dia e trabalho.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -297,6 +267,7 @@ const PRODUCTS = [
     name: 'VIP Eau de Toilette Masculino',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'masculino',
     price: 80.00,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição oriental amadeirada, com toque fresco e levemente doce.',
     image: 'assets/img/products/vip-sea-blue-homme.png',
@@ -307,12 +278,8 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental amadeirado',
       acordes: 'Fresco e levemente doce',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
-      fundo: NOTAS_PENDENTES,
       sensacao: 'Marcante e sofisticada.',
       ocasiao: 'Noite e ocasiões especiais.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -322,6 +289,7 @@ const PRODUCTS = [
     name: 'Sea Blue Eau de Toilette',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'masculino',
     price: 80.00,
     featured: true,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição oriental amadeirada, com toque doce e levemente especiado.',
@@ -333,12 +301,8 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental amadeirado',
       acordes: 'Doce e levemente especiado',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
-      fundo: NOTAS_PENDENTES,
       sensacao: 'Quente e envolvente.',
       ocasiao: 'Noite e dias frios.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -346,6 +310,7 @@ const PRODUCTS = [
     name: 'Victory Eau de Toilette',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'masculino',
     price: 80.00,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição fresca aquática, com toque cítrico e fundo amadeirado.',
     image: 'assets/img/products/victory-sea-blue.png',
@@ -356,12 +321,9 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Aquático fresco',
       acordes: 'Cítrico e madeiras',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Amadeirado',
       sensacao: 'Leve e refrescante.',
       ocasiao: 'Dia a dia e dias quentes.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -369,6 +331,7 @@ const PRODUCTS = [
     name: 'Gold Pour Homme Eau de Toilette',
     brand: 'Sea Blue',
     category: 'perfumes',
+    audience: 'masculino',
     price: 80.00,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição amadeirada especiada, com toque doce e quente.',
     image: 'assets/img/products/gold-pour-homme-sea-blue.png',
@@ -379,12 +342,8 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Amadeirado especiado',
       acordes: 'Especiarias, doce e calor',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
-      fundo: NOTAS_PENDENTES,
       sensacao: 'Intensa e sofisticada.',
       ocasiao: 'Noite e ocasiões especiais.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -392,6 +351,7 @@ const PRODUCTS = [
     name: 'Virtus X Eau de Toilette',
     brand: 'Sea Blue Paris',
     category: 'perfumes',
+    audience: 'masculino',
     price: 150.00,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue Paris, em frasco com tampa magnética. Composição oriental amadeirada, com toque aromático e especiado adocicado.',
     image: 'assets/img/products/virtus-sea-blue.png',
@@ -403,12 +363,8 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Oriental amadeirado',
       acordes: 'Aromático, especiado e doce',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
-      fundo: NOTAS_PENDENTES,
       sensacao: 'Forte e imponente.',
       ocasiao: 'Noite e ocasiões especiais.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
@@ -416,6 +372,7 @@ const PRODUCTS = [
     name: 'Indomable Eau de Toilette',
     brand: 'Sea Blue Paris',
     category: 'perfumes',
+    audience: 'masculino',
     price: 150.00,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue Paris, em frasco com tampa magnética. Composição amadeirada aromática, com toque especiado e fundo quente.',
     image: 'assets/img/products/indomable-sea-blue.png',
@@ -427,23 +384,347 @@ const PRODUCTS = [
     fragrance: {
       familia: 'Amadeirado aromático',
       acordes: 'Especiarias e madeiras',
-      saida: NOTAS_PENDENTES,
-      coracao: NOTAS_PENDENTES,
       fundo: 'Quente',
       sensacao: 'Intensa e marcante.',
       ocasiao: 'Noite e dias frios.',
-      fonte: FRAGRANCE_SOURCE,
     },
   },
   {
+    // ID preservado: era o registro genérico "Perfume — O Boticário" da
+    // Sprint 1, identificado como o Floratta Red pela foto de catálogo.
     id: 'perfume-o-boticario',
-    name: 'Perfume',
+    name: 'Floratta Red Desodorante Colônia',
     brand: 'O Boticário',
     category: 'perfumes',
-    price: 129.90,
+    audience: 'feminino',
+    price: 134.90,
     featured: true,
-    description: 'Perfume da linha O Boticário. Consulte no atendimento as fragrâncias disponíveis na loja.',
+    description: 'Um dos femininos mais queridos do Boticário. A maçã de Vermont dá o toque doce e frutado da abertura, o coração é bem floral e o fundo surpreende com chocolate amargo e madeiras. Romântico e fácil de usar: funciona do trabalho ao encontro.',
     image: 'assets/img/products/perfume-o-boticario.png',
+    specs: [
+      { label: 'Volume', value: '75 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Floriental frutal',
+      acordes: 'Maçã de Vermont, frutas vermelhas e buquê floral',
+      saida: 'Frutas vermelhas e laranja',
+      coracao: 'Flor de laranjeira, violeta, flor de lótus, tuberosa e flor de beijo',
+      fundo: 'Chocolate amargo, musk, sândalo, cedro e âmbar',
+      sensacao: 'Doce, romântica e envolvente.',
+      ocasiao: 'Dia a dia, trabalho e encontros.',
+    },
+  },
+
+  // ── Perfumaria O Boticário — femininos ────────────────────────────────
+  {
+    id: 'floratta-red-passion',
+    name: 'Floratta Red Passion Eau de Parfum',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'feminino',
+    price: 229.90,
+    description: 'A versão eau de parfum do Floratta Red: mais concentrada, mais intensa e com bem mais fixação. Mantém a maçã de Vermont que você já conhece, agora com um buquê floral mais rico e um fundo de madeiras cremosas e âmbar. Para quem ama o Floratta Red e quer que ele dure o dia inteiro.',
+    image: 'assets/img/products/floratta-red-passion.png',
+    specs: [
+      { label: 'Volume', value: '75 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Floriental amadeirado',
+      acordes: 'Maçã de Vermont, buquê floral intenso, madeiras cremosas e âmbar',
+      sensacao: 'Intensa, sofisticada e marcante.',
+      ocasiao: 'Noite, encontros e ocasiões especiais.',
+    },
+  },
+  {
+    id: 'egeo-dolce',
+    name: 'Egeo Dolce Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'feminino',
+    price: 164.90,
+    description: 'Doce de verdade, no melhor sentido: marshmallow, algodão-doce, sorvete de framboesa e baunilha. É divertido, jovem e daqueles que fazem as pessoas perguntarem o que você está usando. Ótima escolha para quem gosta de perfume gourmand e quer algo leve para o dia a dia.',
+    image: 'assets/img/products/egeo-dolce.png',
+    specs: [
+      { label: 'Volume', value: '90 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Oriental gourmand',
+      acordes: 'Marshmallow, sorvete de framboesa, algodão-doce e baunilha',
+      sensacao: 'Divertida, doce e jovem.',
+      ocasiao: 'Dia a dia, faculdade e programas com amigos.',
+    },
+  },
+
+  // ── Perfumaria O Boticário — masculinos ───────────────────────────────
+  {
+    id: 'malbec-colonia',
+    name: 'Malbec Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 219.90,
+    description: 'O clássico da perfumaria masculina brasileira. O contraste da pimenta com a bergamota abre a fragrância e as madeiras do patchouli e do musgo seguram o rastro. Elegante, confiável e sempre atual: se a dúvida é qual masculino escolher, este é o mais seguro.',
+    image: 'assets/img/products/malbec-colonia.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Amadeirado',
+      acordes: 'Pimenta, bergamota, patchouli e musgo',
+      sensacao: 'Marcante, confiante e elegante.',
+      ocasiao: 'Trabalho, dia a dia e noite.',
+    },
+  },
+  {
+    id: 'malbec-eau-de-parfum',
+    name: 'Malbec Eau de Parfum',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 279.90,
+    description: 'O Malbec mais concentrado da linha, com até 12 horas de intensidade. Traz o couro de Grasse junto com o calor da baunilha e das especiarias, num resultado mais doce e mais sofisticado que o Malbec tradicional. É o Malbec de ocasião especial.',
+    image: 'assets/img/products/malbec-eau-de-parfum.png',
+    specs: [
+      { label: 'Volume', value: '90 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+      { label: 'Fixação', value: 'Até 12 horas' },
+    ],
+    fragrance: {
+      familia: 'Amadeirado oriental',
+      acordes: 'Couro de Grasse, baunilha e especiarias',
+      sensacao: 'Sofisticada, quente e poderosa.',
+      ocasiao: 'Noite e ocasiões especiais.',
+    },
+  },
+  {
+    id: 'quasar-blue',
+    name: 'Quasar Blue Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 189.90,
+    description: 'O Quasar tradicional, agora chamado Blue. Frescor clássico de barbearia: cítrico na abertura, lavanda no coração e um fundo amadeirado seco e confortável. É aquele masculino que agrada todo mundo e serve para qualquer momento.',
+    image: 'assets/img/products/quasar-blue.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Fougère fresco',
+      acordes: 'Cítrico, lavanda e madeiras secas',
+      saida: 'Limão e mandarina',
+      coracao: 'Lavanda e gerânio',
+      fundo: 'Cedro seco e musk',
+      sensacao: 'Limpa, clássica e confortável.',
+      ocasiao: 'Dia a dia e trabalho.',
+    },
+  },
+  {
+    id: 'quasar-rush',
+    name: 'Quasar Rush Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 189.90,
+    description: 'Fresco e energético, construído em cima do cedro azul — uma madeira que refresca em vez de pesar. As notas frutadas deixam a fragrância mais leve e moderna. Boa escolha para o dia, para o trabalho e para quem quer se sentir limpo o tempo todo.',
+    image: 'assets/img/products/quasar-rush.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Fougère aquoso',
+      acordes: 'Cedro azul, notas frutadas e amadeiradas',
+      sensacao: 'Refrescante, energizante e moderna.',
+      ocasiao: 'Dia a dia, trabalho e dias quentes.',
+    },
+  },
+  {
+    id: 'quasar-brave',
+    name: 'Quasar Brave Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 189.90,
+    description: 'Diferente dos outros Quasar: traz o frescor do álcool de saquê com folhas de chá preto e um fundo amadeirado. O resultado é mais intenso e menos óbvio, com uma pegada oriental. Para quem já tem um fresco no armário e quer algo com mais personalidade.',
+    image: 'assets/img/products/quasar-brave.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Fougère amadeirado',
+      acordes: 'Álcool de saquê, chá preto e madeiras',
+      sensacao: 'Intensa, potente e diferente.',
+      ocasiao: 'Noite e fim de tarde.',
+    },
+  },
+  {
+    id: 'uomini',
+    name: 'Uomini Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 209.90,
+    description: 'Clássico do Boticário que segue firme: frescor aromático com a força das madeiras. Elegante sem ser pesado, tem cara de perfume de homem adulto e combina muito com o trabalho e com o dia a dia. Frasco em vidro reciclado, com acabamento fosco.',
+    image: 'assets/img/products/uomini.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Fougère aromático',
+      acordes: 'Frescor aromático e madeiras',
+      sensacao: 'Elegante, sóbria e madura.',
+      ocasiao: 'Trabalho, dia a dia e reuniões.',
+    },
+  },
+  {
+    id: 'arbo',
+    name: 'Arbo Desodorante Colônia',
+    brand: 'O Boticário',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 189.90,
+    description: 'Frescor de montanha: menta, notas verdes e sândalo. É leve, limpo e calmante — o tipo de fragrância que combina com dias quentes e com quem prefere algo discreto. Um dos masculinos mais fáceis de usar do Boticário.',
+    image: 'assets/img/products/arbo.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Desodorante Colônia' },
+    ],
+    fragrance: {
+      familia: 'Fougère fresco',
+      acordes: 'Menta, notas verdes e sândalo',
+      sensacao: 'Fresca, leve e revigorante.',
+      ocasiao: 'Dia a dia, dias quentes e lazer.',
+    },
+  },
+
+  // ── Perfumaria Hinode ─────────────────────────────────────────────────
+  {
+    id: 'lattitude-stamina-hinode',
+    name: 'Lattitude Stamina Deo Colônia',
+    brand: 'Hinode',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 150.00,
+    description: 'Um masculino amadeirado de presença forte, para quem gosta de ser notado. Abre cítrico e vibrante, ganha um miolo floral aromático e termina quente, com cedro e baunilha que seguram o rastro por horas. Acompanha bem o dia inteiro e não passa despercebido.',
+    image: 'assets/img/products/lattitude-stamina-hinode.png',
+    specs: [
+      { label: 'Linha', value: 'Lattitude' },
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Deo Colônia' },
+    ],
+    fragrance: {
+      familia: 'Amadeirado envolvente',
+      acordes: 'Cítrico, floral aromático e madeira ambarada',
+      saida: 'Mandarina verde, flor de laranjeira e bergamota',
+      coracao: 'Gerânio, jasmim e lírio-do-vale',
+      fundo: 'Cedro, acorde ambarado e baunilha',
+      sensacao: 'Energia, confiança e vigor.',
+      ocasiao: 'Dia a dia, trabalho e treino.',
+    },
+  },
+  {
+    id: 'lattitude-expedition-hinode',
+    name: 'Lattitude Expedition Deo Colônia',
+    brand: 'Hinode',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 150.00,
+    description: 'Abre bem cítrico e refrescante e fecha adocicado, com praliné e âmbar. Essa virada de fresco para doce é o que faz dele um perfume versátil: leve o suficiente para o dia, marcante o suficiente para a noite. Boa opção para quem quer um perfume só para tudo.',
+    image: 'assets/img/products/lattitude-expedition-hinode.png',
+    specs: [
+      { label: 'Linha', value: 'Lattitude' },
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Deo Colônia' },
+    ],
+    fragrance: {
+      familia: 'Aromático amadeirado',
+      acordes: 'Cítrico, floral e âmbar adocicado',
+      saida: 'Limão siciliano, mandarina e quincã',
+      coracao: 'Lavandin, flor de laranjeira e frésia',
+      fundo: 'Patchouli, praliné e âmbar branco',
+      sensacao: 'Livre, aventureira e envolvente.',
+      ocasiao: 'Dia a dia, lazer e fim de tarde.',
+    },
+  },
+  {
+    id: 'lattitude-origini-hinode',
+    name: 'Lattitude Origini Deo Colônia',
+    brand: 'Hinode',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 150.00,
+    description: 'Um masculino moderno e adocicado, sem ser enjoativo. A abertura cítrica com maçã verde dá frescor, a pimenta preta traz um contraste picante e o fundo de âmbar e baunilha deixa o rastro quente. Combina com quem gosta de perfume doce, mas quer algo com atitude.',
+    image: 'assets/img/products/lattitude-origini-hinode.png',
+    specs: [
+      { label: 'Linha', value: 'Lattitude' },
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Deo Colônia' },
+    ],
+    fragrance: {
+      familia: 'Adocicado vibrante',
+      acordes: 'Cítrico, especiarias, âmbar e baunilha',
+      saida: 'Grapefruit rosa, maçã verde e ruibarbo',
+      coracao: 'Violeta, pimenta preta e folhas de eucalipto',
+      fundo: 'Âmbar, baunilha e praliné',
+      sensacao: 'Moderna, jovem e confiante.',
+      ocasiao: 'Dia a dia, faculdade e programas à noite.',
+    },
+  },
+  {
+    id: 'enigma-hinode',
+    name: 'Enigma Deo Colônia',
+    brand: 'Hinode',
+    category: 'perfumes',
+    audience: 'masculino',
+    price: 150.00,
+    description: 'Começa fresco e cítrico e vai ficando cada vez mais intenso: o couro toscano e o patchouli do fundo dão o ar sério e sedutor. É um perfume de personalidade, para quem quer ser lembrado sem precisar falar muito. Rende bem na noite e em ocasiões mais elegantes.',
+    image: 'assets/img/products/enigma-hinode.png',
+    specs: [
+      { label: 'Linha', value: 'Enigma' },
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Deo Colônia' },
+    ],
+    fragrance: {
+      familia: 'Aromático envolvente',
+      acordes: 'Cítrico fresco, lavanda, couro e patchouli',
+      saida: 'Mandarina, pimenta preta e limão',
+      coracao: 'Lavanda, gerânio e maçã verde',
+      fundo: 'Patchouli, couro toscano e notas ambaradas',
+      sensacao: 'Misteriosa, sofisticada e sedutora.',
+      ocasiao: 'Noite, encontros e eventos.',
+    },
+  },
+
+  // ── Body splash ───────────────────────────────────────────────────────
+  {
+    id: 'afrodite-garden-aura',
+    name: 'Body Splash Afrodite Garden',
+    brand: 'AURA Beauty Club',
+    category: 'perfumes',
+    audience: 'feminino',
+    price: 130.00,
+    description: 'Body splash de 200 ml para perfumar o corpo depois do banho. Começa frutado e leve, revela um buquê floral no coração e termina cremoso, com baunilha e fava tonka. Suave o bastante para usar todo dia e rende muito pelo tamanho do frasco.',
+    image: 'assets/img/products/afrodite-garden-aura.png',
+    specs: [
+      { label: 'Tipo', value: 'Body Splash — desodorante colônia corporal' },
+      { label: 'Volume', value: '200 ml' },
+    ],
+    fragrance: {
+      familia: 'Floral frutado',
+      acordes: 'Frutas, buquê floral e baunilha cremosa',
+      saida: 'Abacaxi, pêra, mandarina e laranja',
+      coracao: 'Flor de laranjeira, jasmim, heliotropina e rosa',
+      fundo: 'Musgo, baunilha, fava tonka e leite',
+      sensacao: 'Fresca, feminina e aconchegante.',
+      ocasiao: 'Dia a dia, depois do banho e uso diurno.',
+    },
   },
 
   // ── Maquiagem ─────────────────────────────────────────────────────────
@@ -457,7 +738,6 @@ const PRODUCTS = [
     image: 'assets/img/products/base-lua-e-neve-matte.png',
     specs: [
       { label: 'Acabamento', value: 'Matte' },
-      { label: 'Volume', value: 'Pendente de confirmação' },
     ],
   },
   {
@@ -526,7 +806,6 @@ const PRODUCTS = [
     image: 'assets/img/products/iluminador-toque-special.png',
     specs: [
       { label: 'Tipo', value: 'Iluminador compacto' },
-      { label: 'Peso', value: 'Pendente de confirmação' },
     ],
   },
   {
@@ -579,7 +858,6 @@ const PRODUCTS = [
     image: 'assets/img/products/corretivo-lua-e-neve.png',
     specs: [
       { label: 'Acabamento', value: 'Matte' },
-      { label: 'Volume', value: 'Pendente de confirmação' },
     ],
   },
   {
@@ -648,7 +926,6 @@ const PRODUCTS = [
       { label: 'Linha', value: 'Skala Expert' },
       { label: 'Peso', value: '1 kg (1000 g)' },
       { label: 'Variantes identificadas', value: 'Babosa, #MaisCrespos, #MaisLisos, Amido de Milho, Óleo de Coco, Divino Potão e Coquetel de Frutas' },
-      { label: 'Demais variantes da foto', value: 'Pendente de confirmação' },
     ],
   },
   {
@@ -735,7 +1012,7 @@ const PRODUCTS = [
   {
     id: 'lenco-umedecido',
     name: 'Lenço Umedecido Portátil',
-    brand: 'Marca a confirmar',
+    brand: 'Sem marca',
     category: 'higiene',
     price: 10.00,
     description: 'Lenço umedecido portátil em embalagem de lata com chaveiro, em estampas variadas. Consulte os modelos disponíveis pelo WhatsApp.',
@@ -743,8 +1020,6 @@ const PRODUCTS = [
     specs: [
       { label: 'Embalagem', value: 'Lata portátil com chaveiro' },
       { label: 'Estampas na foto', value: 'Shiba Inu, Meow e astronauta' },
-      { label: 'Marca', value: 'Pendente de confirmação' },
-      { label: 'Quantidade por embalagem', value: 'Pendente de confirmação' },
     ],
   },
 

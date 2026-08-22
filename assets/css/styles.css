@@ -291,7 +291,6 @@ body {
 }
 .specs dt { color: var(--ink-500); }
 .specs dd { color: var(--ink-700); margin: 0; }
-.specs .is-pending { color: var(--ink-400); font-style: italic; }
 .specs-note {
   margin-top: var(--sp-3);
   font-size: .75rem;
@@ -301,6 +300,59 @@ body {
   .specs dl { grid-template-columns: 1fr; gap: 2px var(--sp-4); }
   .specs dt { font-size: .75rem; }
   .specs dd { margin-bottom: var(--sp-2); }
+}
+
+/* Pirâmide olfativa: saída → coração → fundo, na página do perfume. */
+.notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--sp-3);
+}
+.notes li {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  grid-template-areas: "step value" ".    hint";
+  gap: 2px var(--sp-4);
+  align-items: baseline;
+  padding-left: var(--sp-4);
+  border-left: 2px solid var(--rose-300);
+}
+.notes li:first-child { border-left-color: var(--rose-200); }
+.notes li:last-child  { border-left-color: var(--rose-500); }
+.notes-step {
+  grid-area: step;
+  font-size: .6875rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--rose-700);
+}
+.notes-value {
+  grid-area: value;
+  font-size: .9375rem;
+  line-height: 1.4;
+  color: var(--ink-700);
+}
+.notes-hint {
+  grid-area: hint;
+  font-size: .75rem;
+  color: var(--ink-400);
+}
+@media (max-width: 480px) {
+  .notes li {
+    grid-template-columns: 1fr;
+    grid-template-areas: "step" "value" "hint";
+    gap: 1px;
+  }
+}
+
+/* Chip menor, usado no filtro de perfumaria feminina/masculina. */
+.chip-sm {
+  height: 34px;
+  padding: 0 var(--sp-4);
+  font-size: .8125rem;
 }
 
 /* Painel deslizante (carrinho) */

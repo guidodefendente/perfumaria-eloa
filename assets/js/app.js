@@ -1,5 +1,5 @@
 /**
- * Perfumaria Eloá — lógica do protótipo.
+ * Perfumaria Eloá — lógica do catálogo digital.
  *
  * Sem build, sem dependências: um único objeto `App` exposto no window.
  * Roteamento por hash (#/, #/catalogo, #/produto/<id>, #/sobre) para que o
@@ -12,6 +12,7 @@ const App = (() => {
   const STORAGE_KEY = 'eloa.cart.v1';
   let cart = [];          // [{ id, qty }]
   let filterCategory = 'todos';
+  let filterAudience = 'todos';
   let searchQuery = '';
   let lastFocused = null;
 
@@ -66,42 +67,68 @@ const App = (() => {
     `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
 
-  /** Linha da ficha; o que não foi confirmado fica marcado como pendente. */
-  const specRow = (label, value) => {
-    const pending = /^pendente/i.test(String(value));
-    return `<dt>${escapeHtml(label)}</dt>
-            <dd${pending ? ' class="is-pending"' : ''}>${escapeHtml(value)}</dd>`;
-  };
+  /** Linha da ficha do produto. */
+  const specRow = (label, value) =>
+    `<dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd>`;
 
-  /** Ficha do produto (peso, volume, variantes). Só renderiza se houver dados. */
+  const AUDIENCE_LABEL = { feminino: 'Feminino', masculino: 'Masculino' };
+
+  /** Ficha do produto (volume, concentração, peso, variantes). */
   function specsBlock(product) {
-    if (!product.specs || !product.specs.length) return '';
+    const rows = [...(product.specs || [])];
+    if (product.audience) {
+      rows.push({ label: 'Indicado para', value: AUDIENCE_LABEL[product.audience] });
+    }
+    if (!rows.length) return '';
     return `
       <section class="specs" aria-label="Ficha do produto">
         <p class="specs-title">Sobre o produto</p>
-        <dl>${product.specs.map((s) => specRow(s.label, s.value)).join('')}</dl>
+        <dl>${rows.map((r) => specRow(r.label, r.value)).join('')}</dl>
       </section>`;
   }
 
-  /** Dados olfativos dos perfumes. */
+  /**
+   * Perfil olfativo do perfume, em dois blocos: o perfil em si e, quando há
+   * pirâmide confirmada, as notas de saída/coração/fundo. Campos sem dado
+   * simplesmente não aparecem.
+   */
   function fragranceBlock(product) {
     const f = product.fragrance;
     if (!f) return '';
-    const rows = [
+
+    const perfil = [
       ['Família olfativa', f.familia],
       ['Acordes principais', f.acordes],
-      ['Notas de saída', f.saida],
-      ['Notas de coração', f.coracao],
-      ['Notas de fundo', f.fundo],
       ['Sensação', f.sensacao],
-      ['Ocasião de uso', f.ocasiao],
-    ].filter(([, value]) => value);
-    return `
+      ['Ocasião sugerida', f.ocasiao],
+    ].filter(([, v]) => v);
+
+    const piramide = [
+      ['Saída', 'A primeira impressão', f.saida],
+      ['Coração', 'O corpo da fragrância', f.coracao],
+      ['Fundo', 'O rastro que fica', f.fundo],
+    ].filter(([, , v]) => v);
+
+    const blocoPerfil = perfil.length ? `
       <section class="specs" aria-label="Perfil olfativo">
         <p class="specs-title">Perfil olfativo</p>
-        <dl>${rows.map(([label, value]) => specRow(label, value)).join('')}</dl>
-        ${f.fonte ? `<p class="specs-note">Fonte: ${escapeHtml(f.fonte)}.</p>` : ''}
-      </section>`;
+        <dl>${perfil.map(([label, value]) => specRow(label, value)).join('')}</dl>
+      </section>` : '';
+
+    const blocoNotas = piramide.length ? `
+      <section class="specs" aria-label="Notas olfativas">
+        <p class="specs-title">Notas olfativas</p>
+        <ol class="notes">
+          ${piramide.map(([etapa, hint, value]) => `
+            <li>
+              <span class="notes-step">${escapeHtml(etapa)}</span>
+              <span class="notes-value">${escapeHtml(value)}</span>
+              <span class="notes-hint">${escapeHtml(hint)}</span>
+            </li>`).join('')}
+        </ol>
+      </section>` : '';
+
+    return blocoPerfil + blocoNotas;
   }
 
   // ── Componente: card de produto ─────────────────────────────────────────
@@ -157,7 +184,33 @@ const App = (() => {
       <button class="chip" aria-pressed="${filterCategory === c.id}" onclick="App.setCategory('${c.id}')">
         ${escapeHtml(c.name)}
       </button>`).join('');
+    renderAudienceChips();
     updateChipFade();
+  }
+
+  /**
+   * Filtro de perfumaria feminina/masculina. Só faz sentido dentro de
+   * Perfumes — nas outras categorias os produtos não têm público definido,
+   * então a linha inteira fica escondida.
+   */
+  function renderAudienceChips() {
+    const box = $('#catalog-audience');
+    if (!box) return;
+    if (filterCategory !== 'perfumes') {
+      box.innerHTML = '';
+      box.hidden = true;
+      return;
+    }
+    box.hidden = false;
+    const opcoes = [
+      { id: 'todos', name: 'Todos' },
+      { id: 'feminino', name: 'Feminino' },
+      { id: 'masculino', name: 'Masculino' },
+    ];
+    box.innerHTML = opcoes.map((o) => `
+      <button class="chip chip-sm" aria-pressed="${filterAudience === o.id}" onclick="App.setAudience('${o.id}')">
+        ${escapeHtml(o.name)}
+      </button>`).join('');
   }
 
   /**
@@ -181,8 +234,9 @@ const App = (() => {
     return PRODUCTS.filter((p) => {
       const matchCategory = filterCategory === 'todos' || p.category === filterCategory;
       if (!matchCategory) return false;
+      if (filterAudience !== 'todos' && p.audience !== filterAudience) return false;
       if (!q) return true;
-      const haystack = normalize(`${p.name} ${p.brand} ${getCategory(p.category)?.name || ''}`);
+      const haystack = normalize(`${p.name} ${p.brand} ${getCategory(p.category)?.name || ''} ${p.audience || ''}`);
       return q.split(/\s+/).every((term) => haystack.includes(term));
     });
   }
@@ -579,7 +633,13 @@ const App = (() => {
     closeCart,
     updateChipFade,
 
+    setAudience(id) {
+      filterAudience = id;
+      renderCatalog();
+    },
+
     setCategory(id) {
+      if (id !== filterCategory) filterAudience = 'todos';
       filterCategory = id;
       const suffix = id === 'todos' ? '' : `?cat=${id}`;
       if (window.location.hash !== `#/catalogo${suffix}`) {
@@ -613,6 +673,7 @@ const App = (() => {
     clearFilters() {
       searchQuery = '';
       filterCategory = 'todos';
+      filterAudience = 'todos';
       ['#search-desktop', '#search-mobile'].forEach((sel) => { const el = $(sel); if (el) el.value = ''; });
       window.history.replaceState(null, '', '#/catalogo');
       renderCatalog();

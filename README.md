@@ -47,11 +47,12 @@ cd build && npx tailwindcss@3 -c tailwind.config.js -i input.css -o ../assets/cs
 
 As imagens dos produtos (`assets/img/products/*.png`) são fotos de catálogo tratadas —
 fundo marfim, luz de estúdio, sombra suave e reflexo discreto — mantendo a embalagem e a
-identidade visual de cada item. Todos os 45 produtos usam esse padrão, em 1254 × 1254 PNG.
+identidade visual de cada item. Todos os 59 produtos usam esse padrão, em 1254 × 1254 PNG.
 
-As 32 imagens da Sprint 4 vêm das fotografias reais enviadas pela loja: o tratamento é
-recorte, limpeza, iluminação, fundo, sombra e reflexo. Nenhuma embalagem ou rótulo foi
-redesenhado. As 13 restantes ainda são ilustrações da Sprint 2 — ver `DECISOES.md`.
+As 32 imagens da Sprint 4 vêm das fotografias enviadas pela loja e as 15 da Sprint 5 da
+página oficial de cada fabricante; em ambos os casos o tratamento é recorte, limpeza,
+iluminação, fundo, sombra e reflexo, sem redesenhar embalagem ou rótulo. As 13 restantes
+ainda são ilustrações da Sprint 2 — ver `DECISOES.md`.
 
 ## Telas
 
@@ -85,7 +86,15 @@ bloco "Sobre o produto" na página do produto. Um valor que comece com "Pendente
 itálico e cinza — use isso em vez de inventar o dado.
 
 **Perfumes:** o campo opcional `fragrance` (`familia`, `acordes`, `saida`, `coracao`,
-`fundo`, `sensacao`, `ocasiao`, `fonte`) vira o bloco "Perfil olfativo".
+`fundo`, `sensacao`, `ocasiao`) vira os blocos "Perfil olfativo" e "Notas olfativas". A
+pirâmide de notas só aparece quando `saida`/`coracao`/`fundo` existem.
+
+**Público:** `audience` (`'feminino'` ou `'masculino'`) alimenta o filtro que aparece
+dentro da categoria Perfumes e entra na busca.
+
+**Regra editorial:** `products.js` alimenta a vitrine do cliente. Não entra ali fonte de
+pesquisa, código interno nem aviso de "pendente de confirmação" — o que não foi confirmado
+simplesmente não é publicado. A rastreabilidade fica em `DECISOES.md`.
 
 **Destacar na página inicial:** adicione `featured: true`.
 
@@ -94,7 +103,7 @@ itálico e cinza — use isso em vez de inventar o dado.
 Protótipo navegável, com o fluxo completo funcionando: encontrar produto → adicionar ao
 carrinho → ajustar quantidade → finalizar no WhatsApp.
 
-**45 produtos em 7 categorias.** Os 32 produtos da remessa fotográfica de agosto/2026 têm
-preço, nome e ficha confirmados pela loja ou pela embalagem. Os 13 produtos restantes da
-Sprint 1 continuam com preço, descrição e imagem provisórios, e a curadoria dos destaques
-ainda é nossa. Ver `DECISOES.md`.
+**59 produtos em 7 categorias**, sendo 32 de perfumaria. Os 47 produtos das remessas de
+agosto/2026 têm preço, nome e ficha confirmados pela loja, pela embalagem ou pela página
+oficial do fabricante. Os 12 produtos restantes da Sprint 1 continuam com preço, descrição
+e imagem provisórios, e a curadoria dos destaques ainda é nossa. Ver `DECISOES.md`.
