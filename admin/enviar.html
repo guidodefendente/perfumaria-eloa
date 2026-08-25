@@ -181,7 +181,8 @@
   const params = new URLSearchParams(location.search);
   if (params.get('enviado') === '1') {
     $('#form').style.display = 'none';
-    $('#success').style.display = '';
+    // display:'block' necessário — style.display='' restauraria o CSS #success{display:none}
+    $('#success').style.display = 'block';
     window.scrollTo({ top: 0 });
     // limpa a query para refresh não re-mostrar a confirmação
     history.replaceState(null, '', location.pathname);
