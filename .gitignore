@@ -1,4 +1,7 @@
 _to_delete/
-.DS_Store
+# Eloá Admin — ferramenta local (NUNCA publicar no GitHub Pages)
+admin/index.html
+admin/server.py
+admin/image-sources.md
 .claude/
 .playwright-mcp/
