@@ -26,7 +26,7 @@
     width:100%; padding:15px; font-size:17px; font-weight:700; border:none; border-radius:12px;
     background:var(--rose); color:#fff; cursor:pointer; margin-top:6px;
   }
-  button.enviar:disabled { opacity:.5; }
+  button.enviar:disabled { opacity:.5; cursor:wait; }
   .spec-row { display:flex; gap:8px; margin-bottom:8px; }
   .spec-row input { flex:1; }
   #frag-block { display:none; }
@@ -34,11 +34,11 @@
   .radio-line label { display:flex; align-items:center; gap:6px; font-weight:500; margin:0; }
   img.preview { max-width:100%; max-height:230px; border-radius:10px; border:1px solid var(--line); margin-top:10px; display:block; }
   .warn { background:#fdf6ec; border:1px solid #ecd9b0; border-radius:10px; padding:10px 12px; font-size:13px; margin-top:10px; }
-  #success { display:none; text-align:center; padding:30px 10px; }
-  #success .big { font-size:44px; }
+  #success, #error-panel { display:none; text-align:center; padding:30px 14px; }
+  #success .big, #error-panel .big { font-size:44px; }
   #success h2 { color:var(--ok); margin:10px 0 6px; }
-  #success p { color:#77706f; }
-  .slug-hint { font-size:12px; color:#77706f; margin-top:3px; }
+  #error-panel h2 { color:var(--err); margin:10px 0 6px; }
+  #success p, #error-panel p { color:#77706f; }
 </style>
 </head>
 <body>
@@ -50,44 +50,67 @@
 
 <main>
 
-<form id="form">
+<!-- ══ Confirmação de sucesso (mostrada quando volta do FormSubmit) ══ -->
+<div id="success">
+  <div class="big">✅</div>
+  <h2>Produto enviado com sucesso!</h2>
+  <p>Recebemos as informações e elas serão revisadas antes de serem publicadas.</p>
+  <button onclick="location.href='enviar.html'">Cadastrar outro produto</button>
+</div>
+
+<!-- ══ Painel de erro no envio ═════════════════════════════════════ -->
+<div id="error-panel">
+  <div class="big">⚠️</div>
+  <h2>Não conseguimos enviar.</h2>
+  <p>Verifique sua conexão e tente novamente. Se o problema continuar, mande as informações pelo WhatsApp da loja.</p>
+  <button onclick="location.reload()">Tentar de novo</button>
+</div>
+
+<form id="form"
+      action="https://formsubmit.co/guido.defendente@gmail.com"
+      method="POST"
+      enctype="multipart/form-data">
+
+  <!-- Configuração FormSubmit -->
+  <input type="hidden" name="_subject" value="">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+  <!-- volta para esta página com ?enviado=1 após o envio -->
+  <input type="hidden" name="_next" value="">
+
   <div class="card">
     <label for="name">Nome do produto *</label>
-    <input type="text" id="name" required placeholder="Ex.: VIP Seasons Pour Femme">
+    <input type="text" id="name" name="Nome" required placeholder="Ex.: VIP Seasons Pour Femme">
     <div class="hint">O código interno (ID) é gerado automaticamente.</div>
-    <div class="slug-hint" id="slug-hint"></div>
-    <div class="error" id="err-name">Informe o nome do produto.</div>
+    <div class="slug-hint hint" id="slug-hint"></div>
 
     <label for="brand">Marca *</label>
-    <input type="text" id="brand" required placeholder="Ex.: Sea Blue">
-    <div class="error" id="err-brand">Informe a marca.</div>
+    <input type="text" id="brand" name="Marca" required placeholder="Ex.: Sea Blue">
 
     <label for="category">Categoria *</label>
-    <select id="category" required></select>
-    <div class="error" id="err-cat">Escolha a categoria.</div>
+    <select id="category" name="Categoria" required></select>
   </div>
 
   <div class="card">
     <label for="price">Preço (R$) *</label>
-    <input type="text" id="price" required placeholder="Ex.: 80,00">
-    <div class="error" id="err-price">Preço inválido. Exemplo válido: 80,00</div>
+    <input type="text" id="price" name="Preco_BRL" required placeholder="Ex.: 80,00">
 
     <label style="display:flex;align-items:center;gap:8px;">
-      <input type="checkbox" id="featured" style="width:18px;height:18px;">
+      <input type="checkbox" id="featured" name="Destaque" value="sim" style="width:18px;height:18px;">
       Produto em destaque (aparece na página inicial)
     </label>
 
     <label>Público</label>
     <div class="radio-line">
-      <label><input type="radio" name="audience" value="" checked> Sem definição</label>
-      <label><input type="radio" name="audience" value="feminino"> Feminino</label>
-      <label><input type="radio" name="audience" value="masculino"> Masculino</label>
+      <label><input type="radio" name="Publico" value="" checked> Sem definição</label>
+      <label><input type="radio" name="Publico" value="feminino"> Feminino</label>
+      <label><input type="radio" name="Publico" value="masculino"> Masculino</label>
     </div>
   </div>
 
   <div class="card">
     <label for="description">Descrição *</label>
-    <textarea id="description" maxlength="600" required
+    <textarea id="description" name="Descricao" maxlength="600" required
       placeholder="Descreva o produto conforme a embalagem ou a foto. Não invente informações."></textarea>
     <div class="hint"><span id="desc-count">0</span>/30 caracteres no mínimo</div>
     <div class="error" id="err-desc">A descrição precisa ter pelo menos 30 caracteres.</div>
@@ -98,6 +121,7 @@
     <div class="hint" style="margin-bottom:8px;">Ex.: Volume → 100 ml · Concentração → Deo Colônia</div>
     <div id="specs-container"></div>
     <button type="button" id="btn-add-spec" style="margin-top:4px;">＋ Adicionar especificação</button>
+    <textarea name="Especificacoes" id="specs-hidden" style="display:none"></textarea>
   </div>
 
   <div class="card" id="frag-block">
@@ -109,6 +133,7 @@
     <input type="text" id="fg-fundo" placeholder="Notas de fundo" style="margin-bottom:8px;">
     <input type="text" id="fg-sensacao" placeholder="Sensação (ex.: Envolvente e marcante.)" style="margin-bottom:8px;">
     <input type="text" id="fg-ocasiao" placeholder="Ocasião (ex.: Noite e ocasiões especiais.)">
+    <textarea name="Fragrancia" id="frag-hidden" style="display:none"></textarea>
   </div>
 
   <div class="card">
@@ -117,18 +142,23 @@
       <label><input type="radio" name="img-src" value="file" checked> Arquivo do celular/computador</label>
       <label><input type="radio" name="img-src" value="url"> Link (URL) da internet</label>
     </div>
+
     <div id="img-file-wrap">
-      <input type="file" id="img-file" accept="image/*">
+      <!-- campo "attachment": anexo real no e-mail via multipart/form-data -->
+      <input type="file" id="img-file" name="attachment" accept="image/png,image/jpeg,image/webp" required>
+      <img class="preview" id="img-file-preview" style="display:none" alt="">
+      <div class="error" id="err-img-file">Selecione uma imagem (PNG, JPG ou WEBP, até 8 MB).</div>
     </div>
+
     <div id="img-url-wrap" style="display:none">
-      <input type="url" id="img-url" placeholder="https://… (link da imagem)">
+      <input type="url" id="img-url" name="Imagem_URL_origem" placeholder="https://… (link da imagem)">
       <button type="button" id="btn-img-preview" style="margin-top:8px;">Ver prévia</button>
       <img class="preview" id="img-url-preview" style="display:none" alt="">
+      <div class="hint">A imagem será baixada e copiada para o site durante a revisão — o link serve como origem.</div>
       <div class="error" id="err-img-url">Não consegui abrir essa imagem. Confira o link.</div>
     </div>
-    <img class="preview" id="img-file-preview" style="display:none" alt="">
+
     <div class="warn">⚠️ Certifique-se de que você tem autorização para utilizar esta imagem.</div>
-    <div class="error" id="err-img">Envie uma imagem (arquivo ou link).</div>
   </div>
 
   <button type="submit" class="enviar" id="btn-submit">Enviar produto</button>
@@ -137,36 +167,37 @@
   </p>
 </form>
 
-<div id="success">
-  <div class="big">✅</div>
-  <h2>Produto enviado para revisão!</h2>
-  <p id="success-detail">A publicação será feita após validação.</p>
-  <button onclick="location.reload()">Cadastrar outro produto</button>
-</div>
-
 </main>
 
 <script src="categories.js"></script>
 <script>
 (function () {
   'use strict';
-  // ══════════════════════════════════════════════════════════════════
-  // CONFIG — e-mail que recebe as submissões (ativado no 1º envio).
-  const SUBMIT_EMAIL = 'guido.defendente@gmail.com';
-  // ══════════════════════════════════════════════════════════════════
-
   const $ = (s) => document.querySelector(s);
   const $$ = (s) => Array.from(document.querySelectorAll(s));
-  let fileData = null, urlValidated = false;
+  let urlValidated = false;
+
+  // ── Confirmação / erro pós-redirect ────────────────────────────────────
+  const params = new URLSearchParams(location.search);
+  if (params.get('enviado') === '1') {
+    $('#form').style.display = 'none';
+    $('#success').style.display = '';
+    window.scrollTo({ top: 0 });
+    // limpa a query para refresh não re-mostrar a confirmação
+    history.replaceState(null, '', location.pathname);
+    return; // página em modo confirmação — nada mais a fazer
+  }
 
   function slugify(str) {
     return String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
-  // categorias vindas do catálogo real
   $('#category').innerHTML = '<option value="">— escolha —</option>' +
     CATEGORIES.map((c) => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  // _next dinâmico: mesma URL desta página + flag de sucesso
+  $('input[name=_next]').value = location.origin + location.pathname + '?enviado=1';
 
   function addSpec(label = '', value = '') {
     const div = document.createElement('div');
@@ -193,15 +224,15 @@
   }));
 
   $('#img-file').addEventListener('change', (e) => {
+    hideErr('#err-img-file');
     const f = e.target.files[0];
     if (!f) return;
-    if (!/^image\//.test(f.type)) return showErr('#err-img', 'O arquivo precisa ser uma imagem.');
-    if (f.size > 8 * 1024 * 1024) return showErr('#err-img', 'Imagem muito grande (máximo 8 MB).');
+    if (!/^image\/(png|jpe?g|webp)$/.test(f.type)) return showErr('#err-img-file', 'Formato não suportado. Use PNG, JPG ou WEBP.');
+    if (f.size > 8 * 1024 * 1024) return showErr('#err-img-file', 'Imagem muito grande (máximo 8 MB).');
     const rd = new FileReader();
     rd.onload = () => {
       $('#img-file-preview').src = rd.result;
       $('#img-file-preview').style.display = '';
-      hideErr('#err-img');
     };
     rd.readAsDataURL(f);
   });
@@ -211,7 +242,7 @@
     hideErr('#err-img-url');
     if (!/^https?:\/\/.+/.test(url)) return showErr('#err-img-url', 'Link inválido.');
     const img = $('#img-url-preview');
-    img.onload = () => { img.style.display = ''; urlValidated = true; hideErr('#err-img-url'); };
+    img.onload = () => { img.style.display = ''; urlValidated = true; };
     img.onerror = () => { img.style.display = 'none'; urlValidated = false; showErr('#err-img-url'); };
     img.src = url;
   };
@@ -219,71 +250,70 @@
   function showErr(sel, msg) { const e = $(sel); if (msg) e.textContent = msg; e.style.display=''; }
   function hideErr(sel) { $(sel).style.display='none'; }
 
+  // valida ANTES de deixar o formulário partir (nativo faria só required básico)
   function validate() {
     let ok = true;
-    const req = (cond, errSel) => { if (!cond) { $(errSel).style.display=''; ok=false; } else hideErr(errSel); };
-    req($('#name').value.trim(), '#err-name');
-    req($('#brand').value.trim(), '#err-brand');
-    req(!!$('#category').value, '#err-cat');
-    const priceRaw = $('#price').value.replace(/[R$\s]/g,'');
-    let price = NaN;
-    if (priceRaw.includes(',')) price = parseFloat(priceRaw.replace(/\./g,'').replace(',','.'));
-    else price = parseFloat(priceRaw);
-    req(Number.isFinite(price) && price > 0, '#err-price');
+    const req = (cond, errSel, msg) => {
+      if (!cond) { $(errSel).textContent = msg || ''; $(errSel).style.display=''; ok=false; }
+      else hideErr(errSel);
+    };
     req($('#description').value.trim().length >= 30, '#err-desc');
-    const imgMode = $$('input[name=img-src]').find((r)=>r.checked).value;
-    if (imgMode === 'file') req(!!$('#img-file').files[0], '#err-img');
-    else req(urlValidated, '#err-img');
-    return ok ? { price } : null;
-  }
 
-  $('#form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const parsed = validate();
-    if (!parsed) { window.scrollTo({top:document.body.scrollHeight}); return; }
+    const priceRaw = $('#price').value.replace(/[R$\s]/g,'');
+    let price = priceRaw.includes(',')
+      ? parseFloat(priceRaw.replace(/\./g,'').replace(',','.'))
+      : parseFloat(priceRaw);
+    if (!(Number.isFinite(price) && price > 0)) {
+      // impede submit nativo
+      alert('Preço inválido. Use um formato como 80,00');
+      ok = false;
+    } else {
+      // normaliza para número com ponto (mais fácil de validar depois)
+      $('#price').value = String(price);
+    }
 
-    const btn = $('#btn-submit');
-    btn.disabled = true; btn.textContent = 'Enviando…';
+    const mode = $$('input[name=img-src]').find((r)=>r.checked).value;
+    if (mode === 'file') {
+      const f = $('#img-file').files[0];
+      if (!f) { req(false, '#err-img-file'); ok = false; }
+    } else {
+      req(urlValidated && !!$('#img-url').value.trim(), '#err-img-url', 'Clique em "Ver prévia" para validar o link antes de enviar.');
+      if (!ok) return false;
+    }
 
+    // specs → textarea escondido (uma por linha "Label: Valor")
     const specs = $$('#specs-container .spec-row')
       .map((r) => [r.querySelector('.spec-label').value.trim(), r.querySelector('.spec-value').value.trim()])
       .filter(([l, v]) => l && v)
       .map(([l, v]) => `${l}: ${v}`);
+    $('#specs-hidden').value = specs.join('\n');
+    if (!specs.length) $('#specs-hidden').disabled = true;
 
+    // fragrance → textarea escondido (chaves reais do products.js)
     const fragKeys = ['familia','acordes','saida','coracao','fundo','sensacao','ocasiao'];
-    const fragLines = fragKeys
-      .map((k) => [k, $(`#fg-${k}`).value.trim()])
-      .filter(([, v]) => v)
-      .map(([k, v]) => `${k}: ${v}`);
-
-    const imgMode = $$('input[name=img-src]').find((r)=>r.checked).value;
-    const fd = new FormData();
-    fd.append('_subject', `NOVO PRODUTO p/ revisão: ${$('#name').value.trim()} (${slugify($('#name').value)})`);
-    fd.append('Nome', $('#name').value.trim());
-    fd.append('Marca', $('#brand').value.trim());
-    fd.append('Categoria', $('#category').value);
-    fd.append('Preco_BRL', String(parsed.price));
-    fd.append('Destaque', $('#featured').checked ? 'sim' : 'nao');
-    fd.append('Publico', ($$('input[name=audience]').find((r)=>r.checked)||{}).value || 'sem-definicao');
-    fd.append('Descricao', $('#description').value.trim());
-    if (specs.length) fd.append('Especificacoes', specs.join('\n'));
-    if (fragLines.length && $('#category').value === 'perfumes') fd.append('Fragrancia', fragLines.join('\n'));
-    if (imgMode === 'url') fd.append('Imagem_URL_origem', $('#img-url').value.trim());
-    else fd.append('imagem', $('#img-file').files[0]);
-
-    try {
-      const resp = await fetch(`https://formsubmit.co/ajax/${SUBMIT_EMAIL}`, {
-        method:'POST', body: fd,
-        headers: { 'Accept': 'application/json' },
-      });
-      if (!resp.ok) throw new Error('falha no envio');
-      $('#form').style.display = 'none';
-      $('#success').style.display = '';
-      window.scrollTo({ top:0 });
-    } catch (err) {
-      alert('Não foi possível enviar agora. Verifique sua conexão e tente de novo.');
-      btn.disabled = false; btn.textContent = 'Enviar produto';
+    const fragLines = fragKeys.map((k) => [k, $(`#fg-${k}`).value.trim()])
+      .filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`);
+    if ($('#category').value === 'perfumes' && fragLines.length) {
+      $('#frag-hidden').value = fragLines.join('\n');
+    } else {
+      $('#frag-hidden').disabled = true;
     }
+
+    // assunto do e-mail
+    $('input[name=_subject]').value =
+      `NOVO PRODUTO p/ revisão: ${$('#name').value.trim()} (${slugify($('#name').value)})`;
+    return ok;
+  }
+
+  $('#form').addEventListener('submit', () => {
+    if (!validate()) return;
+    const btn = $('#btn-submit');
+    btn.disabled = true;                       // trava contra duplo envio
+    btn.textContent = 'Enviando…';
+    // se o FormSubmit falhar (sem redirect), restaura após timeout generoso
+    setTimeout(() => {
+      btn.disabled = false; btn.textContent = 'Enviar produto';
+    }, 30000);
   });
 })();
 </script>
