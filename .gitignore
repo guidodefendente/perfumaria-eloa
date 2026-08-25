@@ -5,3 +5,6 @@ admin/server.py
 admin/image-sources.md
 .claude/
 .playwright-mcp/
+
+# motor da ferramenta local de administração
+admin/admin.js
