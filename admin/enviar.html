@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Perfumaria Eloá — Cadastro de produto</title>
+<style>
+  :root { --ink:#140E10; --rose:#9d2c4e; --line:#EAE0E3; --ok:#1a7f4b; --err:#b3261e; }
+  * { box-sizing:border-box; }
+  body { font:16px/1.55 -apple-system, "SF Pro Text", Segoe UI, sans-serif; color:var(--ink); margin:0; background:#faf7f8; }
+  header { background:var(--ink); color:#fff; padding:18px 20px; text-align:center; }
+  header h1 { margin:0; font-size:19px; font-weight:600; }
+  header p { margin:4px 0 0; font-size:12px; opacity:.75; letter-spacing:.06em; }
+  main { max-width:560px; margin:20px auto 60px; padding:0 14px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; margin-bottom:14px; }
+  label { display:block; font-size:13px; font-weight:600; margin:12px 0 4px; }
+  input[type=text], input[type=url], select, textarea {
+    width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; background:#fff; font-size:16px;
+  }
+  textarea { min-height:100px; resize:vertical; }
+  input:focus, select:focus, textarea:focus { outline:2px solid var(--rose); border-color:var(--rose); }
+  .hint { font-size:12px; color:#77706f; margin-top:3px; }
+  .error { color:var(--err); font-size:13px; font-weight:600; margin-top:4px; display:none; }
+  button.enviar {
+    width:100%; padding:15px; font-size:17px; font-weight:700; border:none; border-radius:12px;
+    background:var(--rose); color:#fff; cursor:pointer; margin-top:6px;
+  }
+  button.enviar:disabled { opacity:.5; }
+  .spec-row { display:flex; gap:8px; margin-bottom:8px; }
+  .spec-row input { flex:1; }
+  #frag-block { display:none; }
+  .radio-line { display:flex; flex-wrap:wrap; gap:14px; margin:6px 0; font-size:15px; }
+  .radio-line label { display:flex; align-items:center; gap:6px; font-weight:500; margin:0; }
+  img.preview { max-width:100%; max-height:230px; border-radius:10px; border:1px solid var(--line); margin-top:10px; display:block; }
+  .warn { background:#fdf6ec; border:1px solid #ecd9b0; border-radius:10px; padding:10px 12px; font-size:13px; margin-top:10px; }
+  #success { display:none; text-align:center; padding:30px 10px; }
+  #success .big { font-size:44px; }
+  #success h2 { color:var(--ok); margin:10px 0 6px; }
+  #success p { color:#77706f; }
+  .slug-hint { font-size:12px; color:#77706f; margin-top:3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🛍 Perfumaria Eloá</h1>
+  <p>CADASTRO DE PRODUTO</p>
+</header>
+
+<main>
+
+<form id="form">
+  <div class="card">
+    <label for="name">Nome do produto *</label>
+    <input type="text" id="name" required placeholder="Ex.: VIP Seasons Pour Femme">
+    <div class="hint">O código interno (ID) é gerado automaticamente.</div>
+    <div class="slug-hint" id="slug-hint"></div>
+    <div class="error" id="err-name">Informe o nome do produto.</div>
+
+    <label for="brand">Marca *</label>
+    <input type="text" id="brand" required placeholder="Ex.: Sea Blue">
+    <div class="error" id="err-brand">Informe a marca.</div>
+
+    <label for="category">Categoria *</label>
+    <select id="category" required></select>
+    <div class="error" id="err-cat">Escolha a categoria.</div>
+  </div>
+
+  <div class="card">
+    <label for="price">Preço (R$) *</label>
+    <input type="text" id="price" required placeholder="Ex.: 80,00">
+    <div class="error" id="err-price">Preço inválido. Exemplo válido: 80,00</div>
+
+    <label style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" id="featured" style="width:18px;height:18px;">
+      Produto em destaque (aparece na página inicial)
+    </label>
+
+    <label>Público</label>
+    <div class="radio-line">
+      <label><input type="radio" name="audience" value="" checked> Sem definição</label>
+      <label><input type="radio" name="audience" value="feminino"> Feminino</label>
+      <label><input type="radio" name="audience" value="masculino"> Masculino</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <label for="description">Descrição *</label>
+    <textarea id="description" maxlength="600" required
+      placeholder="Descreva o produto conforme a embalagem ou a foto. Não invente informações."></textarea>
+    <div class="hint"><span id="desc-count">0</span>/30 caracteres no mínimo</div>
+    <div class="error" id="err-desc">A descrição precisa ter pelo menos 30 caracteres.</div>
+  </div>
+
+  <div class="card">
+    <label>Especificações (opcional)</label>
+    <div class="hint" style="margin-bottom:8px;">Ex.: Volume → 100 ml · Concentração → Deo Colônia</div>
+    <div id="specs-container"></div>
+    <button type="button" id="btn-add-spec" style="margin-top:4px;">＋ Adicionar especificação</button>
+  </div>
+
+  <div class="card" id="frag-block">
+    <label>Informações da fragrância (opcional)</label>
+    <input type="text" id="fg-familia" placeholder="Família olfativa (ex.: Oriental floral)" style="margin-bottom:8px;">
+    <input type="text" id="fg-acordes" placeholder="Acordes principais" style="margin-bottom:8px;">
+    <input type="text" id="fg-saida" placeholder="Notas de saída" style="margin-bottom:8px;">
+    <input type="text" id="fg-coracao" placeholder="Notas de coração" style="margin-bottom:8px;">
+    <input type="text" id="fg-fundo" placeholder="Notas de fundo" style="margin-bottom:8px;">
+    <input type="text" id="fg-sensacao" placeholder="Sensação (ex.: Envolvente e marcante.)" style="margin-bottom:8px;">
+    <input type="text" id="fg-ocasiao" placeholder="Ocasião (ex.: Noite e ocasiões especiais.)">
+  </div>
+
+  <div class="card">
+    <label>Imagem *</label>
+    <div class="radio-line">
+      <label><input type="radio" name="img-src" value="file" checked> Arquivo do celular/computador</label>
+      <label><input type="radio" name="img-src" value="url"> Link (URL) da internet</label>
+    </div>
+    <div id="img-file-wrap">
+      <input type="file" id="img-file" accept="image/*">
+    </div>
+    <div id="img-url-wrap" style="display:none">
+      <input type="url" id="img-url" placeholder="https://… (link da imagem)">
+      <button type="button" id="btn-img-preview" style="margin-top:8px;">Ver prévia</button>
+      <img class="preview" id="img-url-preview" style="display:none" alt="">
+      <div class="error" id="err-img-url">Não consegui abrir essa imagem. Confira o link.</div>
+    </div>
+    <img class="preview" id="img-file-preview" style="display:none" alt="">
+    <div class="warn">⚠️ Certifique-se de que você tem autorização para utilizar esta imagem.</div>
+    <div class="error" id="err-img">Envie uma imagem (arquivo ou link).</div>
+  </div>
+
+  <button type="submit" class="enviar" id="btn-submit">Enviar produto</button>
+  <p class="hint" style="text-align:center;margin-top:10px;">
+    O produto vai para revisão antes de aparecer no site — nada é publicado na hora.
+  </p>
+</form>
+
+<div id="success">
+  <div class="big">✅</div>
+  <h2>Produto enviado para revisão!</h2>
+  <p id="success-detail">A publicação será feita após validação.</p>
+  <button onclick="location.reload()">Cadastrar outro produto</button>
+</div>
+
+</main>
+
+<script src="categories.js"></script>
+<script>
+(function () {
+  'use strict';
+  // ══════════════════════════════════════════════════════════════════
+  // CONFIG — e-mail que recebe as submissões (ativado no 1º envio).
+  const SUBMIT_EMAIL = 'guido.defendente@gmail.com';
+  // ══════════════════════════════════════════════════════════════════
+
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => Array.from(document.querySelectorAll(s));
+  let fileData = null, urlValidated = false;
+
+  function slugify(str) {
+    return String(str).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  // categorias vindas do catálogo real
+  $('#category').innerHTML = '<option value="">— escolha —</option>' +
+    CATEGORIES.map((c) => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  function addSpec(label = '', value = '') {
+    const div = document.createElement('div');
+    div.className = 'spec-row';
+    div.innerHTML = `<input type="text" class="spec-label" placeholder="Nome (ex.: Volume)" value="${label}">
+      <input type="text" class="spec-value" placeholder="Valor (ex.: 100 ml)" value="${value}">
+      <button type="button" class="spec-del" style="border:none;background:none;font-size:18px;color:#b3261e;">✕</button>`;
+    div.querySelector('.spec-del').onclick = () => div.remove();
+    $('#specs-container').appendChild(div);
+  }
+  $('#btn-add-spec').onclick = () => addSpec();
+
+  $('#name').addEventListener('input', () => {
+    $('#slug-hint').textContent = $('#name').value.trim() ? 'ID gerado: ' + slugify($('#name').value) : '';
+  });
+  $('#description').addEventListener('input', () => {
+    $('#desc-count').textContent = String($('#description').value.trim().length);
+  });
+
+  $$('input[name=img-src]').forEach((r) => r.addEventListener('change', () => {
+    const v = $$('input[name=img-src]').find((x) => x.checked).value;
+    $('#img-file-wrap').style.display = v === 'file' ? '' : 'none';
+    $('#img-url-wrap').style.display = v === 'url' ? '' : 'none';
+  }));
+
+  $('#img-file').addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    if (!/^image\//.test(f.type)) return showErr('#err-img', 'O arquivo precisa ser uma imagem.');
+    if (f.size > 8 * 1024 * 1024) return showErr('#err-img', 'Imagem muito grande (máximo 8 MB).');
+    const rd = new FileReader();
+    rd.onload = () => {
+      $('#img-file-preview').src = rd.result;
+      $('#img-file-preview').style.display = '';
+      hideErr('#err-img');
+    };
+    rd.readAsDataURL(f);
+  });
+
+  $('#btn-img-preview').onclick = () => {
+    const url = $('#img-url').value.trim();
+    hideErr('#err-img-url');
+    if (!/^https?:\/\/.+/.test(url)) return showErr('#err-img-url', 'Link inválido.');
+    const img = $('#img-url-preview');
+    img.onload = () => { img.style.display = ''; urlValidated = true; hideErr('#err-img-url'); };
+    img.onerror = () => { img.style.display = 'none'; urlValidated = false; showErr('#err-img-url'); };
+    img.src = url;
+  };
+
+  function showErr(sel, msg) { const e = $(sel); if (msg) e.textContent = msg; e.style.display=''; }
+  function hideErr(sel) { $(sel).style.display='none'; }
+
+  function validate() {
+    let ok = true;
+    const req = (cond, errSel) => { if (!cond) { $(errSel).style.display=''; ok=false; } else hideErr(errSel); };
+    req($('#name').value.trim(), '#err-name');
+    req($('#brand').value.trim(), '#err-brand');
+    req(!!$('#category').value, '#err-cat');
+    const priceRaw = $('#price').value.replace(/[R$\s]/g,'');
+    let price = NaN;
+    if (priceRaw.includes(',')) price = parseFloat(priceRaw.replace(/\./g,'').replace(',','.'));
+    else price = parseFloat(priceRaw);
+    req(Number.isFinite(price) && price > 0, '#err-price');
+    req($('#description').value.trim().length >= 30, '#err-desc');
+    const imgMode = $$('input[name=img-src]').find((r)=>r.checked).value;
+    if (imgMode === 'file') req(!!$('#img-file').files[0], '#err-img');
+    else req(urlValidated, '#err-img');
+    return ok ? { price } : null;
+  }
+
+  $('#form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const parsed = validate();
+    if (!parsed) { window.scrollTo({top:document.body.scrollHeight}); return; }
+
+    const btn = $('#btn-submit');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+
+    const specs = $$('#specs-container .spec-row')
+      .map((r) => [r.querySelector('.spec-label').value.trim(), r.querySelector('.spec-value').value.trim()])
+      .filter(([l, v]) => l && v)
+      .map(([l, v]) => `${l}: ${v}`);
+
+    const fragKeys = ['familia','acordes','saida','coracao','fundo','sensacao','ocasiao'];
+    const fragLines = fragKeys
+      .map((k) => [k, $(`#fg-${k}`).value.trim()])
+      .filter(([, v]) => v)
+      .map(([k, v]) => `${k}: ${v}`);
+
+    const imgMode = $$('input[name=img-src]').find((r)=>r.checked).value;
+    const fd = new FormData();
+    fd.append('_subject', `NOVO PRODUTO p/ revisão: ${$('#name').value.trim()} (${slugify($('#name').value)})`);
+    fd.append('Nome', $('#name').value.trim());
+    fd.append('Marca', $('#brand').value.trim());
+    fd.append('Categoria', $('#category').value);
+    fd.append('Preco_BRL', String(parsed.price));
+    fd.append('Destaque', $('#featured').checked ? 'sim' : 'nao');
+    fd.append('Publico', ($$('input[name=audience]').find((r)=>r.checked)||{}).value || 'sem-definicao');
+    fd.append('Descricao', $('#description').value.trim());
+    if (specs.length) fd.append('Especificacoes', specs.join('\n'));
+    if (fragLines.length && $('#category').value === 'perfumes') fd.append('Fragrancia', fragLines.join('\n'));
+    if (imgMode === 'url') fd.append('Imagem_URL_origem', $('#img-url').value.trim());
+    else fd.append('imagem', $('#img-file').files[0]);
+
+    try {
+      const resp = await fetch(`https://formsubmit.co/ajax/${SUBMIT_EMAIL}`, {
+        method:'POST', body: fd,
+        headers: { 'Accept': 'application/json' },
+      });
+      if (!resp.ok) throw new Error('falha no envio');
+      $('#form').style.display = 'none';
+      $('#success').style.display = '';
+      window.scrollTo({ top:0 });
+    } catch (err) {
+      alert('Não foi possível enviar agora. Verifique sua conexão e tente de novo.');
+      btn.disabled = false; btn.textContent = 'Enviar produto';
+    }
+  });
+})();
+</script>
+</body>
+</html>
