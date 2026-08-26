@@ -291,7 +291,6 @@ const PRODUCTS = [
     category: 'perfumes',
     audience: 'masculino',
     price: 80.00,
-    featured: true,
     description: 'Eau de toilette masculino de 100 ml da Sea Blue. Composição oriental amadeirada, com toque doce e levemente especiado.',
     image: 'assets/img/products/perfume-sea-blue.png',
     specs: [
@@ -397,7 +396,7 @@ const PRODUCTS = [
     brand: 'O Boticário',
     category: 'perfumes',
     audience: 'feminino',
-    price: 134.90,
+    price: 174.00,
     featured: true,
     description: 'Um dos femininos mais queridos do Boticário. A maçã de Vermont dá o toque doce e frutado da abertura, o coração é bem floral e o fundo surpreende com chocolate amargo e madeiras. Romântico e fácil de usar: funciona do trabalho ao encontro.',
     image: 'assets/img/products/perfume-o-boticario.png',
@@ -425,6 +424,7 @@ const PRODUCTS = [
     audience: 'feminino',
     price: 229.90,
     description: 'A versão eau de parfum do Floratta Red: mais concentrada, mais intensa e com bem mais fixação. Mantém a maçã de Vermont que você já conhece, agora com um buquê floral mais rico e um fundo de madeiras cremosas e âmbar. Para quem ama o Floratta Red e quer que ele dure o dia inteiro.',
+    featured: true,
     image: 'assets/img/products/floratta-red-passion.png',
     specs: [
       { label: 'Volume', value: '75 ml' },
@@ -445,6 +445,7 @@ const PRODUCTS = [
     audience: 'feminino',
     price: 164.90,
     description: 'Doce de verdade, no melhor sentido: marshmallow, algodão-doce, sorvete de framboesa e baunilha. É divertido, jovem e daqueles que fazem as pessoas perguntarem o que você está usando. Ótima escolha para quem gosta de perfume gourmand e quer algo leve para o dia a dia.',
+    featured: true,
     image: 'assets/img/products/egeo-dolce.png',
     specs: [
       { label: 'Volume', value: '90 ml' },
@@ -467,6 +468,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 219.90,
     description: 'O clássico da perfumaria masculina brasileira. O contraste da pimenta com a bergamota abre a fragrância e as madeiras do patchouli e do musgo seguram o rastro. Elegante, confiável e sempre atual: se a dúvida é qual masculino escolher, este é o mais seguro.',
+    featured: true,
     image: 'assets/img/products/malbec-colonia.png',
     specs: [
       { label: 'Volume', value: '100 ml' },
@@ -487,6 +489,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 279.90,
     description: 'O Malbec mais concentrado da linha, com até 12 horas de intensidade. Traz o couro de Grasse junto com o calor da baunilha e das especiarias, num resultado mais doce e mais sofisticado que o Malbec tradicional. É o Malbec de ocasião especial.',
+    featured: true,
     image: 'assets/img/products/malbec-eau-de-parfum.png',
     specs: [
       { label: 'Volume', value: '90 ml' },
@@ -508,6 +511,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 189.90,
     description: 'O Quasar tradicional, agora chamado Blue. Frescor clássico de barbearia: cítrico na abertura, lavanda no coração e um fundo amadeirado seco e confortável. É aquele masculino que agrada todo mundo e serve para qualquer momento.',
+    featured: true,
     image: 'assets/img/products/quasar-blue.png',
     specs: [
       { label: 'Volume', value: '100 ml' },
@@ -531,6 +535,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 189.90,
     description: 'Fresco e energético, construído em cima do cedro azul — uma madeira que refresca em vez de pesar. As notas frutadas deixam a fragrância mais leve e moderna. Boa escolha para o dia, para o trabalho e para quem quer se sentir limpo o tempo todo.',
+    featured: true,
     image: 'assets/img/products/quasar-rush.png',
     specs: [
       { label: 'Volume', value: '100 ml' },
@@ -551,6 +556,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 189.90,
     description: 'Diferente dos outros Quasar: traz o frescor do álcool de saquê com folhas de chá preto e um fundo amadeirado. O resultado é mais intenso e menos óbvio, com uma pegada oriental. Para quem já tem um fresco no armário e quer algo com mais personalidade.',
+    featured: true,
     image: 'assets/img/products/quasar-brave.png',
     specs: [
       { label: 'Volume', value: '100 ml' },
@@ -571,6 +577,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 209.90,
     description: 'Clássico do Boticário que segue firme: frescor aromático com a força das madeiras. Elegante sem ser pesado, tem cara de perfume de homem adulto e combina muito com o trabalho e com o dia a dia. Frasco em vidro reciclado, com acabamento fosco.',
+    featured: true,
     image: 'assets/img/products/uomini.png',
     specs: [
       { label: 'Volume', value: '100 ml' },
@@ -591,6 +598,7 @@ const PRODUCTS = [
     audience: 'masculino',
     price: 189.90,
     description: 'Frescor de montanha: menta, notas verdes e sândalo. É leve, limpo e calmante — o tipo de fragrância que combina com dias quentes e com quem prefere algo discreto. Um dos masculinos mais fáceis de usar do Boticário.',
+    featured: true,
     image: 'assets/img/products/arbo.png',
     specs: [
       { label: 'Volume', value: '100 ml' },
@@ -747,7 +755,6 @@ const PRODUCTS = [
     brand: 'Belle Angel',
     category: 'maquiagem',
     price: 10.00,
-    featured: true,
     description: 'Base líquida Belle Angel com acabamento matte, em bisnaga de 30 ml. Consulte os tons disponíveis pelo WhatsApp.',
     image: 'assets/img/products/base-belle-angel.png',
     specs: [
@@ -866,7 +873,6 @@ const PRODUCTS = [
     brand: 'Holding Morning',
     category: 'maquiagem',
     price: 19.90,
-    featured: true,
     description: 'Gloss labial Holding Morning. Consulte as cores disponíveis pelo WhatsApp.',
     image: 'assets/img/products/lip-gloss-holding-morning.png',
   },
@@ -934,7 +940,6 @@ const PRODUCTS = [
     brand: 'Alquimia',
     category: 'cabelo',
     price: 32.90,
-    featured: true,
     description: 'Shampoo Alquimia para a limpeza diária dos fios.',
     image: 'assets/img/products/shampoo-alquimia.png',
   },
@@ -975,7 +980,6 @@ const PRODUCTS = [
     brand: 'Bio Instinto',
     category: 'pele',
     price: 10.00,
-    featured: true,
     description: 'Esfoliante Bio Instinto de melancia para rosto e corpo, em pote de 180 g, para a rotina de cuidados com a pele.',
     image: 'assets/img/products/esfoliante-bio-instinto.png',
     specs: [
@@ -1030,7 +1034,6 @@ const PRODUCTS = [
     brand: 'New How',
     category: 'cilios',
     price: 12.90,
-    featured: true,
     description: 'Cílios postiços New How. Consulte os modelos disponíveis pelo WhatsApp.',
     image: 'assets/img/products/cilios-new-how.png',
   },
