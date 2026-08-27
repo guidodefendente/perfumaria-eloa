@@ -1057,6 +1057,16 @@ const PRODUCTS = [
     description: 'Kit de unhas postiças Dafu. Consulte os modelos disponíveis pelo WhatsApp.',
     image: 'assets/img/products/unha-postica-dafu.png',
   },
+  {
+    id: 'natura-todo-dia',
+    name: 'Natura Todo dia',
+    brand: 'Natura',
+    category: 'pele',
+    price: 65.00,
+    featured: true,
+    description: 'Creme para o corpo',
+    image: 'assets/img/products/natura-todo-dia.png',
+  },
 ];
 
 /** Dados da loja — transcritos do documento do Obsidian. */
