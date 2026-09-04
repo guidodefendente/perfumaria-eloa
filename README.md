@@ -34,6 +34,11 @@ assets/
   img/products/*.png          imagens de catálogo tratadas dos produtos (provisórias)
   fonts/*.woff2               Inter e Playfair Display (subconjunto latino)
 build/                        config para regerar o tailwind.css
+produto/<id>/index.html       páginas estáticas de produto (GERADAS — não editar)
+robots.txt                    liberado, aponta o sitemap
+sitemap.xml                   home + 60 produtos (GERADO — não editar)
+tools/gerar-paginas.mjs       gera as páginas de produto e o sitemap
+tools/verificar-seo.mjs       verificações de SEO e integridade do catálogo
 DECISOES.md                   decisões tomadas e o que ainda é provisório
 ```
 
@@ -97,6 +102,28 @@ pesquisa, código interno nem aviso de "pendente de confirmação" — o que nã
 simplesmente não é publicado. A rastreabilidade fica em `DECISOES.md`.
 
 **Destacar na página inicial:** adicione `featured: true`.
+
+**Depois de qualquer mudança em `products.js`, rode o gerador:**
+
+```bash
+node tools/gerar-paginas.mjs
+```
+
+Ele reescreve `produto/<id>/index.html` para cada produto e regenera o
+`sitemap.xml`. Sem esse passo, a página estática do produto fica desatualizada
+(ou nem existe, no caso de um produto novo). Em seguida, confirme tudo com:
+
+```bash
+node tools/verificar-seo.mjs
+```
+
+A verificação falha se algum produto estiver sem página, se sobrar página de
+produto removido ou se o sitemap não bater com o catálogo. Ao publicar ou
+remover um produto, atualize também a constante `ESPERADO` no topo do
+`verificar-seo.mjs` — é o único contador manual do projeto.
+
+**Nunca edite `produto/<id>/index.html` à mão:** o arquivo é gerado e a próxima
+execução sobrescreve. Para mudar a página, mude `products.js`.
 
 ## Estado atual
 
