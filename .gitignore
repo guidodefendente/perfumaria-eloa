@@ -9,3 +9,5 @@ admin/image-sources.md
 # motor da ferramenta local de administração
 admin/admin.js
 admin/_submissoes/
+
+.DS_Store

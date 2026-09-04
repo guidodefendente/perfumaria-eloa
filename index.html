@@ -3,11 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Perfumaria Eloá — Catálogo digital</title>
-<meta name="description" content="Catálogo digital da Perfumaria Eloá, na Cidade Tiradentes. Perfumes, maquiagem, cabelo, cílios e unhas. Peça pelo WhatsApp.">
+<title>Perfumaria Eloá — Perfumes e maquiagem na Cidade Tiradentes, São Paulo</title>
+<meta name="description" content="Perfumaria Eloá: perfumes, maquiagem, cabelo, pele, cílios e unhas na Cidade Tiradentes, Zona Leste de São Paulo. Escolha pelo catálogo e peça pelo WhatsApp.">
+<link rel="canonical" href="https://perfumariaeloa.com.br/">
 <meta name="theme-color" content="#140E10">
 <link rel="icon" href="assets/img/logo-eloa-96.png">
 <link rel="apple-touch-icon" href="assets/img/logo-eloa.png">
+
+<!-- Compartilhamento (WhatsApp, Instagram, Facebook). A imagem é o logotipo
+     512×512 — quadrado, então o card do Twitter/X é o `summary` simples, e não
+     o `summary_large_image`, que pediria uma arte 1200×630 que não existe. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Perfumaria Eloá">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://perfumariaeloa.com.br/">
+<meta property="og:title" content="Perfumaria Eloá — Perfumes e maquiagem na Cidade Tiradentes">
+<meta property="og:description" content="Perfumes, maquiagem, cabelo, pele, cílios e unhas. Loja na Cidade Tiradentes, com entrega na Zona Leste de São Paulo e pedidos pelo WhatsApp.">
+<meta property="og:image" content="https://perfumariaeloa.com.br/assets/img/logo-eloa.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Logotipo da Perfumaria Eloá">
+<meta name="twitter:card" content="summary">
 
 <!-- Fontes e Tailwind são servidos do próprio projeto: sem CDN, a página
      renderiza igual mesmo em conexão ruim ou offline. Ver DECISOES.md. -->
@@ -15,6 +31,69 @@
      Assim uma classe como `text-white` consegue sobrescrever o componente. -->
 <link rel="stylesheet" href="assets/css/styles.css">
 <link rel="stylesheet" href="assets/css/tailwind.css">
+
+<!-- Dados estruturados. Só o que a arquitetura sustenta hoje:
+     - HealthAndBeautyBusiness (subtipo de LocalBusiness) porque a loja é física
+       e local, e esse é o sinal que o Google usa para busca local;
+     - WebSite para amarrar nome e URL do site à marca.
+     Product não entra: sem URL própria por produto o Google não valida a marcação,
+     e BreadcrumbList também não, porque as rotas do site são fragmentos (#/...).
+     Os dados abaixo espelham o objeto STORE de assets/js/products.js — se um
+     mudar, mude o outro. Nada aqui é inventado: sem CEP e sem coordenadas
+     confirmadas, esses campos ficam de fora. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://perfumariaeloa.com.br/#website",
+      "url": "https://perfumariaeloa.com.br/",
+      "name": "Perfumaria Eloá",
+      "inLanguage": "pt-BR",
+      "publisher": { "@id": "https://perfumariaeloa.com.br/#loja" }
+    },
+    {
+      "@type": "HealthAndBeautyBusiness",
+      "@id": "https://perfumariaeloa.com.br/#loja",
+      "name": "Perfumaria Eloá",
+      "alternateName": "Perfumaria Eloa",
+      "slogan": "Sua beleza, nossa essência",
+      "description": "Perfumaria de bairro na Cidade Tiradentes, Zona Leste de São Paulo. Perfumes, maquiagem, produtos para cabelo, cuidados com a pele, cílios e unhas, com pedidos finalizados pelo WhatsApp.",
+      "url": "https://perfumariaeloa.com.br/",
+      "image": "https://perfumariaeloa.com.br/assets/img/logo-eloa.png",
+      "logo": "https://perfumariaeloa.com.br/assets/img/logo-eloa.png",
+      "telephone": "+5511933414386",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua Nascer do Sol, 243 — Cidade Tiradentes",
+        "addressLocality": "São Paulo",
+        "addressRegion": "SP",
+        "addressCountry": "BR"
+      },
+      "areaServed": {
+        "@type": "Place",
+        "name": "Zona Leste de São Paulo"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday", "Tuesday", "Wednesday", "Thursday",
+            "Friday", "Saturday", "Sunday"
+          ],
+          "opens": "09:00",
+          "closes": "18:00"
+        }
+      ],
+      "currenciesAccepted": "BRL",
+      "sameAs": [
+        "https://www.instagram.com/perfumariap_eloa/"
+      ]
+    }
+  ]
+}
+</script>
 </head>
 
 <body class="bg-white text-ink-800">
@@ -104,7 +183,8 @@
             Beleza que combina<br class="hidden sm:block"> com você
           </h1>
           <p class="mt-5 text-[15px] sm:text-lg text-sand-50/75 max-w-lg leading-relaxed">
-            Perfumes, maquiagem, cuidados com o cabelo e a pele. Escolha com calma pelo catálogo
+            A Perfumaria Eloá fica na Cidade Tiradentes, Zona Leste de São Paulo. Perfumes,
+            maquiagem, cuidados com o cabelo e a pele: escolha com calma pelo catálogo
             e finalize o pedido em segundos pelo WhatsApp.
           </p>
           <div class="mt-8 flex flex-wrap gap-3">
@@ -241,9 +321,9 @@
       <p class="eyebrow">Sobre</p>
       <h1 class="section-title mt-2">Perfumaria Eloá</h1>
       <p class="mt-4 text-[15px] sm:text-base text-ink-500 leading-relaxed max-w-2xl">
-        Somos uma perfumaria de bairro na Cidade Tiradentes. Trabalhamos com perfumes, maquiagem,
-        produtos para cabelo, cuidados com a pele, cílios e unhas — com atendimento próximo e
-        pedidos finalizados pelo WhatsApp.
+        Somos uma perfumaria de bairro na Cidade Tiradentes, Zona Leste de São Paulo. Trabalhamos
+        com perfumes, maquiagem, produtos para cabelo, cuidados com a pele, cílios e unhas — com
+        atendimento próximo, entrega em toda a Zona Leste e pedidos finalizados pelo WhatsApp.
       </p>
 
       <dl class="mt-10 grid sm:grid-cols-2 gap-4">
@@ -305,6 +385,7 @@
       <p class="font-display text-lg text-ink-900">Perfumaria Eloá</p>
       <p class="text-sm text-ink-500 mt-1" id="footer-address"></p>
       <p class="text-sm text-ink-500" id="footer-hours"></p>
+      <p class="text-sm text-ink-500" id="footer-phone"></p>
       <nav class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm">
         <a href="#/" class="text-ink-600 hover:text-rose-700">Início</a>
         <a href="#/catalogo" class="text-ink-600 hover:text-rose-700">Catálogo</a>

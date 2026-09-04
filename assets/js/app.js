@@ -355,6 +355,9 @@ const App = (() => {
 
     $('#footer-address').innerHTML = `${escapeHtml(STORE.address)} — ${escapeHtml(STORE.city)}`;
     $('#footer-hours').textContent = STORE.hours;
+    // Nome, endereço e telefone em texto no rodapé: é o par NAP que a busca
+    // local usa para casar o site com a ficha do Google da loja.
+    $('#footer-phone').textContent = `WhatsApp ${STORE.whatsappDisplay}`;
   }
 
   // ── Carrinho ────────────────────────────────────────────────────────────
