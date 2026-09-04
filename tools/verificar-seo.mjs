@@ -8,12 +8,19 @@
  * Sai com código 1 se qualquer verificação falhar, para poder ser usado em CI
  * mais tarde sem mudar nada. Não altera nenhum arquivo.
  */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://perfumariaeloa.com.br';
+
+/**
+ * Valores esperados do catálogo. Servem de trava contra alteração acidental
+ * de dado comercial. ATUALIZE AQUI ao publicar ou remover um produto — é o
+ * único lugar do projeto que precisa acompanhar o tamanho do catálogo.
+ */
+const ESPERADO = { produtos: 60, featured: 11, categorias: 7 };
 
 let falhas = 0;
 let total = 0;
@@ -100,7 +107,15 @@ checar('sitemap.xml existe', existsSync(resolve(RAIZ, 'sitemap.xml')));
 const sitemap = ler('sitemap.xml');
 checar('sitemap declara o namespace correto', sitemap.includes('http://www.sitemaps.org/schemas/sitemap/0.9'));
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-checar('sitemap tem ao menos uma URL', locs.length > 0);
+checar(`sitemap tem exatamente ${ESPERADO.produtos + 1} URLs (home + produtos)`,
+  locs.length === ESPERADO.produtos + 1, `${locs.length} URLs`);
+checar('nenhuma URL do sitemap contém #', locs.every((u) => !u.includes('#')),
+  locs.filter((u) => u.includes('#')).join(', '));
+checar('não há URLs duplicadas no sitemap', new Set(locs).size === locs.length,
+  locs.filter((v, i) => locs.indexOf(v) !== i).join(', '));
+checar('o sitemap não expõe /admin/, JS ou imagens',
+  locs.every((u) => !/\/admin\/|\.js$|\.png$|\.svg$|\.css$/.test(u)),
+  locs.filter((u) => /\/admin\/|\.js$|\.png$|\.svg$|\.css$/.test(u)).join(', '));
 checar('todas as URLs do sitemap são absolutas e https', locs.every((u) => u.startsWith(`${SITE}/`)), locs.join(', '));
 for (const loc of locs) {
   const rel = loc.replace(`${SITE}/`, '') || 'index.html';
@@ -108,6 +123,8 @@ for (const loc of locs) {
   checar(`URL do sitemap existe no repositório: ${loc}`, existsSync(resolve(RAIZ, alvo)));
 }
 checar('a home canônica está no sitemap', locs.includes(canonical));
+const semUrl = PRODUCTS.filter((p) => !locs.includes(`${SITE}/produto/${p.id}/`)).map((p) => p.id);
+checar('todo produto tem sua URL no sitemap', semUrl.length === 0, semUrl.slice(0, 6).join(', '));
 const lastmod = sitemap.match(/<lastmod>([^<]+)<\/lastmod>/)?.[1] ?? '';
 checar('lastmod no formato AAAA-MM-DD', /^\d{4}-\d{2}-\d{2}$/.test(lastmod), lastmod);
 
@@ -141,7 +158,13 @@ checar('declara um WebSite', grafo.some((n) => n['@type'] === 'WebSite'));
 
 // ── 7. Catálogo: dados comerciais preservados ──────────────────────────────
 secao('7. Catálogo e dados comerciais');
-checar('há produtos no catálogo', PRODUCTS.length > 0, `${PRODUCTS.length} produtos`);
+checar(`existem exatamente ${ESPERADO.produtos} produtos`,
+  PRODUCTS.length === ESPERADO.produtos, `${PRODUCTS.length} produtos`);
+checar(`existem exatamente ${ESPERADO.featured} produtos em destaque`,
+  PRODUCTS.filter((p) => p.featured).length === ESPERADO.featured,
+  `${PRODUCTS.filter((p) => p.featured).length} em destaque`);
+checar(`existem exatamente ${ESPERADO.categorias} categorias`,
+  CATEGORIES.length === ESPERADO.categorias, `${CATEGORIES.length} categorias`);
 console.log(`       (${PRODUCTS.length} produtos, ${CATEGORIES.length} categorias, ${PRODUCTS.filter((p) => p.featured).length} em destaque)`);
 
 const ids = PRODUCTS.map((p) => p.id);
@@ -162,8 +185,103 @@ checar('nenhuma categoria está vazia', categoriasVazias.length === 0, categoria
 checar('dados da loja completos',
   Boolean(STORE.name && STORE.address && STORE.city && STORE.hours && STORE.whatsappNumber));
 
-// ── 8. Links e arquivos referenciados ──────────────────────────────────────
-secao('8. Links e arquivos');
+// ── 8. Páginas estáticas de produto ────────────────────────────────────────
+secao('8. Páginas de produto');
+
+const dirProdutos = resolve(RAIZ, 'produto');
+checar('a pasta produto/ existe', existsSync(dirProdutos));
+
+const pastas = existsSync(dirProdutos)
+  ? readdirSync(dirProdutos, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name)
+  : [];
+checar(`existem exatamente ${ESPERADO.produtos} páginas de produto`,
+  pastas.length === ESPERADO.produtos, `${pastas.length} pastas`);
+
+const idsProdutos = new Set(PRODUCTS.map((p) => p.id));
+const semPagina = PRODUCTS.filter((p) => !existsSync(resolve(dirProdutos, p.id, 'index.html'))).map((p) => p.id);
+checar('todo produto tem uma página', semPagina.length === 0, semPagina.join(', '));
+
+const orfas = pastas.filter((nome) => !idsProdutos.has(nome));
+checar('não existem páginas órfãs', orfas.length === 0, orfas.join(', '));
+
+const semIndex = pastas.filter((nome) => !existsSync(resolve(dirProdutos, nome, 'index.html')));
+checar('toda pasta de produto tem index.html', semIndex.length === 0, semIndex.join(', '));
+
+// Conteúdo de cada página, produto a produto.
+const faltando = { title: [], desc: [], canonical: [], h1: [], nome: [], marca: [], img: [], alt: [], gerado: [], jsonld: [] };
+const classesUsadas = new Set();
+for (const p of PRODUCTS) {
+  const arquivo = resolve(dirProdutos, p.id, 'index.html');
+  if (!existsSync(arquivo)) continue;
+  const pag = readFileSync(arquivo, 'utf8');
+
+  const t = pag.match(/<title>([^<]+)<\/title>/)?.[1] ?? '';
+  if (t !== `${p.name} — ${p.brand} | Perfumaria Eloá`.replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))) faltando.title.push(p.id);
+
+  const d = pag.match(/<meta name="description" content="([^"]+)"/)?.[1] ?? '';
+  if (d.length < 50 || d.length > 170) faltando.desc.push(`${p.id}(${d.length})`);
+
+  const c = pag.match(/<link rel="canonical" href="([^"]+)"/)?.[1] ?? '';
+  if (c !== `${SITE}/produto/${p.id}/`) faltando.canonical.push(`${p.id}: ${c}`);
+
+  const h1s = pag.match(/<h1[\s\S]*?<\/h1>/g) || [];
+  if (h1s.length !== 1) faltando.h1.push(`${p.id}(${h1s.length})`);
+  if (!h1s[0] || !h1s[0].includes(p.name.replace(/&/g, '&amp;'))) faltando.nome.push(p.id);
+
+  if (!pag.includes(p.brand.replace(/&/g, '&amp;'))) faltando.marca.push(p.id);
+  if (!pag.includes(`src="/${p.image}"`)) faltando.img.push(p.id);
+
+  const semAlt = (pag.match(/<img (?![^>]*\balt=)[^>]*>/g) || []).length;
+  if (semAlt > 0) faltando.alt.push(`${p.id}(${semAlt})`);
+
+  if (!pag.includes('ARQUIVO GERADO AUTOMATICAMENTE')) faltando.gerado.push(p.id);
+
+  const bloco = pag.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1];
+  try {
+    const dados = JSON.parse(bloco);
+    const prod = dados['@graph'].find((n) => n['@type'] === 'Product');
+    const trilha = dados['@graph'].find((n) => n['@type'] === 'BreadcrumbList');
+    const ok = prod && trilha
+      && prod.name === p.name && prod.sku === p.id && prod.brand?.name === p.brand
+      && prod.image === `${SITE}/${p.image}` && prod.description === p.description
+      && prod.offers?.price === p.price.toFixed(2) && prod.offers?.priceCurrency === 'BRL'
+      // availability é omitido de propósito — ver comentário em gerar-paginas.mjs
+      && prod.offers?.availability === undefined
+      && trilha.itemListElement.at(-1).item === `${SITE}/produto/${p.id}/`;
+    if (!ok) faltando.jsonld.push(p.id);
+  } catch (e) { faltando.jsonld.push(`${p.id}(inválido)`); }
+
+  for (const attr of pag.match(/class="([^"]*)"/g) || []) {
+    attr.slice(7, -1).split(/\s+/).filter(Boolean).forEach((cl) => classesUsadas.add(cl));
+  }
+}
+const rel = (nome, lista) => checar(nome, lista.length === 0, lista.slice(0, 6).join(', '));
+rel('toda página tem o title no formato correto', faltando.title);
+rel('toda página tem meta description de tamanho útil', faltando.desc);
+rel('o canonical de cada página aponta para ela mesma', faltando.canonical);
+rel('toda página tem exatamente um <h1>', faltando.h1);
+rel('o <h1> traz o nome do produto', faltando.nome);
+rel('toda página traz a marca', faltando.marca);
+rel('toda página traz a imagem do produto', faltando.img);
+rel('nenhuma imagem sem alt nas páginas', faltando.alt);
+rel('toda página avisa que é gerada automaticamente', faltando.gerado);
+rel('Product + BreadcrumbList corretos e coerentes com products.js', faltando.jsonld);
+
+// Trava do CSS: produto/ não é varrido pelo Tailwind (content: index.html + assets/js).
+// Se uma classe usada aqui não existir no CSS compilado, uma futura regeneração
+// do tailwind.css deixaria estas páginas quebradas em silêncio.
+const cssCompilado = ler('assets/css/tailwind.css') + ler('assets/css/styles.css');
+const escapaCss = (cl) => cl.replace(/[.:[\]()#%!/,+*>~=&']/g, (ch) => `\\${ch}`);
+const ausentes = [...classesUsadas].filter((cl) => {
+  if (/^(sr-only|focus:|group$|hover:|sm:|md:|lg:)/.test(cl) && cssCompilado.includes(escapaCss(cl))) return false;
+  return !cssCompilado.includes(`.${escapaCss(cl)}`);
+});
+checar('toda classe usada nas páginas existe no CSS compilado', ausentes.length === 0,
+  ausentes.slice(0, 8).join(' '));
+
+// ── 9. Links e arquivos referenciados ──────────────────────────────────────
+secao('9. Links e arquivos');
 const refs = [...html.matchAll(/(?:href|src)="([^"#][^"]*)"/g)].map((m) => m[1]);
 const locais = refs.filter((u) => !/^(https?:)?\/\//.test(u) && !u.startsWith('mailto:') && !u.startsWith('#'));
 const quebrados = locais.filter((u) => !existsSync(resolve(RAIZ, u.split('?')[0])));
