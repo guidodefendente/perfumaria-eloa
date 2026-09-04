@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Perfumaria Eloá — mapa do site.
+
+  O catálogo é uma aplicação de página única com rotas por fragmento
+  (#/catalogo, #/produto/<id>, #/sobre). Fragmento não é URL para buscador,
+  então a home é a única página real do site e a única entrada legítima aqui.
+  Listar "#/catalogo" seria enviar ao Google uma URL que ele trata como a home.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://perfumariaeloa.com.br/</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

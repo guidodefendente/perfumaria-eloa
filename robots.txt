@@ -1,0 +1,11 @@
+# Perfumaria Eloá — https://perfumariaeloa.com.br/
+#
+# O site é liberado por inteiro. O formulário de cadastro (admin/enviar.html)
+# NÃO é bloqueado aqui de propósito: ele já traz <meta name="robots" content="noindex">,
+# e uma regra Disallow impediria o Google de ler essa tag — a URL poderia acabar
+# indexada sem conteúdo, que é o oposto do que se quer.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://perfumariaeloa.com.br/sitemap.xml
