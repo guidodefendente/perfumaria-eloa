@@ -168,14 +168,31 @@
   </div>
 
   <div class="card" id="frag-block">
-    <label>Informações da fragrância (opcional)</label>
-    <input type="text" id="fg-familia" placeholder="Família olfativa (ex.: Oriental floral)" style="margin-bottom:8px;">
-    <input type="text" id="fg-acordes" placeholder="Acordes principais" style="margin-bottom:8px;">
-    <input type="text" id="fg-saida" placeholder="Notas de saída" style="margin-bottom:8px;">
-    <input type="text" id="fg-coracao" placeholder="Notas de coração" style="margin-bottom:8px;">
-    <input type="text" id="fg-fundo" placeholder="Notas de fundo" style="margin-bottom:8px;">
-    <input type="text" id="fg-sensacao" placeholder="Sensação (ex.: Envolvente e marcante.)" style="margin-bottom:8px;">
-    <input type="text" id="fg-ocasiao" placeholder="Ocasião (ex.: Noite e ocasiões especiais.)">
+    <label style="margin-top:0;">Informações da fragrância (opcional)</label>
+    <div class="hint" style="margin-bottom:6px;">Preencha só o que estiver na embalagem.</div>
+
+    <!-- cada campo com rótulo próprio: preenchidos, os placeholders somem e
+         sem rótulo não dá para saber o que é "Gourmand" ou "Doce e envolvente" -->
+    <label for="fg-familia">Família olfativa</label>
+    <input type="text" id="fg-familia" placeholder="Ex.: Oriental floral">
+
+    <label for="fg-acordes">Acordes principais</label>
+    <input type="text" id="fg-acordes" placeholder="Ex.: Doce, baunilha e âmbar">
+
+    <label for="fg-saida">Notas de saída</label>
+    <input type="text" id="fg-saida" placeholder="Ex.: Bergamota">
+
+    <label for="fg-coracao">Notas de coração</label>
+    <input type="text" id="fg-coracao" placeholder="Ex.: Jasmim">
+
+    <label for="fg-fundo">Notas de fundo</label>
+    <input type="text" id="fg-fundo" placeholder="Ex.: Ambarado">
+
+    <label for="fg-sensacao">Sensação</label>
+    <input type="text" id="fg-sensacao" placeholder="Ex.: Envolvente e marcante.">
+
+    <label for="fg-ocasiao">Ocasião</label>
+    <input type="text" id="fg-ocasiao" placeholder="Ex.: Noite e ocasiões especiais.">
     <textarea name="Fragrancia" id="frag-hidden" style="display:none"></textarea>
   </div>
 
