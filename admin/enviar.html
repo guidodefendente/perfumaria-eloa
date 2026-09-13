@@ -52,6 +52,10 @@
 
   #form, #form-exclusao { display:none; }
 
+  #sem-chave { display:none; text-align:center; padding:40px 14px; }
+  #sem-chave .big { font-size:44px; }
+  #sem-chave h2 { margin:10px 0 6px; }
+  #sem-chave p { color:#77706f; }
   #success, #success-exclusao, #error-panel { display:none; text-align:center; padding:30px 14px; }
   #success .big, #success-exclusao .big, #error-panel .big { font-size:44px; }
   #success h2, #success-exclusao h2 { color:var(--ok); margin:10px 0 6px; }
@@ -72,7 +76,7 @@
 <div id="success">
   <div class="big">✅</div>
   <h2>Produto enviado com sucesso!</h2>
-  <p>Recebemos as informações e elas serão revisadas antes de serem publicadas.</p>
+  <p>O produto entra no site automaticamente em alguns minutos.</p>
   <button onclick="location.href='enviar.html'">Cadastrar outro produto</button>
 </div>
 
@@ -86,10 +90,17 @@
 
 <!-- ══ Confirmação de solicitação de exclusão ═══════════════════════ -->
 <div id="success-exclusao">
-  <div class="big">📋</div>
-  <h2>Solicitação registrada!</h2>
-  <p>A responsável pela loja precisa confirmar antes de o produto sair do site. Nada é removido por esta solicitação sozinha.</p>
+  <div class="big">✅</div>
+  <h2>Remoção solicitada!</h2>
+  <p>O produto sai do site automaticamente em alguns minutos.</p>
   <button onclick="location.href='enviar.html'">Voltar ao início</button>
+</div>
+
+<!-- ══ Aberto sem a chave de acesso ════════════════════════════════ -->
+<div id="sem-chave" style="display:none">
+  <div class="big">🔒</div>
+  <h2>Link incompleto</h2>
+  <p>Use o link completo que você recebeu para cadastrar ou remover produtos.</p>
 </div>
 
 <!-- ══ Escolha da operação ═════════════════════════════════════════ -->
@@ -120,6 +131,8 @@
   <input type="hidden" name="_captcha" value="false">
   <!-- volta para esta página com ?enviado=1 após o envio -->
   <input type="hidden" name="_next" value="">
+  <!-- chave de acesso, preenchida a partir de ?k= na URL -->
+  <input type="hidden" name="Chave" value="">
 
   <div class="card">
     <label for="name">Nome do produto *</label>
@@ -223,7 +236,7 @@
 
   <button type="submit" class="enviar" id="btn-submit">Enviar produto</button>
   <p class="hint" style="text-align:center;margin-top:10px;">
-    O produto vai para revisão antes de aparecer no site — nada é publicado na hora.
+    O produto entra no site automaticamente. Confira os dados antes de enviar.
   </p>
 </form>
 
@@ -238,6 +251,7 @@
   <input type="hidden" name="_template" value="table">
   <input type="hidden" name="_captcha" value="false">
   <input type="hidden" name="_next" value="">
+  <input type="hidden" name="Chave" value="">
 
   <!-- preenchidos a partir do produto escolhido na lista -->
   <input type="hidden" name="Slug" id="ex-slug">
@@ -267,8 +281,8 @@
     <div class="error" id="err-ex-confirma">Marque a confirmação para continuar.</div>
 
     <div class="danger">
-      Esta solicitação não remove nada sozinha. A responsável pela loja recebe um
-      pedido de confirmação e só depois a remoção é preparada para revisão.
+      <strong>O produto sai do site.</strong> Confira o nome acima antes de enviar.
+      Para voltar atrás depois, é preciso cadastrar o produto de novo.
     </div>
   </div>
 
@@ -336,10 +350,32 @@
   $('#btn-cadastrar').onclick = () => mostrar('cadastrar');
   $('#btn-excluir').onclick = () => mostrar('excluir');
 
-  // _next dinâmico: mesma URL desta página + flag de sucesso por operação
+  /**
+   * Chave de acesso, vinda da própria URL (?k=…).
+   *
+   * Esta página publica direto no site, sem aprovação intermediária, e o
+   * endereço /admin/enviar.html é fácil de adivinhar. A chave é o que separa
+   * quem recebeu o link de quem só chutou o caminho: ela viaja junto da
+   * submissão e o Hermes descarta o que chegar sem a chave certa.
+   *
+   * O valor não está neste arquivo — mora no .env do Hermes e chega pela URL.
+   * Um segredo escrito aqui seria público para qualquer um que abrisse a
+   * página, o que não protegeria nada.
+   */
+  const chave = params.get('k') || '';
+  $$('input[name=Chave]').forEach((i) => { i.value = chave; });
+
+  // _next dinâmico: volta para esta página, preservando a chave para que dê
+  // para enviar outro produto sem precisar abrir o link de novo
   const aqui = location.origin + location.pathname;
-  $('#form input[name=_next]').value = aqui + '?enviado=1';
-  $('#form-exclusao input[name=_next]').value = aqui + '?enviado=excluir';
+  const comChave = (flag) => `${aqui}?enviado=${flag}` + (chave ? `&k=${encodeURIComponent(chave)}` : '');
+  $('#form input[name=_next]').value = comChave('1');
+  $('#form-exclusao input[name=_next]').value = comChave('excluir');
+
+  if (!chave) {
+    $('#sem-chave').style.display = 'block';
+    $('#seletor').style.display = 'none';
+  }
 
   // ── Preenche categoria (cadastro) e lista de produtos (remoção) ─────────
   carregarCatalogo().then(({ PRODUCTS, CATEGORIES }) => {
