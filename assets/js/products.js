@@ -1067,6 +1067,24 @@ const PRODUCTS = [
     description: 'Creme para o corpo',
     image: 'assets/img/products/natura-todo-dia.png',
   },
+  {
+    id: 'frasco-teste-pipeline',
+    name: 'Frasco Teste Pipeline',
+    brand: 'Teste Automacao',
+    category: 'perfumes',
+    audience: 'feminino',
+    price: 99.90,
+    description: 'Item sintetico usado para validar o pipeline automatico de cadastro. Nao e um produto real da loja.',
+    image: 'assets/img/products/frasco-teste-pipeline.png',
+    specs: [
+      { label: 'Volume', value: '100 ml' },
+      { label: 'Concentração', value: 'Eau de Parfum' },
+    ],
+    fragrance: {
+      familia: 'Teste',
+      acordes: 'Teste automatizado',
+    },
+  },
 ];
 
 /** Dados da loja — transcritos do documento do Obsidian. */
