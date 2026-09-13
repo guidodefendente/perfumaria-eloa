@@ -508,6 +508,116 @@ body {
     radial-gradient(46% 60% at 88% 8%,  rgba(216,136,152,.18), transparent 70%);
 }
 
+/* Ícones das informações de entrega/horário/pedido no hero */
+.hero-pill-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: var(--radius-pill);
+  background: rgba(251, 248, 248, .09);
+  border: 1px solid rgba(251, 248, 248, .14);
+  color: var(--rose-300);
+}
+.hero-pill-icon svg { width: 17px; height: 17px; }
+
+/* Vitrine do hero: três destaques em leque, o do meio à frente.
+   Os packshots do catálogo vêm todos no mesmo enquadramento (1254×1254, fundo
+   marfim), então o leque funciona sem tratamento extra de imagem. */
+.hero-vitrine {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.hero-vitrine-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 12px 12px;
+  border-radius: 16px;
+  text-align: center;
+  background: rgba(251, 248, 248, .07);
+  border: 1px solid rgba(251, 248, 248, .12);
+  transition: transform var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+.hero-vitrine-item img {
+  border-radius: var(--radius-sm);
+  background: var(--sand-50);
+  object-fit: cover;
+}
+.hero-vitrine-nome {
+  margin-top: var(--sp-2);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--sand-50);
+  /* nome comprido não pode esticar o cartão e desalinhar o leque */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hero-vitrine-preco {
+  margin-top: 2px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--rose-300);
+}
+.hero-vitrine-centro { z-index: 1; transform: translateY(-14px); }
+.hero-vitrine-centro img { width: 150px; height: 150px; }
+.hero-vitrine-centro .hero-vitrine-nome { max-width: 150px; }
+.hero-vitrine-lado { opacity: .82; }
+.hero-vitrine-lado img { width: 104px; height: 104px; }
+.hero-vitrine-lado .hero-vitrine-nome { max-width: 104px; }
+
+/* No celular a vitrine encolhe em vez de sumir: é de onde vem a maior parte
+   dos acessos, e era justamente ali que o hero ficava sem nenhum produto. */
+@media (max-width: 1023px) {
+  .hero-vitrine { margin-top: var(--sp-10); gap: var(--sp-2); }
+  .hero-vitrine-centro { transform: translateY(-10px); }
+  .hero-vitrine-centro img { width: 104px; height: 104px; }
+  .hero-vitrine-centro .hero-vitrine-nome { max-width: 104px; }
+  .hero-vitrine-lado img { width: 78px; height: 78px; }
+  .hero-vitrine-lado .hero-vitrine-nome { max-width: 78px; }
+  .hero-vitrine-item { padding: 10px 8px 8px; border-radius: 13px; }
+  .hero-vitrine-nome { font-size: 11px; }
+  .hero-vitrine-preco { font-size: 13px; }
+}
+.hero-vitrine-item:hover { background: rgba(251, 248, 248, .12); }
+.hero-vitrine-centro:hover { transform: translateY(-18px); }
+.hero-vitrine-lado:hover { transform: translateY(-4px); opacity: 1; }
+
+/* Seção "Passe na loja" */
+.loja-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: var(--radius-pill);
+  background: var(--rose-100);
+  color: var(--rose-700);
+}
+.loja-icon svg { width: 19px; height: 19px; }
+
+.loja-cartao {
+  padding: var(--sp-8);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--rose-200);
+  box-shadow: var(--shadow-md);
+}
+.loja-cartao img {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--rose-200);
+}
+
 /* Entrada suave dos blocos ao rolar (motion sutil: 3/10) */
 .reveal { opacity: 0; transform: translateY(12px); }
 .reveal.is-visible {
