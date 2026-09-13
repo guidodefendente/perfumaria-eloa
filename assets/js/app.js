@@ -10,6 +10,7 @@ const App = (() => {
 
   // ── Estado ──────────────────────────────────────────────────────────────
   const STORAGE_KEY = 'eloa.cart.v1';
+  const HOME_FEATURED_MAX = 6;   // amostra de destaques na home; o resto fica no catálogo
   let cart = [];          // [{ id, qty }]
   let filterCategory = 'todos';
   let filterAudience = 'todos';
@@ -163,18 +164,92 @@ const App = (() => {
   function renderHome() {
     $('#home-categories').innerHTML = CATEGORIES.map((category) => {
       const total = PRODUCTS.filter((p) => p.category === category.id).length;
+      // min-h e mt-auto: os nomes têm comprimentos bem diferentes ("Unhas" ao
+      // lado de "Cuidados com a pele"), e sem isso a contagem de itens flutuava
+      // em alturas distintas, deixando a fileira desalinhada.
       return `
         <a href="#/catalogo?cat=${category.id}"
-           class="group flex flex-col items-center justify-center gap-2.5 p-5 rounded-[14px] border border-[#EAE0E3] bg-white hover:border-rose-300 hover:bg-rose-50 transition-all duration-200 text-center">
+           class="group flex flex-col items-center gap-2.5 p-5 min-h-[148px] rounded-[14px] border border-[#EAE0E3] bg-white hover:border-rose-300 hover:bg-rose-50 hover:shadow-md transition-all duration-200 text-center">
           <span class="w-12 h-12 grid place-items-center rounded-full bg-rose-100 text-rose-700 group-hover:bg-rose-500 group-hover:text-ink-900 transition-colors">
             ${icon(category.icon, 'w-6 h-6')}
           </span>
           <span class="text-sm font-medium text-ink-900 leading-tight">${escapeHtml(category.name)}</span>
-          <span class="text-xs text-ink-400">${total} ${total === 1 ? 'item' : 'itens'}</span>
+          <span class="mt-auto text-xs text-ink-400">${total} ${total === 1 ? 'item' : 'itens'}</span>
         </a>`;
     }).join('');
 
-    $('#home-featured').innerHTML = PRODUCTS.filter((p) => p.featured).map(productCard).join('');
+    // A home mostra uma amostra dos destaques, não todos: com o catálogo
+    // crescendo, a lista inteira empurrava "Como pedir" para fora do alcance
+    // de quem chega. Quem quiser ver o resto tem o "Ver tudo" ao lado do
+    // título e o catálogo completo a um clique.
+    const destaques = PRODUCTS.filter((p) => p.featured);
+    $('#home-featured').innerHTML = destaques.slice(0, HOME_FEATURED_MAX).map(productCard).join('');
+
+    renderHeroVitrine(destaques);
+    renderLoja();
+  }
+
+  /** Dados da loja física na home, vindos de STORE (fonte única com o rodapé). */
+  function renderLoja() {
+    const campos = {
+      '#loja-endereco': STORE.address,
+      '#loja-cidade': STORE.city,
+      '#loja-horario': STORE.hours,
+      '#loja-whatsapp': STORE.whatsappDisplay,
+    };
+    for (const [sel, valor] of Object.entries(campos)) {
+      const el = $(sel);
+      if (el) el.textContent = valor;
+    }
+
+    const zap = $('#loja-whatsapp-link');
+    if (zap) zap.href = whatsappLink('Olá! Vim pelo catálogo digital da Perfumaria Eloá.');
+
+    const mapa = $('#loja-mapa');
+    if (mapa) {
+      mapa.href = 'https://www.google.com/maps/search/?api=1&query='
+        + encodeURIComponent(`${STORE.address}, ${STORE.city}`);
+    }
+  }
+
+  /**
+   * Vitrine do hero: os primeiros destaques, em leque.
+   *
+   * O hero mostrava o logotipo da loja — bonito, mas não vende nada: quem
+   * chegou já sabe onde está. Trocar por produto real aproveita o espaço mais
+   * visto da página, e as imagens vêm do próprio catálogo, então a vitrine se
+   * atualiza sozinha e nunca aponta para um produto que saiu do ar.
+   */
+  function renderHeroVitrine(destaques) {
+    const alvo = $('#hero-vitrine');
+    if (!alvo) return;
+
+    const vitrine = destaques.slice(0, 3);
+    if (vitrine.length < 3) {           // catálogo pequeno demais: mantém o logotipo
+      alvo.innerHTML = `
+        <div class="absolute inset-0 rounded-full bg-rose-500/15 blur-3xl scale-110" aria-hidden="true"></div>
+        <img src="assets/img/logo-eloa.png" alt="Logotipo da Perfumaria Eloá"
+             width="300" height="300"
+             class="relative w-[300px] h-[300px] rounded-full ring-1 ring-rose-500/30">`;
+      return;
+    }
+
+    // alt vazio de propósito: o nome do produto vem logo abaixo como texto, e
+    // repeti-lo no alt faria o leitor de tela anunciar tudo duas vezes
+    const cartao = (p, classe) => `
+      <a href="#/produto/${p.id}" class="hero-vitrine-item ${classe}">
+        <img src="${escapeHtml(p.image)}" alt="" width="240" height="240" decoding="async">
+        <span class="hero-vitrine-nome">${escapeHtml(p.name)}</span>
+        <span class="hero-vitrine-preco tnum">${brl(p.price)}</span>
+      </a>`;
+
+    alvo.innerHTML = `
+      <div class="absolute inset-0 rounded-full bg-rose-500/15 blur-3xl scale-110" aria-hidden="true"></div>
+      <div class="hero-vitrine">
+        ${cartao(vitrine[1], 'hero-vitrine-lado')}
+        ${cartao(vitrine[0], 'hero-vitrine-centro')}
+        ${cartao(vitrine[2], 'hero-vitrine-lado')}
+      </div>`;
   }
 
   // ── Renderização: Catálogo ──────────────────────────────────────────────

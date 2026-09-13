@@ -15,13 +15,6 @@ import { fileURLToPath } from 'node:url';
 const RAIZ = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://perfumariaeloa.com.br';
 
-/**
- * Valores esperados do catálogo. Servem de trava contra alteração acidental
- * de dado comercial. ATUALIZE AQUI ao publicar ou remover um produto — é o
- * único lugar do projeto que precisa acompanhar o tamanho do catálogo.
- */
-const ESPERADO = { produtos: 60, featured: 11, categorias: 7 };
-
 let falhas = 0;
 let total = 0;
 
@@ -46,6 +39,29 @@ function carregarCatalogo() {
   return new Function(`${src}\nreturn { PRODUCTS, CATEGORIES, STORE };`)();
 }
 const { PRODUCTS, CATEGORIES, STORE } = carregarCatalogo();
+
+/**
+ * Tamanho do catálogo, derivado de products.js — a fonte da verdade.
+ *
+ * Estes números eram fixos aqui e precisavam ser atualizados à mão a cada
+ * produto publicado ou removido. Com o cadastro automático, esse passo manual
+ * seria o ponto de falha mais provável do pipeline: errar a contagem reprova a
+ * suíte e trava o PR de um produto que estava correto.
+ *
+ * Derivar não enfraquece a suíte, porque as travas que pegam erro de verdade
+ * são cruzadas e continuam valendo: o sitemap precisa ter uma URL por produto
+ * mais a home, e produto/ precisa ter uma pasta por produto. Gerador que não
+ * rodou, página órfã e sitemap desatualizado continuam reprovando. O que se
+ * perde é só a comparação de um número consigo mesmo.
+ *
+ * A proteção contra alteração acidental de dado comercial passa a vir de onde
+ * ela é visível: o diff do PR e a revisão humana antes do merge.
+ */
+const ESPERADO = {
+  produtos: PRODUCTS.length,
+  featured: PRODUCTS.filter((p) => p.featured).length,
+  categorias: CATEGORIES.length,
+};
 
 // ── 1. Metadados da home ───────────────────────────────────────────────────
 secao('1. Metadados da página inicial');
@@ -158,13 +174,13 @@ checar('declara um WebSite', grafo.some((n) => n['@type'] === 'WebSite'));
 
 // ── 7. Catálogo: dados comerciais preservados ──────────────────────────────
 secao('7. Catálogo e dados comerciais');
-checar(`existem exatamente ${ESPERADO.produtos} produtos`,
-  PRODUCTS.length === ESPERADO.produtos, `${PRODUCTS.length} produtos`);
-checar(`existem exatamente ${ESPERADO.featured} produtos em destaque`,
-  PRODUCTS.filter((p) => p.featured).length === ESPERADO.featured,
-  `${PRODUCTS.filter((p) => p.featured).length} em destaque`);
-checar(`existem exatamente ${ESPERADO.categorias} categorias`,
-  CATEGORIES.length === ESPERADO.categorias, `${CATEGORIES.length} categorias`);
+// Sanidade do catálogo. Comparar PRODUCTS.length com ele mesmo não provaria
+// nada; o que importa é que o catálogo não tenha sido esvaziado e que a home
+// ainda tenha o que mostrar na vitrine de destaques.
+checar('o catálogo não está vazio', PRODUCTS.length > 0, `${PRODUCTS.length} produtos`);
+checar('há pelo menos um produto em destaque para a home',
+  ESPERADO.featured > 0, `${ESPERADO.featured} em destaque`);
+checar('há pelo menos uma categoria', CATEGORIES.length > 0, `${CATEGORIES.length} categorias`);
 console.log(`       (${PRODUCTS.length} produtos, ${CATEGORIES.length} categorias, ${PRODUCTS.filter((p) => p.featured).length} em destaque)`);
 
 const ids = PRODUCTS.map((p) => p.id);

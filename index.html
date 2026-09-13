@@ -194,20 +194,39 @@
             </a>
             <a href="#/sobre" class="btn text-sand-50 border border-white/25 hover:bg-white/10">Sobre a loja</a>
           </div>
-          <dl class="mt-10 flex flex-wrap gap-x-10 gap-y-4 text-sm">
-            <div><dt class="text-sand-50/50 text-xs uppercase tracking-widest">Entrega</dt><dd class="mt-1 text-sand-50 font-medium">Zona Leste</dd></div>
-            <div><dt class="text-sand-50/50 text-xs uppercase tracking-widest">Aberto</dt><dd class="mt-1 text-sand-50 font-medium">Todos os dias, 9h–18h</dd></div>
-            <div><dt class="text-sand-50/50 text-xs uppercase tracking-widest">Pedidos</dt><dd class="mt-1 text-sand-50 font-medium">Pelo WhatsApp</dd></div>
-          </dl>
+          <!-- As três informações que decidem a compra numa loja de bairro:
+               se entrega aqui, se está aberto agora, e como se pede. Antes
+               eram texto miúdo em duas linhas; viraram itens que se leem de
+               relance, que é como esta parte da página é olhada. -->
+          <ul class="mt-10 flex flex-wrap gap-x-8 gap-y-4 text-sm">
+            <li class="flex items-center gap-2.5 text-sand-50">
+              <span class="hero-pill-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 17h4V5H2v12h3m5 0H5m5 0v-2m-5 2v-2m0 0H2m3 0h5m9-6h3l2 3v5h-3m-2-8v8m2 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM7 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z"/></svg>
+              </span>
+              <span><span class="block text-sand-50/55 text-xs">Entrega</span><span class="font-medium">Toda a Zona Leste</span></span>
+            </li>
+            <li class="flex items-center gap-2.5 text-sand-50">
+              <span class="hero-pill-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </span>
+              <span><span class="block text-sand-50/55 text-xs">Aberto</span><span class="font-medium">Todo dia, 9h–18h</span></span>
+            </li>
+            <li class="flex items-center gap-2.5 text-sand-50">
+              <span class="hero-pill-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.7-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+              </span>
+              <span><span class="block text-sand-50/55 text-xs">Pedidos</span><span class="font-medium">Pelo WhatsApp</span></span>
+            </li>
+          </ul>
         </div>
 
-        <div class="hidden lg:flex justify-center">
-          <div class="relative">
-            <div class="absolute inset-0 rounded-full bg-rose-500/15 blur-3xl scale-110" aria-hidden="true"></div>
-            <img src="assets/img/logo-eloa.png" alt="Logotipo da Perfumaria Eloá"
-                 width="300" height="300"
-                 class="relative w-[300px] h-[300px] rounded-full ring-1 ring-rose-500/30">
-          </div>
+        <!-- Vitrine do hero: produtos reais, não o logotipo.
+             O espaço mais nobre da página passa a mostrar o que está à venda.
+             O conteúdo vem dos destaques de products.js (renderHeroVitrine no
+             app.js), então nenhuma imagem fica órfã quando um produto sai do
+             catálogo. -->
+        <div class="flex justify-center">
+          <div class="relative" id="hero-vitrine"></div>
         </div>
       </div>
     </div>
@@ -261,6 +280,83 @@
           <p class="mt-1.5 text-sm text-ink-500 leading-relaxed">O pedido chega pronto na conversa. O frete é combinado no atendimento.</p>
         </li>
       </ol>
+    </div>
+
+    <!-- A loja física.
+         Num negócio de bairro, o endereço na rua é a prova de credibilidade
+         mais forte que existe — mais do que selo ou avaliação. Antes só
+         aparecia em letra miúda no rodapé; aqui ganha lugar próprio, com os
+         dados vindos de STORE em products.js (preenchidos por renderLoja). -->
+    <div class="bg-sand-50 border-t border-[#EAE0E3]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-14 sm:py-16">
+        <div class="grid lg:grid-cols-[1fr_.9fr] gap-10 items-center reveal">
+          <div>
+            <p class="eyebrow">Onde a gente fica</p>
+            <h2 class="section-title mt-2">Passe na loja</h2>
+            <p class="mt-4 text-ink-500 leading-relaxed max-w-md">
+              Somos uma perfumaria de bairro na Cidade Tiradentes. Dá para escolher
+              com calma pelo catálogo e retirar na loja, ou receber em casa — a
+              entrega cobre toda a Zona Leste.
+            </p>
+
+            <dl class="mt-8 space-y-5">
+              <div class="flex gap-3.5">
+                <span class="loja-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+                <div>
+                  <dt class="text-xs uppercase tracking-widest text-ink-400">Endereço</dt>
+                  <dd class="mt-0.5 font-medium text-ink-900" id="loja-endereco"></dd>
+                  <dd class="text-sm text-ink-500" id="loja-cidade"></dd>
+                </div>
+              </div>
+              <div class="flex gap-3.5">
+                <span class="loja-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                </span>
+                <div>
+                  <dt class="text-xs uppercase tracking-widest text-ink-400">Horário</dt>
+                  <dd class="mt-0.5 font-medium text-ink-900" id="loja-horario"></dd>
+                </div>
+              </div>
+              <div class="flex gap-3.5">
+                <span class="loja-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.6 7.3L3 20.5l1.7-5.2A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+                </span>
+                <div>
+                  <dt class="text-xs uppercase tracking-widest text-ink-400">Atendimento</dt>
+                  <dd class="mt-0.5 font-medium text-ink-900" id="loja-whatsapp"></dd>
+                </div>
+              </div>
+            </dl>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <a id="loja-whatsapp-link" href="#" class="btn btn-rose" rel="noopener">
+                Falar no WhatsApp
+                <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a id="loja-mapa" href="#" target="_blank" rel="noopener"
+                 class="btn border border-[#EAE0E3] text-ink-900 hover:bg-white">Ver no mapa</a>
+            </div>
+          </div>
+
+          <div class="hidden lg:block">
+            <div class="loja-cartao">
+              <img src="assets/img/logo-eloa.png" alt="" width="120" height="120" loading="lazy">
+              <p class="font-display text-2xl text-ink-900 mt-4">Sua beleza,<br>nossa essência</p>
+              <p class="mt-3 text-sm text-ink-500 leading-relaxed">
+                Perfumes, maquiagem, cabelo, pele, cílios e unhas —
+                atendimento de quem conhece a vizinhança.
+              </p>
+              <a href="https://www.instagram.com/perfumariap_eloa" target="_blank" rel="noopener"
+                 class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-rose-700 hover:text-rose-600">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+                @perfumariap_eloa
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
