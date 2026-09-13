@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Perfumaria Eloá — Cadastro de produto</title>
+<title>Perfumaria Eloá — Gestão de produtos</title>
 <style>
   :root { --ink:#140E10; --rose:#9d2c4e; --line:#EAE0E3; --ok:#1a7f4b; --err:#b3261e; }
   * { box-sizing:border-box; }
@@ -34,18 +34,36 @@
   .radio-line label { display:flex; align-items:center; gap:6px; font-weight:500; margin:0; }
   img.preview { max-width:100%; max-height:230px; border-radius:10px; border:1px solid var(--line); margin-top:10px; display:block; }
   .warn { background:#fdf6ec; border:1px solid #ecd9b0; border-radius:10px; padding:10px 12px; font-size:13px; margin-top:10px; }
-  #success, #error-panel { display:none; text-align:center; padding:30px 14px; }
-  #success .big, #error-panel .big { font-size:44px; }
-  #success h2 { color:var(--ok); margin:10px 0 6px; }
+  .danger { background:#fdf0f0; border:1px solid #f2c9c9; border-radius:10px; padding:10px 12px; font-size:13px; margin-top:10px; }
+
+  /* Escolha da operação */
+  .acao-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .acao-btn {
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    padding:16px 10px; border:2px solid var(--line); border-radius:12px;
+    background:#fff; cursor:pointer; font:inherit; color:var(--ink); text-align:center;
+  }
+  .acao-btn:hover { border-color:var(--rose); }
+  .acao-btn[aria-pressed="true"] { border-color:var(--rose); background:#fdf4f7; }
+  .acao-btn .icone { font-size:26px; }
+  .acao-btn .rotulo { font-size:14px; font-weight:700; line-height:1.2; }
+  .acao-btn .sub { font-size:11px; color:#77706f; }
+  @media (max-width:380px) { .acao-grid { grid-template-columns:1fr; } }
+
+  #form, #form-exclusao { display:none; }
+
+  #success, #success-exclusao, #error-panel { display:none; text-align:center; padding:30px 14px; }
+  #success .big, #success-exclusao .big, #error-panel .big { font-size:44px; }
+  #success h2, #success-exclusao h2 { color:var(--ok); margin:10px 0 6px; }
   #error-panel h2 { color:var(--err); margin:10px 0 6px; }
-  #success p, #error-panel p { color:#77706f; }
+  #success p, #success-exclusao p, #error-panel p { color:#77706f; }
 </style>
 </head>
 <body>
 
 <header>
   <h1>🛍 Perfumaria Eloá</h1>
-  <p>CADASTRO DE PRODUTO</p>
+  <p>GESTÃO DE PRODUTOS</p>
 </header>
 
 <main>
@@ -64,6 +82,31 @@
   <h2>Não conseguimos enviar.</h2>
   <p>Verifique sua conexão e tente novamente. Se o problema continuar, mande as informações pelo WhatsApp da loja.</p>
   <button onclick="location.reload()">Tentar de novo</button>
+</div>
+
+<!-- ══ Confirmação de solicitação de exclusão ═══════════════════════ -->
+<div id="success-exclusao">
+  <div class="big">📋</div>
+  <h2>Solicitação registrada!</h2>
+  <p>A responsável pela loja precisa confirmar antes de o produto sair do site. Nada é removido por esta solicitação sozinha.</p>
+  <button onclick="location.href='enviar.html'">Voltar ao início</button>
+</div>
+
+<!-- ══ Escolha da operação ═════════════════════════════════════════ -->
+<div class="card" id="seletor">
+  <label style="margin-top:0;">O que você quer fazer?</label>
+  <div class="acao-grid">
+    <button type="button" class="acao-btn" id="btn-cadastrar" aria-pressed="false">
+      <span class="icone">➕</span>
+      <span class="rotulo">Cadastrar produto</span>
+      <span class="sub">Adicionar ao catálogo</span>
+    </button>
+    <button type="button" class="acao-btn" id="btn-excluir" aria-pressed="false">
+      <span class="icone">🗑️</span>
+      <span class="rotulo">Remover produto</span>
+      <span class="sub">Saiu de estoque</span>
+    </button>
+  </div>
 </div>
 
 <form id="form"
@@ -167,9 +210,56 @@
   </p>
 </form>
 
+<!-- ════════════════════════════════════════════════════════════════
+     Solicitação de remoção de produto
+     ════════════════════════════════════════════════════════════════ -->
+<form id="form-exclusao"
+      action="https://formsubmit.co/guido.defendente@gmail.com"
+      method="POST">
+
+  <input type="hidden" name="_subject" value="">
+  <input type="hidden" name="_template" value="table">
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_next" value="">
+
+  <!-- preenchidos a partir do produto escolhido na lista -->
+  <input type="hidden" name="Slug" id="ex-slug">
+  <input type="hidden" name="NomeProduto" id="ex-nome">
+
+  <div class="card">
+    <label for="ex-produto">Produto a remover *</label>
+    <select id="ex-produto" required>
+      <option value="">— carregando catálogo… —</option>
+    </select>
+    <div class="hint">A lista vem do catálogo publicado no site.</div>
+    <div class="error" id="err-ex-produto">Escolha o produto que saiu do catálogo.</div>
+
+    <div id="ex-resumo" class="warn" style="display:none"></div>
+  </div>
+
+  <div class="card">
+    <label for="ex-motivo">Motivo *</label>
+    <textarea id="ex-motivo" name="Motivo" maxlength="400" required
+      placeholder="Ex.: produto esgotado e não será reposto."></textarea>
+    <div class="error" id="err-ex-motivo">Escreva o motivo da remoção.</div>
+
+    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;">
+      <input type="checkbox" id="ex-confirma" style="width:18px;height:18px;">
+      Confirmo que quero solicitar a remoção deste produto.
+    </label>
+    <div class="error" id="err-ex-confirma">Marque a confirmação para continuar.</div>
+
+    <div class="danger">
+      Esta solicitação não remove nada sozinha. A responsável pela loja recebe um
+      pedido de confirmação e só depois a remoção é preparada para revisão.
+    </div>
+  </div>
+
+  <button type="submit" class="enviar" id="btn-submit-exclusao">Solicitar remoção</button>
+</form>
+
 </main>
 
-<script src="categories.js"></script>
 <script>
 (function () {
   'use strict';
@@ -178,11 +268,14 @@
   let urlValidated = false;
 
   // ── Confirmação / erro pós-redirect ────────────────────────────────────
+  // ?enviado=1 volta do cadastro; ?enviado=excluir volta da solicitação de
+  // remoção. Cada formulário manda o próprio _next.
   const params = new URLSearchParams(location.search);
-  if (params.get('enviado') === '1') {
-    $('#form').style.display = 'none';
+  const enviado = params.get('enviado');
+  if (enviado === '1' || enviado === 'excluir') {
+    $('#seletor').style.display = 'none';
     // display:'block' necessário — style.display='' restauraria o CSS #success{display:none}
-    $('#success').style.display = 'block';
+    $(enviado === 'excluir' ? '#success-exclusao' : '#success').style.display = 'block';
     window.scrollTo({ top: 0 });
     // limpa a query para refresh não re-mostrar a confirmação
     history.replaceState(null, '', location.pathname);
@@ -194,11 +287,77 @@
       .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   }
 
-  $('#category').innerHTML = '<option value="">— escolha —</option>' +
-    CATEGORIES.map((c) => `<option value="${c.id}">${c.name}</option>`).join('');
+  /**
+   * Catálogo publicado, lido do próprio products.js do site.
+   *
+   * Esta página tinha uma cópia manual das categorias em admin/categories.js,
+   * que precisava ser atualizada à mão junto com o products.js. Ler a fonte
+   * real elimina essa sincronização e ainda permite listar os produtos
+   * existentes na hora de pedir uma remoção — quem usa o formulário escolhe da
+   * lista em vez de digitar o código interno.
+   *
+   * Não dá para usar <script src>: products.js declara `const CATEGORIES` no
+   * escopo global e colidiria com o resto da página. Lendo o texto e avaliando
+   * num escopo próprio, o arquivo continua servindo ao site sem virar módulo.
+   */
+  async function carregarCatalogo() {
+    const resp = await fetch('../assets/js/products.js', { cache: 'no-store' });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const src = await resp.text();
+    return new Function(`${src}\nreturn { PRODUCTS, CATEGORIES };`)();
+  }
 
-  // _next dinâmico: mesma URL desta página + flag de sucesso
-  $('input[name=_next]').value = location.origin + location.pathname + '?enviado=1';
+  // ── Escolha da operação ────────────────────────────────────────────────
+  function mostrar(acao) {
+    const cadastrar = acao === 'cadastrar';
+    $('#form').style.display = cadastrar ? 'block' : 'none';
+    $('#form-exclusao').style.display = cadastrar ? 'none' : 'block';
+    $('#btn-cadastrar').setAttribute('aria-pressed', String(cadastrar));
+    $('#btn-excluir').setAttribute('aria-pressed', String(!cadastrar));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  $('#btn-cadastrar').onclick = () => mostrar('cadastrar');
+  $('#btn-excluir').onclick = () => mostrar('excluir');
+
+  // _next dinâmico: mesma URL desta página + flag de sucesso por operação
+  const aqui = location.origin + location.pathname;
+  $('#form input[name=_next]').value = aqui + '?enviado=1';
+  $('#form-exclusao input[name=_next]').value = aqui + '?enviado=excluir';
+
+  // ── Preenche categoria (cadastro) e lista de produtos (remoção) ─────────
+  carregarCatalogo().then(({ PRODUCTS, CATEGORIES }) => {
+    $('#category').innerHTML = '<option value="">— escolha —</option>' +
+      CATEGORIES.map((c) => `<option value="${c.id}">${c.name}</option>`).join('');
+
+    const ordenados = PRODUCTS.slice().sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+    $('#ex-produto').innerHTML = '<option value="">— escolha o produto —</option>' +
+      ordenados.map((p) => `<option value="${p.id}">${esc(p.name)} — ${esc(p.brand)}</option>`).join('');
+
+    $('#ex-produto').addEventListener('change', () => {
+      const p = PRODUCTS.find((x) => x.id === $('#ex-produto').value);
+      hideErr('#err-ex-produto');
+      // O slug é o identificador; o nome viaja junto para o Hermes conferir
+      // que a lista da página e o catálogo do servidor concordam.
+      $('#ex-slug').value = p ? p.id : '';
+      $('#ex-nome').value = p ? p.name : '';
+      const resumo = $('#ex-resumo');
+      if (!p) { resumo.style.display = 'none'; return; }
+      resumo.innerHTML = `Vai ser solicitada a remoção de <strong>${esc(p.name)}</strong>`
+        + ` — ${esc(p.brand)}, R$ ${Number(p.price).toFixed(2).replace('.', ',')}`
+        + `<br><span class="hint">código interno: ${esc(p.id)}</span>`;
+      resumo.style.display = '';
+    });
+  }).catch((e) => {
+    // Sem catálogo o cadastro ainda funciona se as categorias vierem do arquivo
+    // antigo; a remoção não, porque depende da lista real.
+    $('#ex-produto').innerHTML = '<option value="">— não foi possível carregar o catálogo —</option>';
+    showErr('#err-ex-produto', 'Não consegui carregar a lista de produtos. Recarregue a página ou fale pelo WhatsApp.');
+    console.error('catálogo:', e);
+  });
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
 
   function addSpec(label = '', value = '') {
     const div = document.createElement('div');
@@ -216,6 +375,14 @@
   });
   $('#description').addEventListener('input', () => {
     $('#desc-count').textContent = String($('#description').value.trim().length);
+  });
+
+  // O bloco de fragrância existia no HTML com display:none e nada o revelava:
+  // os campos de perfil olfativo eram inalcançáveis pelo formulário e acabavam
+  // preenchidos à mão depois. Só faz sentido para perfumes, que é o que o
+  // validador aceita em `fragrance`.
+  $('#category').addEventListener('change', () => {
+    $('#frag-block').style.display = $('#category').value === 'perfumes' ? 'block' : 'none';
   });
 
   $$('input[name=img-src]').forEach((r) => r.addEventListener('change', () => {
@@ -248,14 +415,16 @@
     img.src = url;
   };
 
-  function showErr(sel, msg) { const e = $(sel); if (msg) e.textContent = msg; e.style.display=''; }
+  // display:'block' e não '': a regra .error{display:none} do CSS voltaria a
+  // valer ao limpar o estilo inline, e a mensagem de erro nunca apareceria
+  function showErr(sel, msg) { const e = $(sel); if (msg) e.textContent = msg; e.style.display='block'; }
   function hideErr(sel) { $(sel).style.display='none'; }
 
   // valida ANTES de deixar o formulário partir (nativo faria só required básico)
   function validate() {
     let ok = true;
     const req = (cond, errSel, msg) => {
-      if (!cond) { $(errSel).textContent = msg || ''; $(errSel).style.display=''; ok=false; }
+      if (!cond) { if (msg) $(errSel).textContent = msg; $(errSel).style.display='block'; ok=false; }
       else hideErr(errSel);
     };
     req($('#description').value.trim().length >= 30, '#err-desc');
@@ -306,14 +475,44 @@
     return ok;
   }
 
-  $('#form').addEventListener('submit', () => {
-    if (!validate()) return;
+  $('#form').addEventListener('submit', (e) => {
+    // sem preventDefault o formulário partia mesmo com validate() reprovando,
+    // e a submissão inválida só era barrada depois, já na caixa de entrada
+    if (!validate()) { e.preventDefault(); return; }
     const btn = $('#btn-submit');
     btn.disabled = true;                       // trava contra duplo envio
     btn.textContent = 'Enviando…';
     // se o FormSubmit falhar (sem redirect), restaura após timeout generoso
     setTimeout(() => {
       btn.disabled = false; btn.textContent = 'Enviar produto';
+    }, 30000);
+  });
+
+  // ── Envio da solicitação de remoção ────────────────────────────────────
+  function validarExclusao() {
+    let ok = true;
+    const exige = (cond, errSel) => {
+      if (cond) { hideErr(errSel); return; }
+      $(errSel).style.display = 'block'; ok = false;
+    };
+    exige(Boolean($('#ex-slug').value), '#err-ex-produto');
+    exige($('#ex-motivo').value.trim().length > 0, '#err-ex-motivo');
+    exige($('#ex-confirma').checked, '#err-ex-confirma');
+    if (ok) {
+      // o slug no assunto é o que o Hermes usa para achar o produto
+      $('#form-exclusao input[name=_subject]').value =
+        `EXCLUIR PRODUTO: ${$('#ex-slug').value}`;
+    }
+    return ok;
+  }
+
+  $('#form-exclusao').addEventListener('submit', (e) => {
+    if (!validarExclusao()) { e.preventDefault(); return; }
+    const btn = $('#btn-submit-exclusao');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    setTimeout(() => {
+      btn.disabled = false; btn.textContent = 'Solicitar remoção';
     }, 30000);
   });
 })();
