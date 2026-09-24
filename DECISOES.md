@@ -518,3 +518,119 @@ público, busca (Malbec, Floratta, Quasar, Lattitude, Uomini, Arbo, Egeo, Hinode
 link do Instagram. **0 erros de console, 0 requisições com falha, nenhuma imagem
 quebrada, nenhuma rolagem horizontal.** Nenhuma mensagem de WhatsApp foi
 enviada — a URL foi capturada interceptando `window.open`.
+
+---
+
+## Sprint 6 — Lote de produtos via formulário de autoatendimento (24/09/2026)
+
+Nota de lacuna: entre a Sprint 5 (22/08) e esta entrada, o projeto ganhou o
+formulário de autoatendimento (`admin/enviar.html`) e o fluxo de publicação
+por Pull Request com `ELOA_AUTO_MERGE=0` — trabalho feito em setembro e não
+registrado aqui até agora. Fica como pendência revisar e documentar essa
+automação com mais detalhe numa próxima sessão.
+
+### O que motivou esta entrada
+
+Havia um lote de 9 e-mails de submissão parados na caixa de entrada (8
+"NOVO PRODUTO" — um deles duplicado — e 1 "EXCLUIR PRODUTO"), de 13/09 e
+23/09, sem processar porque a automação (Hermes) apontava para um modelo de
+IA inválido e falhava com erro 404. O cadastro foi feito manualmente nesta
+sessão, produto a produto, comparando o texto de cada submissão com a foto
+anexada.
+
+### Publicados (PR #11)
+
+5 dos 8 produtos do lote, todos com o texto da submissão batendo com a foto
+anexada:
+
+- **Lip Gloss — WB Beuty**, R$ 12,00
+- **Escova de cabelo — Pink Sweet**, R$ 22,00
+- **Lip Gloss Chameleon — Sarah's Beauty**, R$ 12,00. A submissão trazia
+  "Chameleon" no campo Marca — a embalagem mostra que "Chameleon Lip Gloss"
+  é o nome da linha e "Sarah's Beauty" é o fabricante impresso no tubo.
+  Seguido o mesmo critério da Sprint 5 (divergência resolvida pela
+  embalagem): o campo `brand` ficou com o fabricante.
+- **PopFruit — Amor Anjo**, R$ 40,00. Kit com 4 lip oils/gloss (uma unidade
+  por sabor/fruta), vendido como registro único — mesmo critério do caso
+  Skala na Sprint 4. Duas submissões quase idênticas chegaram com 2 minutos
+  de diferença (23/09, 17h48 e 17h50) — mesmo texto, mesmo anexo: tratada
+  como reenvio duplicado, um único cadastro. Havia uma terceira submissão
+  do mesmo produto em 13/09 ("Pop Fruit", marca "Amor e Anjo", descrição só
+  "Lip Gloss", imagem `445065.jpg`) — descartada em favor da versão de
+  23/09, mais recente e com descrição mais completa.
+- **Lip Gloss Sweet Honey — Aozy**, R$ 12,00.
+
+### Não publicados — precisam de confirmação da loja
+
+Três submissões ficaram de fora. Nenhuma foi publicada com dado que a
+própria submissão não sustentava — o que não está confirmado não entra,
+seguindo a regra já registrada nas sprints anteriores.
+
+1. **"Pó Iluminador", marca "Amor e Anjo"** (R$ 16,00) — o anexo
+   (`445046.jpg`) não mostra um pó iluminador: mostra dois frascos de
+   perfume da linha "Amor Anjo — All You Need Is Love", a mesma marca do
+   PopFruit. O anexo da submissão não corresponde ao produto descrito —
+   provavelmente um arquivo trocado no envio. Não dá para cadastrar
+   "Pó Iluminador" com a foto de um perfume, nem cadastrar o perfume sem
+   saber nome, linha e preço reais. **Ação:** confirmar com a loja qual
+   produto e qual foto correspondem a esta submissão.
+
+2. **"Pompom💖", marca "Perfumaria"** (R$ 10,00, cabelo) — "Perfumaria" não
+   é nome de marca (é o segmento do próprio negócio), e a foto
+   (`1002107753.png`) mostra elásticos de cabelo em tubo com aplique de
+   coelho — não o acessório que normalmente se chama "pompom". Tanto o
+   nome quanto a marca do produto ficam sem confirmação. **Ação:**
+   confirmar com a loja o nome correto do item e a marca (ou "Sem marca",
+   como já é o padrão do catálogo para itens sem marca visível — ver
+   Sprint 5, lenço umedecido).
+
+3. **"Lip Gloss", marca "Cherry"** (R$ 12,00, `Destaque: sim`) — o tubo na
+   foto (`445035.jpg`) traz "Hold morning" impresso, e o catálogo já tem um
+   registro `lip-gloss-holding-morning` (marca "Holding Morning", R$ 19,90,
+   sem foto específica de sabor). É provável que seja a mesma linha, só que
+   agora com uma foto real e um sabor específico ("Cherry") — mas o preço
+   diverge (R$ 12 vs R$ 19,90) e não há como saber, sem perguntar, se a
+   loja quer **atualizar** o registro existente (preço novo + foto real +
+   nome do sabor) ou **manter os dois** como produtos separados. Cadastrar
+   sem saber arriscava duplicar o item ou aplicar um preço errado ao
+   existente. **Ação:** confirmar com a loja se `lip-gloss-holding-morning`
+   deve virar "Lip Gloss Cherry" (R$ 12) ou se são produtos diferentes.
+
+   À parte: o registro `lip-gloss-holding-morning` já existente usa uma
+   imagem com embalagem e marca "ELOÁ" impressas nela — não é foto de
+   produto real, é uma imagem gerada com o nome da própria loja na
+   embalagem. Isso contraria a regra de não inventar embalagem/rótulo
+   (seção "3. Imagens dos produtos", acima) e não está documentado em
+   nenhuma sprint anterior. Fica sinalizado para revisão — provavelmente
+   precisa ser trocada por uma foto real quando o ponto 3 acima for
+   resolvido.
+
+### Remoção
+
+`condicionador-alquimia` removido do catálogo a pedido da loja (EXCLUIR
+PRODUTO, motivo: esgotado) — produto, página estática e sitemap.
+
+### Tratamento de imagem — desvio do padrão das sprints anteriores
+
+As fotos deste lote são *still lifes* de divulgação de revendedor (flores,
+xícaras, tecidos, acessórios de cenário), não fotos de produto isolado como
+as usadas nas Sprints 4 e 5. O pipeline de recorte + fundo marfim
+`rgb(252,238,220)` + halo + sombra + reflexo (documentado na Sprint 4) parte
+de uma foto só do produto contra fundo neutro — não é o formato deste
+material, e um recorte automático (`rembg`) sobre uma cena com vários
+objetos arriscava cortar pedaço do produto ou incluir lixo visual.
+
+Optou-se por manter a foto original enviada pela loja, sem qualquer
+invenção de embalagem, rótulo ou fundo de estúdio, ajustada para o
+quadrado 1254×1254 do catálogo com barras desfocadas (extensão borrada da
+própria foto) nas laterais — nunca cortando o produto do enquadramento.
+Fica como melhoria pendente equalizar estas 5 imagens ao padrão de estúdio
+das demais, quando houver fotos de produto isolado (ou quando a loja
+aprovar o tratamento a partir do material atual).
+
+### Validação
+
+`node tools/gerar-paginas.mjs` — 5 páginas novas, 1 removida, sitemap
+atualizado. `node tools/verificar-seo.mjs` — 141 verificações, 0 falhas.
+Publicado como PR #11 (`feat/lote-setembro-2026-produtos`), sem merge
+automático — segue para revisão manual, conforme `ELOA_AUTO_MERGE=0`.
