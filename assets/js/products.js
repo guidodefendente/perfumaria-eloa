@@ -1105,6 +1105,35 @@ const PRODUCTS = [
     description: 'Lip gloss Aozy Sweet Honey, com hidratação e proteção contra o ressecamento dos lábios, efeito molhado, leve e natural.',
     image: 'assets/img/products/lipgloss-aozy.png',
   },
+  // ── Lote de setembro 2026 — divergências, publicadas conforme enviadas ──
+  {
+    id: 'po-iluminador-amor-anjo',
+    name: 'Pó Iluminador',
+    brand: 'Amor e Anjo',
+    category: 'maquiagem',
+    price: 16.00,
+    description: 'Pó iluminador da linha Amor e Anjo. Consulte o tom e o acabamento disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/po-iluminador-amor-anjo.png',
+  },
+  {
+    id: 'pompom',
+    name: 'Pompom',
+    brand: 'Perfumaria',
+    category: 'cabelo',
+    price: 10.00,
+    description: 'Elástico de cabelo em tubo, com aplique em formato de coelho.',
+    image: 'assets/img/products/pompom.png',
+  },
+  {
+    id: 'lip-gloss-cherry',
+    name: 'Lip Gloss',
+    brand: 'Cherry',
+    category: 'maquiagem',
+    price: 12.00,
+    featured: true,
+    description: 'Lip gloss da marca Cherry. Consulte sabores e cores disponíveis pelo WhatsApp.',
+    image: 'assets/img/products/lip-gloss-cherry.png',
+  },
 ];
 
 /** Dados da loja — transcritos do documento do Obsidian. */

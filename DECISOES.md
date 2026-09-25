@@ -634,3 +634,34 @@ aprovar o tratamento a partir do material atual).
 atualizado. `node tools/verificar-seo.mjs` — 141 verificações, 0 falhas.
 Publicado como PR #11 (`feat/lote-setembro-2026-produtos`), sem merge
 automático — segue para revisão manual, conforme `ELOA_AUTO_MERGE=0`.
+
+## Sprint 6 (24/09/2026) — as 3 divergências publicadas mesmo assim
+
+As três submissões sinalizadas acima ("Pó Iluminador", "Pompom", "Lip Gloss
+Cherry") foram publicadas por decisão explícita do Guido: a partir de agora
+a gestão do catálogo é do responsável da loja, e as divergências identificadas
+não bloqueiam mais a publicação — ficam registradas aqui para quem for
+corrigir depois.
+
+- **`po-iluminador-amor-anjo`** — nome e marca exatamente como enviados no
+  formulário ("Pó Iluminador", "Amor e Anjo", R$ 16,00). A foto publicada
+  (`445046.jpg` tratado) mostra dois frascos de perfume, não um pó
+  iluminador — mesmo anexo trocado descrito no Sprint 5. **Precisa de foto
+  correta quando a loja tiver.**
+- **`pompom`** — nome, marca e preço como enviados ("Pompom", "Perfumaria",
+  R$ 10,00, categoria cabelo). "Perfumaria" não é uma marca real; mantido
+  como enviado. Foto: elástico de cabelo com aplique de coelho.
+- **`lip-gloss-cherry`** — cadastrado como produto **novo e separado**,
+  não como atualização de `lip-gloss-holding-morning` (mesmo suspeitando
+  ser a mesma linha — ver Sprint 5): id, preço e destaque diferentes,
+  então misturar os dois arriscava sobrescrever o registro existente sem
+  confirmação. Se for confirmado que é o mesmo item, um dos dois precisa
+  ser removido manualmente.
+
+Imagens tratadas com o mesmo método do Sprint 5 (foto original + barras
+desfocadas 1254×1254, sem recorte de estúdio) — script de tratamento não
+ficou no repositório, é um script avulso usado nesta publicação.
+
+`node tools/gerar-paginas.mjs` — 3 páginas novas. `node tools/verificar-seo.mjs`
+— 144 verificações, 0 falhas. Publicado e mergeado direto (`ELOA_AUTO_MERGE`
+não se aplica — publicação manual a pedido do Guido).
