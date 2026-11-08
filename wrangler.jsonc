@@ -41,7 +41,7 @@
       "binding": "DB",
       "database_name": "eloa",
       // Preenchido por scripts/configurar-cloudflare.sh após criar o banco.
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "4a9caaf7-a1a5-428d-af7e-2e7841e94e26",
       "migrations_dir": "migrations"
     }
   ],
@@ -51,7 +51,7 @@
       // Fotos dos produtos enviadas pelo painel (WebP/JPEG já otimizados no celular).
       "binding": "FOTOS",
       // Preenchido por scripts/configurar-cloudflare.sh após criar o namespace.
-      "id": "00000000000000000000000000000000"
+      "id": "e259051cb21b4fa8beeabbeb44b5d797"
     }
   ],
 
