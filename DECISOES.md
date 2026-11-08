@@ -763,3 +763,10 @@ virada, para o GitHub Pages seguir funcionando; saem no passo 9 de `docs/IMPLANT
 
 **Ainda não validado em produção:** depende da implantação (conta Cloudflare,
 DNS, Email Routing) — roteiro em `docs/IMPLANTACAO.md`.
+
+### Titularidade (decisão do Guido, 07/11/2026)
+
+Nenhum cadastro muda de dono. Registro.br, Google, GitHub e Cloudflare ficam na
+conta do Guido, que segue proprietário de toda a infraestrutura. O irmão tem só
+um login próprio (e-mail e senha) no painel `/painel/` — sem acesso a GitHub,
+Cloudflare, Registro.br ou Google. Operação comercial separada da administração técnica.

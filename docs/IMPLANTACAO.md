@@ -3,7 +3,7 @@
 Roteiro único, feito uma vez. **O site atual continua no ar o tempo todo**: o
 GitHub Pages só deixa de responder no passo 7, quando o Worker já foi testado.
 
-Legenda: 👤 = só o Guido (ou o irmão) pode fazer · 🤖 = automático/Claude
+Legenda: 👤 = só o Guido pode fazer · 🤖 = automático/Claude
 
 ---
 
@@ -14,9 +14,10 @@ Legenda: 👤 = só o Guido (ou o irmão) pode fazer · 🤖 = automático/Claud
 - [ ] Se algum produto foi alterado em `assets/js/products.js` depois deste
       PR, rodar `node scripts/gerar-seed.mjs` para atualizar a carga inicial. 🤖
 
-## 1. 👤 Criar a conta Cloudflare (sem cartão)
+## 1. 👤 Conta Cloudflare (do Guido, sem cartão)
 
-1. Em https://dash.cloudflare.com/sign-up, criar a conta **com o e-mail do irmão**.
+1. Usar a conta Cloudflare **do Guido** (proprietário de toda a infraestrutura). O irmão
+   não tem acesso à Cloudflare, ao GitHub nem ao Registro.br — só ao painel `/painel/`.
 2. **Não cadastrar cartão nem PayPal.** Nenhum passo deste roteiro precisa disso.
    Se alguma tela pedir pagamento, pare: é um serviço pago (ver `CUSTOS.md`).
 3. Recomendado: ativar a verificação em duas etapas (Perfil → Autenticação).
