@@ -27,7 +27,7 @@ export async function telaInicio() {
 
     <section class="cartao">
       <h2>Produtos em destaque</h2>
-      <p class="sub">Os 3 primeiros aparecem no topo da página; os 6 primeiros, na seção “Destaques”.</p>
+      <p class="sub">Os 3 primeiros aparecem no topo da página; os 6 primeiros, na seção “Destaques”. Todo produto em destaque que você cadastra ou salva vai automaticamente para o 1º lugar — aqui você pode ajustar a ordem à mão.</p>
       <ul class="lista" id="destaques" style="box-shadow:none"></ul>
       <button type="button" class="botao botao-secundario botao-largo" id="add-destaque" style="margin-top:12px">${icone('mais')} Adicionar destaque</button>
     </section>

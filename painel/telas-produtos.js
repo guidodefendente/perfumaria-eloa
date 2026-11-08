@@ -211,7 +211,7 @@ export async function telaProduto(id) {
           <span class="chave"><input type="checkbox" name="ativo"${p.ativo ? ' checked' : ''}><i></i></span>
         </label>
         <label class="interruptor">
-          <span class="interruptor-texto"><strong>Destaque na página inicial</strong><small>A ordem dos destaques fica em “Página inicial”.</small></span>
+          <span class="interruptor-texto"><strong>Destaque na página inicial</strong><small>Ao salvar, o produto vai para o 1º lugar dos destaques. A ordem pode ser ajustada em “Página inicial”.</small></span>
           <span class="chave"><input type="checkbox" name="destaque"${p.destaque ? ' checked' : ''}><i></i></span>
         </label>
       </section>

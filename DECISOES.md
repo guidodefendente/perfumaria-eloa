@@ -770,3 +770,13 @@ Nenhum cadastro muda de dono. Registro.br, Google, GitHub e Cloudflare ficam na
 conta do Guido, que segue proprietário de toda a infraestrutura. O irmão tem só
 um login próprio (e-mail e senha) no painel `/painel/` — sem acesso a GitHub,
 Cloudflare, Registro.br ou Google. Operação comercial separada da administração técnica.
+
+## Destaques pelo mais recente (08/11/2026)
+
+Pedido do Guido: a página inicial deve mostrar primeiro os destaques alterados
+mais recentemente (antes, a ordem vinha da carga inicial, com a linha O
+Boticário na frente). Regra: produto em destaque cadastrado ou salvo no painel
+vai para o 1º lugar e os demais descem uma posição. A ordem continua ajustável
+à mão em "Página inicial". Mostrar/ocultar pela chave da lista não mexe na
+ordem. A migration `0003` reordenou os destaques existentes uma vez, pelo
+`atualizado_em`.

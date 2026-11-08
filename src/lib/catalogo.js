@@ -174,6 +174,20 @@ function instrucoesDeFotos(env, produtoId, fotos) {
   ];
 }
 
+/**
+ * Regra dos destaques: o produto em destaque que acabou de ser cadastrado ou
+ * salvo vai para o 1º lugar, e os outros descem uma posição. Assim a página
+ * inicial mostra primeiro os destaques alterados mais recentemente. A ordem
+ * ainda pode ser ajustada à mão em "Página inicial".
+ * (O produto recebe destaque_pos = 0 antes destas instruções.)
+ */
+function subirParaPrimeiroDestaque(env, id) {
+  return [
+    env.DB.prepare('UPDATE produtos SET destaque_pos = destaque_pos + 1 WHERE destaque_pos IS NOT NULL AND id <> ?1').bind(id),
+    env.DB.prepare('UPDATE produtos SET destaque_pos = 1 WHERE id = ?1').bind(id),
+  ];
+}
+
 const brl = (c) => (c / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
 export async function criarProduto(env, usuario, dados) {
@@ -188,16 +202,16 @@ export async function criarProduto(env, usuario, dados) {
   const id = await slugLivre(env, 'produtos', base);
 
   const t = agora();
-  const max = await env.DB.prepare(`SELECT COALESCE(MAX(posicao), 0) AS pos,
-      (SELECT COALESCE(MAX(destaque_pos), 0) FROM produtos) AS dpos FROM produtos WHERE categoria_id = ?1`).bind(p.categoria).first();
+  const max = await env.DB.prepare('SELECT COALESCE(MAX(posicao), 0) AS pos FROM produtos WHERE categoria_id = ?1').bind(p.categoria).first();
   await env.DB.batch([
     env.DB.prepare(`INSERT INTO produtos (id, nome, marca, categoria_id, preco_centavos, descricao, publico, ficha_json,
         fragrancia_json, ativo, destaque_pos, posicao, criado_em, atualizado_em)
         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?13)`)
       .bind(id, p.nome, p.marca, p.categoria, p.centavos, p.descricao, p.publico,
         p.ficha && JSON.stringify(p.ficha), p.fragrancia && JSON.stringify(p.fragrancia),
-        p.ativo ? 1 : 0, p.destaque ? max.dpos + 1 : null, max.pos + 1, t),
+        p.ativo ? 1 : 0, p.destaque ? 0 : null, max.pos + 1, t),
     ...instrucoesDeFotos(env, id, p.fotos),
+    ...(p.destaque ? subirParaPrimeiroDestaque(env, id) : []),
     registro(env, usuario, 'produto.criar', `Cadastrou "${p.nome}" (${p.marca}) por ${brl(p.centavos)}${p.ativo ? '' : ' — oculto'}`),
   ]);
   await publicar(env);
@@ -212,11 +226,7 @@ export async function atualizarProduto(env, usuario, id, dados) {
   const p = v.produto;
   await conferirFotos(env, p.fotos, id);
 
-  let destaquePos = atual.destaque_pos;
-  if (p.destaque && destaquePos === null) {
-    const m = await env.DB.prepare('SELECT COALESCE(MAX(destaque_pos), 0) AS m FROM produtos').first();
-    destaquePos = m.m + 1;
-  } else if (!p.destaque) destaquePos = null;
+  const destaquePos = p.destaque ? 0 : null;
 
   const mudancas = [];
   if (atual.preco_centavos !== p.centavos) mudancas.push(`preço ${brl(atual.preco_centavos)} → ${brl(p.centavos)}`);
@@ -230,6 +240,7 @@ export async function atualizarProduto(env, usuario, id, dados) {
         p.ficha && JSON.stringify(p.ficha), p.fragrancia && JSON.stringify(p.fragrancia),
         p.ativo ? 1 : 0, destaquePos, agora()),
     ...instrucoesDeFotos(env, id, p.fotos),
+    ...(p.destaque ? subirParaPrimeiroDestaque(env, id) : []),
     registro(env, usuario, 'produto.editar', `Editou "${p.nome}"${mudancas.length ? `: ${mudancas.join('; ')}` : ''}`),
   ]);
   await publicar(env);

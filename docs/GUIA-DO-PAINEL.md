@@ -84,7 +84,9 @@ O painel pede confirmação.
 Em **Página inicial**:
 
 - **Produtos em destaque:** os **3 primeiros** aparecem no topo do site; os
-  **6 primeiros**, na seção “Destaques”. Use ↑ ↓ para mudar a ordem, ✕ para
+  **6 primeiros**, na seção “Destaques”. **Todo produto em destaque que você
+  cadastra ou salva vai sozinho para o 1º lugar** — assim a página inicial
+  mostra sempre as novidades primeiro. Use ↑ ↓ para mudar a ordem, ✕ para
   tirar e **+ Adicionar destaque** para incluir.
 - **Categorias na página inicial:** ligue as que devem aparecer e ajuste a ordem.
 

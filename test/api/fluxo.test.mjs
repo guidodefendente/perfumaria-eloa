@@ -191,6 +191,28 @@ test('editar: preço, ordem das fotos e foto principal', async () => {
   assert.equal(p.image, fotoB.src, 'nova foto principal');
 });
 
+test('destaque salvo vai para o 1º lugar da página inicial', async () => {
+  const r = await chamar('PUT', `/api/admin/produtos/${produtoId}`, novo([fotoB.id, fotoA.id], { preco: '34,50', destaque: true }));
+  assert.equal(r.status, 200, JSON.stringify(r.dados));
+  const ordem = () => catalogoPublico().then((c) => c.produtos.filter((p) => p.featured)
+    .sort((a, b) => a.featuredOrder - b.featuredOrder).map((p) => p.id));
+  const antes = await ordem();
+  assert.equal(antes[0], produtoId);
+  assert.equal(antes.length, 13, 'os 12 destaques anteriores continuam, uma posição abaixo');
+  // Editar outro destaque o coloca no topo, e o anterior desce para o 2º.
+  const outro = antes[5];
+  const { dados } = await chamar('GET', '/api/admin/catalogo');
+  const p = dados.produtos.find((x) => x.id === outro);
+  const edit = await chamar('PUT', `/api/admin/produtos/${outro}`, {
+    nome: p.nome, marca: p.marca, categoria: p.categoria, preco: p.preco, descricao: p.descricao,
+    publico: p.publico, ficha: p.ficha, fragrancia: p.fragrancia, fotos: p.fotos.map((f) => f.id), ativo: p.ativo, destaque: true,
+  });
+  assert.equal(edit.status, 200, JSON.stringify(edit.dados));
+  const depois = await ordem();
+  assert.deepEqual(depois.slice(0, 2), [outro, produtoId]);
+  assert.equal(new Set(depois).size, depois.length);
+});
+
 test('ocultar e mostrar de novo', async () => {
   assert.equal((await chamar('PUT', `/api/admin/produtos/${produtoId}/ativo`, { ativo: false })).status, 200);
   assert.ok(!(await catalogoPublico()).produtos.some((x) => x.id === produtoId));
