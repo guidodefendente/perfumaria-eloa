@@ -156,7 +156,8 @@ export default {
       if (p.startsWith('/api/admin/')) return await apiAdmin(env, request, p.slice(11));
 
       // Só em desenvolvimento local: e-mails "enviados" para os testes lerem.
-      if (p === '/api/dev/emails' && env.EMAIL_MODE === 'console' && url.hostname === 'localhost') {
+      // (o wrangler dev reescreve o host para o da rota, então a trava é pela configuração local)
+      if (p === '/api/dev/emails' && env.EMAIL_MODE === 'console' && String(env.SITE_URL).startsWith('http://localhost')) {
         return json({ emails: ultimosEmailsDeTeste() });
       }
 

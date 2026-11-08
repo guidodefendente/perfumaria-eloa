@@ -88,3 +88,4 @@ test('formato da imagem pelos bytes, não pelo nome', () => {
   assert.equal(formatoDe(jpg), 'image/jpeg');
   assert.equal(formatoDe(png), null);
 });
+

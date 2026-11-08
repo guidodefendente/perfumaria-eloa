@@ -5,7 +5,7 @@
  * (#/produtos, #/produtos/<id>, #/categorias, #/inicio, #/conta) para o botão
  * voltar do celular funcionar como esperado.
  */
-import { api } from './api.js';
+import { api, MSG_SEM_API } from './api.js';
 import { esc, $, $$, avisar, confirmar, ocupado, mostrarErros } from './ui.js';
 import { derivarChave, novoSal, ITERACOES, problemaNaSenha } from './senha.js';
 import { validarEmail } from './validacao.js';
@@ -111,7 +111,16 @@ async function iniciar() {
   try {
     const { usuario } = await api('GET', '/api/auth/sessao');
     estado.usuario = usuario;
-  } catch (_) { estado.usuario = null; }
+  } catch (erro) {
+    estado.usuario = null;
+    if (erro.message === MSG_SEM_API) {
+      tela().innerHTML = `<div class="tela-estreita">${marca('Painel da loja', '')}
+        <div class="caixa caixa-alerta" role="alert">${esc(MSG_SEM_API)}</div>
+        <button class="botao botao-secundario botao-largo" type="button" data-recarregar>Tentar de novo</button></div>`;
+      $('[data-recarregar]', tela()).addEventListener('click', () => location.reload());
+      return;
+    }
+  }
   roteador();
 }
 

@@ -8,6 +8,8 @@ export class ErroApi extends Error {
   }
 }
 
+export const MSG_SEM_API = 'O painel ainda não está ativo neste endereço: o domínio está terminando de apontar para o novo servidor. Tente de novo em alguns minutos.';
+
 export async function api(metodo, caminho, corpo, { form } = {}) {
   const opcoes = { method: metodo, credentials: 'same-origin', headers: {} };
   if (form) opcoes.body = form;
@@ -20,6 +22,12 @@ export async function api(metodo, caminho, corpo, { form } = {}) {
     resposta = await fetch(caminho, opcoes);
   } catch (_) {
     throw new ErroApi('Sem conexão com a internet. Confira o sinal e tente de novo.', 0);
+  }
+  const ehJson = (resposta.headers.get('content-type') || '').includes('application/json');
+  if (!ehJson && resposta.status !== 204) {
+    // Quem respondeu não foi a API do painel (ex.: o domínio ainda está
+    // apontando para a hospedagem antiga, sem o servidor do painel).
+    throw new ErroApi(MSG_SEM_API, resposta.status);
   }
   let dados = {};
   try { dados = await resposta.json(); } catch (_) { /* resposta sem corpo */ }

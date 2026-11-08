@@ -162,9 +162,32 @@ export async function pedirRedefinicao(env, request, dados) {
   await env.DB.prepare('INSERT INTO redefinicoes (token_hash, usuario_id, criado_em, expira_em) VALUES (?1, ?2, ?3, ?4)')
     .bind(await sha256(token), u.id, agora, agora + DURACAO_LINK).run();
 
-  const link = `${env.SITE_URL}/painel/#/redefinir/${token}`;
+  const link = `${origemPermitida(env, request)}/painel/#/redefinir/${token}`;
   const msg = emailRedefinicao(link, !u.verificador);
-  await enviarEmail(env, { para: email, ...msg });
+  try {
+    await enviarEmail(env, { para: email, ...msg });
+  } catch (erro) {
+    // Causa real no log (ex.: domínio ainda não ativo no Email Routing,
+    // destinatário não verificado); para a pessoa, uma mensagem que diz o que houve.
+    console.error(`Falha ao enviar e-mail de redefinição para ${email}:`, erro && erro.message ? erro.message : erro);
+    throw new ErroHttp(503, 'Não conseguimos enviar o e-mail agora. Tente de novo em alguns minutos. Se continuar, avise o Guido.');
+  }
+}
+
+/**
+ * Endereço usado no link do e-mail: o mesmo em que o pedido foi feito, desde
+ * que seja o domínio oficial ou o endereço *.workers.dev deste Worker. Assim o
+ * link nunca leva para um endereço que ainda não atende o painel.
+ */
+export function origemPermitida(env, request) {
+  const oficial = new URL(env.SITE_URL);
+  try {
+    const pedido = new URL(request.url);
+    const ok = pedido.protocol === 'https:'
+      && (pedido.hostname === oficial.hostname || /^perfumaria-eloa\.[a-z0-9-]+\.workers\.dev$/.test(pedido.hostname));
+    if (ok) return pedido.origin;
+  } catch (_) { /* usa o oficial */ }
+  return oficial.origin;
 }
 
 function validarNovaChave(dados) {
