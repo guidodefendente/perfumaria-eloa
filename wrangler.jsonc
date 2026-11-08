@@ -14,6 +14,14 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-10-01",
   "workers_dev": true,
+
+  // Domínio próprio. Rotas sobre os registros DNS com proxy (nuvem laranja):
+  // o Worker atende tudo; se um dia o limite gratuito diário for atingido,
+  // a rota "falha aberta" e o visitante cai no GitHub Pages em vez de ver erro.
+  "routes": [
+    { "pattern": "perfumariaeloa.com.br/*", "zone_name": "perfumariaeloa.com.br" },
+    { "pattern": "www.perfumariaeloa.com.br/*", "zone_name": "perfumariaeloa.com.br" }
+  ],
   "preview_urls": false,
 
   // Arquivos do site (HTML, CSS, JS, fontes, imagens antigas, painel).
