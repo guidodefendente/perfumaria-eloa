@@ -780,3 +780,4 @@ vai para o 1º lugar e os demais descem uma posição. A ordem continua ajustáv
 à mão em "Página inicial". Mostrar/ocultar pela chave da lista não mexe na
 ordem. A migration `0003` reordenou os destaques existentes uma vez, pelo
 `atualizado_em`.
+`0004` descarta o catálogo publicado em cache para a nova ordem aparecer na hora.
