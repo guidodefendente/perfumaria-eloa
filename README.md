@@ -5,59 +5,64 @@ Catálogo digital da Perfumaria Eloá, desenvolvido durante o Projeto Atlas.
 Loja física na Rua Nascer do Sol, 243 — Cidade Tiradentes, São Paulo/SP.
 Os pedidos são montados no site e finalizados pelo WhatsApp.
 
-## Como rodar
+## Como funciona (a partir do painel administrativo)
 
-Não há build nem dependências para instalar.
+- **Produtos, preços, fotos, categorias e destaques** são administrados pelo
+  painel em **https://perfumariaeloa.com.br/painel/** — no celular, sem
+  código, sem commit e sem deploy. Salvou, está no site.
+- O site roda na **Cloudflare** (Workers + D1 + KV), inteiramente no **plano
+  gratuito** e numa conta **sem forma de pagamento** — ver [`docs/CUSTOS.md`](docs/CUSTOS.md).
+- O site do cliente continua sendo HTML/CSS/JS puro, sem build; o catálogo
+  (`assets/js/products.js`) passa a ser gerado pelo Worker a partir do banco.
 
-**Opção 1 — abrir direto:** dê um duplo clique em `index.html`.
+| Documento | Para quem |
+|---|---|
+| [`docs/GUIA-DO-PAINEL.md`](docs/GUIA-DO-PAINEL.md) | Quem cuida da loja — passo a passo do painel |
+| [`docs/IMPLANTACAO.md`](docs/IMPLANTACAO.md) | Roteiro único de troca do GitHub Pages para a Cloudflare |
+| [`docs/CUSTOS.md`](docs/CUSTOS.md) | Por que não há cobrança, limites e o que nunca ativar |
+| [`docs/SEGURANCA.md`](docs/SEGURANCA.md) | Login, senhas, sessões e proteções |
+| [`docs/MANUTENCAO.md`](docs/MANUTENCAO.md) | Arquitetura, ambiente local, testes, backup |
+| [`DECISOES.md`](DECISOES.md) | Histórico de decisões de todas as sprints |
 
-**Opção 2 — servidor local** (recomendado, evita restrições do `file://`):
+## Como rodar localmente
 
 ```bash
-python3 -m http.server 8000
+npm install
+cp .dev.vars.exemplo .dev.vars
+npm run db:migrar:local      # banco local com o catálogo atual
+npm run dev                  # site em http://localhost:8787 e painel em /painel/
+scripts/testar-local.sh      # testes unitários, de API e de interface
 ```
 
-Depois acesse <http://localhost:8000>.
-
-Não precisa de internet: o CSS e as fontes são servidos pelo próprio projeto.
+Sem a Cloudflare, o site estático também abre com `python3 -m http.server 8000`
+(usa o `assets/js/products.js` versionado, retrato do catálogo antes do painel).
 
 ## Estrutura
 
 ```
-index.html                    estrutura e conteúdo das quatro telas
+index.html                    estrutura e conteúdo das quatro telas do site
 assets/
-  css/styles.css              tokens de design e componentes
+  css/styles.css              tokens de design e componentes (inclui a galeria)
   css/tailwind.css            utilitárias compiladas (gerado — não editar à mão)
-  js/products.js              catálogo e dados da loja  ← edite aqui para mudar produtos
-  js/app.js                   estado, roteamento e interações
-  img/logo-eloa.png           logotipo oficial
-  img/products/*.png          imagens de catálogo tratadas dos produtos (provisórias)
+  js/app.js                   estado, roteamento e interações do site
+  js/galeria.js               galeria de fotos do produto (site e Worker)
+  js/products.js              catálogo estático pré-painel (no Worker, é gerado do banco)
+  img/products/w/*.webp       fotos do catálogo em WebP (1200 px e miniatura 600 px)
+  img/products/*.png          originais em PNG (matriz de qualidade; não vão para o site)
   fonts/*.woff2               Inter e Playfair Display (subconjunto latino)
+painel/                       painel administrativo (HTML/CSS/JS, módulos ES, sem build)
+src/                          Worker da Cloudflare (API, autenticação, fotos, páginas de produto)
+migrations/                   estrutura do banco D1 e carga inicial do catálogo
+scripts/                      carga inicial, conversão de fotos, configuração e testes
+test/                         testes unitários, de API e de interface
+docs/                         guias (painel, implantação, custos, segurança, manutenção)
+wrangler.jsonc                configuração do Worker (só serviços gratuitos)
+.github/workflows/            publicação automática e configuração inicial da Cloudflare
+produto/, sitemap.xml         versão estática pré-painel (o Worker gera na hora; sai após a virada)
+tools/                        geradores da versão estática (saem após a virada)
 build/                        config para regerar o tailwind.css
-produto/<id>/index.html       páginas estáticas de produto (GERADAS — não editar)
-robots.txt                    liberado, aponta o sitemap
-sitemap.xml                   home + 60 produtos (GERADO — não editar)
-tools/gerar-paginas.mjs       gera as páginas de produto e o sitemap
-tools/verificar-seo.mjs       verificações de SEO e integridade do catálogo
 DECISOES.md                   decisões tomadas e o que ainda é provisório
 ```
-
-O projeto não tem `package.json` nem `node_modules`. O `assets/css/tailwind.css` é um
-arquivo pronto e versionado; só precisa ser regerado se você usar uma classe do Tailwind
-que ainda não aparecia no projeto:
-
-```bash
-cd build && npx tailwindcss@3 -c tailwind.config.js -i input.css -o ../assets/css/tailwind.css --minify
-```
-
-As imagens dos produtos (`assets/img/products/*.png`) são fotos de catálogo tratadas —
-fundo marfim, luz de estúdio, sombra suave e reflexo discreto — mantendo a embalagem e a
-identidade visual de cada item. Todos os 59 produtos usam esse padrão, em 1254 × 1254 PNG.
-
-As 32 imagens da Sprint 4 vêm das fotografias enviadas pela loja e as 15 da Sprint 5 da
-página oficial de cada fabricante; em ambos os casos o tratamento é recorte, limpeza,
-iluminação, fundo, sombra e reflexo, sem redesenhar embalagem ou rótulo. As 13 restantes
-ainda são ilustrações da Sprint 2 — ver `DECISOES.md`.
 
 ## Telas
 
@@ -72,65 +77,17 @@ O carrinho é um painel lateral no desktop e um *bottom sheet* no celular.
 
 ## Como atualizar o catálogo
 
-Tudo em `assets/js/products.js`.
+**Pelo painel** — ver [`docs/GUIA-DO-PAINEL.md`](docs/GUIA-DO-PAINEL.md).
 
-**Trocar um preço:** altere o campo `price` (número, sem símbolo de moeda).
+A regra editorial continua valendo: a vitrine do cliente não recebe fonte de
+pesquisa, código interno nem aviso de "pendente de confirmação" — o que não foi
+confirmado simplesmente não é publicado.
 
-**Usar a foto real de um produto:** coloque o arquivo em `assets/img/products/` e aponte o
-campo `image` para ele.
-
-```js
-image: 'assets/img/products/perfume-o-boticario.jpg',
-```
-
-**Adicionar um produto:** copie um bloco existente, troque os campos e use um `id` único.
-O `category` precisa ser um dos ids de `CATEGORIES`.
-
-**Ficha do produto:** o campo opcional `specs` é uma lista de `{ label, value }` que vira o
-bloco "Sobre o produto" na página do produto. Um valor que comece com "Pendente" aparece em
-itálico e cinza — use isso em vez de inventar o dado.
-
-**Perfumes:** o campo opcional `fragrance` (`familia`, `acordes`, `saida`, `coracao`,
-`fundo`, `sensacao`, `ocasiao`) vira os blocos "Perfil olfativo" e "Notas olfativas". A
-pirâmide de notas só aparece quando `saida`/`coracao`/`fundo` existem.
-
-**Público:** `audience` (`'feminino'` ou `'masculino'`) alimenta o filtro que aparece
-dentro da categoria Perfumes e entra na busca.
-
-**Regra editorial:** `products.js` alimenta a vitrine do cliente. Não entra ali fonte de
-pesquisa, código interno nem aviso de "pendente de confirmação" — o que não foi confirmado
-simplesmente não é publicado. A rastreabilidade fica em `DECISOES.md`.
-
-**Destacar na página inicial:** adicione `featured: true`.
-
-**Depois de qualquer mudança em `products.js`, rode o gerador:**
-
-```bash
-node tools/gerar-paginas.mjs
-```
-
-Ele reescreve `produto/<id>/index.html` para cada produto e regenera o
-`sitemap.xml`. Sem esse passo, a página estática do produto fica desatualizada
-(ou nem existe, no caso de um produto novo). Em seguida, confirme tudo com:
-
-```bash
-node tools/verificar-seo.mjs
-```
-
-A verificação falha se algum produto estiver sem página, se sobrar página de
-produto removido ou se o sitemap não bater com o catálogo. Ao publicar ou
-remover um produto, atualize também a constante `ESPERADO` no topo do
-`verificar-seo.mjs` — é o único contador manual do projeto.
-
-**Nunca edite `produto/<id>/index.html` à mão:** o arquivo é gerado e a próxima
-execução sobrescreve. Para mudar a página, mude `products.js`.
+Até a virada para a Cloudflare (ver [`docs/IMPLANTACAO.md`](docs/IMPLANTACAO.md)),
+o site no ar ainda é o do GitHub Pages, alimentado por `assets/js/products.js` +
+`node tools/gerar-paginas.mjs`. Depois da virada, esse arquivo deixa de ser editado.
 
 ## Estado atual
 
-Protótipo navegável, com o fluxo completo funcionando: encontrar produto → adicionar ao
-carrinho → ajustar quantidade → finalizar no WhatsApp.
-
-**59 produtos em 7 categorias**, sendo 32 de perfumaria. Os 47 produtos das remessas de
-agosto/2026 têm preço, nome e ficha confirmados pela loja, pela embalagem ou pela página
-oficial do fabricante. Os 12 produtos restantes da Sprint 1 continuam com preço, descrição
-e imagem provisórios, e a curadoria dos destaques ainda é nossa. Ver `DECISOES.md`.
+**67 produtos em 7 categorias.** Painel administrativo pronto e testado
+(Sprint 7, ver `DECISOES.md`), aguardando a implantação na Cloudflare.

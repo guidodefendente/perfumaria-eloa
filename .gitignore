@@ -11,3 +11,11 @@ admin/admin.js
 admin/_submissoes/
 
 .DS_Store
+
+# Worker (Cloudflare)
+node_modules/
+.wrangler/
+.dev.vars
+.dev.vars.*
+!.dev.vars.exemplo
+test/e2e/capturas/

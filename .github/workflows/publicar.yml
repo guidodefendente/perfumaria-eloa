@@ -1,0 +1,89 @@
+# Publica o código do site e do painel na Cloudflare a cada mudança no main.
+#
+# IMPORTANTE: isto só publica CÓDIGO. Produtos, preços, fotos e categorias
+# são alterados pelo painel e vão direto para o banco — não passam por aqui.
+#
+# Só roda depois da configuração inicial (fluxo "Configurar Cloudflare"),
+# quando existem os segredos CLOUDFLARE_API_TOKEN e CLOUDFLARE_ACCOUNT_ID.
+name: Publicar na Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      ADMIN_EMAILS: ${{ secrets.ADMIN_EMAILS }}
+    steps:
+      - name: Verificar se a Cloudflare já foi configurada
+        id: pronto
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "Cloudflare ainda não configurada — nada a publicar (o site continua no GitHub Pages)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.pronto.outputs.ok == 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.pronto.outputs.ok == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar ferramentas
+        if: steps.pronto.outputs.ok == 'true'
+        run: npm ci --no-audit --no-fund
+
+      - name: Testes
+        if: steps.pronto.outputs.ok == 'true'
+        run: npm test
+
+      - name: Conferir configuração (banco e KV preenchidos)
+        if: steps.pronto.outputs.ok == 'true'
+        run: |
+          if grep -q '00000000-0000-0000-0000-000000000000' wrangler.jsonc; then
+            echo "::error::wrangler.jsonc ainda sem o ID do banco. Rode o fluxo 'Configurar Cloudflare' primeiro."
+            exit 1
+          fi
+
+      - name: Atualizar estrutura do banco (migrations)
+        if: steps.pronto.outputs.ok == 'true'
+        run: npx wrangler d1 migrations apply eloa --remote
+
+      - name: Publicar o Worker
+        if: steps.pronto.outputs.ok == 'true'
+        run: npx wrangler deploy
+
+      - name: Sincronizar e-mails autorizados (ADMIN_EMAILS)
+        if: steps.pronto.outputs.ok == 'true' && env.ADMIN_EMAILS != ''
+        run: printf '%s' "$ADMIN_EMAILS" | npx wrangler secret put ADMIN_EMAILS
+
+      - name: Conferir que o site responde
+        if: steps.pronto.outputs.ok == 'true'
+        run: |
+          URL=$(node -e "const s=require('fs').readFileSync('wrangler.jsonc','utf8');const m=s.match(/\"SITE_URL\":\s*\"([^\"]+)\"/);console.log(m[1])")
+          if grep -q '"custom_domain": true' wrangler.jsonc; then
+            for i in 1 2 3 4 5 6; do
+              if curl -sf "$URL/api/catalogo" > /dev/null; then echo "Site no ar: $URL"; exit 0; fi
+              sleep 10
+            done
+            echo "::warning::$URL/api/catalogo não respondeu — confira o domínio no painel da Cloudflare."
+          else
+            echo "Domínio próprio ainda não ligado ao Worker (só workers.dev)."
+          fi

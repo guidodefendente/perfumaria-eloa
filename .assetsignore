@@ -1,0 +1,36 @@
+# O que NÃO é publicado como arquivo do site (Workers Static Assets).
+# Tudo o que não está aqui fica acessível em https://perfumariaeloa.com.br/<caminho>.
+.git
+.github
+.gitignore
+.assetsignore
+.wrangler
+.dev.vars*
+.DS_Store
+.claude
+node_modules
+package.json
+package-lock.json
+wrangler.jsonc
+src
+migrations
+scripts
+test
+tools
+build
+docs
+*.md
+CNAME
+_to_delete
+
+# Substituídos pelo Worker (gerados na hora a partir do banco):
+assets/js/products.js
+produto
+sitemap.xml
+
+# Formulário antigo (FormSubmit) — /admin/* redireciona para /painel/
+admin
+
+# Originais PNG ficam no repositório como matriz; o site usa as versões WebP.
+assets/img/products/*.png
+assets/img/products/*.svg

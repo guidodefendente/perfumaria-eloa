@@ -138,8 +138,8 @@ const App = (() => {
     return `
       <article class="card group">
         <a href="#/produto/${product.id}" class="card-img block" aria-label="Ver ${escapeHtml(product.name)} ${escapeHtml(product.brand)}">
-          <img src="${product.image}" alt="${escapeHtml(product.name)} da marca ${escapeHtml(product.brand)}"
-               width="800" height="800" loading="lazy" decoding="async">
+          <img src="${escapeHtml(product.thumb || product.image)}" alt="${escapeHtml(product.name)} da marca ${escapeHtml(product.brand)}"
+               width="600" height="600" loading="lazy" decoding="async">
           ${product.featured ? '<span class="badge">Destaque</span>' : ''}
         </a>
         <div class="p-3.5 sm:p-4 flex flex-col flex-1">
@@ -162,7 +162,8 @@ const App = (() => {
 
   // ── Renderização: Início ────────────────────────────────────────────────
   function renderHome() {
-    $('#home-categories').innerHTML = CATEGORIES.map((category) => {
+    // Ordem e visibilidade definidas no painel (Página inicial → Categorias).
+    $('#home-categories').innerHTML = CATEGORIES.filter((c) => c.home !== false).map((category) => {
       const total = PRODUCTS.filter((p) => p.category === category.id).length;
       // min-h e mt-auto: os nomes têm comprimentos bem diferentes ("Unhas" ao
       // lado de "Cuidados com a pele"), e sem isso a contagem de itens flutuava
@@ -182,7 +183,8 @@ const App = (() => {
     // crescendo, a lista inteira empurrava "Como pedir" para fora do alcance
     // de quem chega. Quem quiser ver o resto tem o "Ver tudo" ao lado do
     // título e o catálogo completo a um clique.
-    const destaques = PRODUCTS.filter((p) => p.featured);
+    const destaques = PRODUCTS.filter((p) => p.featured)
+      .sort((a, b) => (a.featuredOrder || 0) - (b.featuredOrder || 0));
     $('#home-featured').innerHTML = destaques.slice(0, HOME_FEATURED_MAX).map(productCard).join('');
 
     renderHeroVitrine(destaques);
@@ -238,7 +240,7 @@ const App = (() => {
     // repeti-lo no alt faria o leitor de tela anunciar tudo duas vezes
     const cartao = (p, classe) => `
       <a href="#/produto/${p.id}" class="hero-vitrine-item ${classe}">
-        <img src="${escapeHtml(p.image)}" alt="" width="240" height="240" decoding="async">
+        <img src="${escapeHtml(p.thumb || p.image)}" alt="" width="240" height="240" decoding="async">
         <span class="hero-vitrine-nome">${escapeHtml(p.name)}</span>
         <span class="hero-vitrine-preco tnum">${brl(p.price)}</span>
       </a>`;
@@ -361,10 +363,7 @@ const App = (() => {
 
     container.innerHTML = `
       <div class="grid md:grid-cols-2 gap-6 lg:gap-12 items-start">
-        <div class="rounded-[22px] overflow-hidden border border-[#EAE0E3] bg-sand-100 aspect-square">
-          <img src="${product.image}" alt="${escapeHtml(product.name)} da marca ${escapeHtml(product.brand)}"
-               width="800" height="800" class="w-full h-full object-cover" decoding="async">
-        </div>
+        ${Galeria.html(product)}
 
         <div class="md:pt-4">
           <a href="#/catalogo?cat=${product.category}" class="eyebrow hover:text-rose-600">${escapeHtml(category ? category.name : '')}</a>
@@ -411,6 +410,7 @@ const App = (() => {
       .concat(PRODUCTS.filter((p) => p.category !== product.category && p.featured))
       .slice(0, 4);
     $('#product-related').innerHTML = related.map(productCard).join('');
+    Galeria.ativar(container);
   }
 
   // ── Renderização: Sobre ─────────────────────────────────────────────────
@@ -487,7 +487,7 @@ const App = (() => {
       return `
         <div class="flex gap-3 py-4 border-b border-[#EAE0E3] last:border-0">
           <a href="#/produto/${p.id}" onclick="App.closeCart()" class="shrink-0">
-            <img src="${p.image}" alt="" width="80" height="80"
+            <img src="${escapeHtml(p.thumb || p.image)}" alt="" width="80" height="80"
                  class="w-20 h-20 rounded-[10px] object-cover bg-sand-100" loading="lazy" decoding="async">
           </a>
           <div class="flex-1 min-w-0">

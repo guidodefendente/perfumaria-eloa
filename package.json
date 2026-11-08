@@ -1,0 +1,24 @@
+{
+  "name": "perfumaria-eloa",
+  "private": true,
+  "type": "module",
+  "description": "Catálogo digital e painel administrativo da Perfumaria Eloá (Cloudflare Workers + D1 + KV).",
+  "scripts": {
+    "dev": "wrangler dev",
+    "db:migrar:local": "wrangler d1 migrations apply eloa --local",
+    "db:migrar:remoto": "wrangler d1 migrations apply eloa --remote",
+    "seed:gerar": "node scripts/gerar-seed.mjs",
+    "imagens:webp": "python3 scripts/converter-imagens.py",
+    "test": "node --test \"test/unit/*.test.mjs\"",
+    "test:api": "node --test --test-concurrency=1 \"test/api/*.test.mjs\"",
+    "test:e2e": "node --test --test-concurrency=1 \"test/e2e/*.test.mjs\"",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^24.43.1",
+    "wrangler": "4.158.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

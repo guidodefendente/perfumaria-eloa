@@ -1,0 +1,79 @@
+// Configuração do Worker da Perfumaria Eloá.
+//
+// TUDO AQUI FICA NO PLANO GRATUITO (Workers Free + D1 + KV), sem forma de
+// pagamento cadastrada na conta. Ver docs/CUSTOS.md antes de mudar qualquer
+// binding: R2, Images, Queues, Durable Objects pagos ou "Workers Paid"
+// NÃO devem ser adicionados sem autorização expressa do Guido.
+//
+// Segredos (nunca neste arquivo — o repositório é público):
+//   AUTH_PEPPER   chave do HMAC das senhas           (wrangler secret put AUTH_PEPPER)
+//   ADMIN_EMAILS  e-mails autorizados, separados por vírgula
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "perfumaria-eloa",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+
+  // Arquivos do site (HTML, CSS, JS, fontes, imagens antigas, painel).
+  // Requisições a arquivos estáticos são gratuitas e ilimitadas e não
+  // contam no limite diário do Worker. O .assetsignore tira do upload o que
+  // não é site (código do Worker, migrations, docs, ferramentas).
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none",
+    // Só estas rotas passam pelo Worker; o resto é arquivo estático.
+    "run_worker_first": [
+      "/api/*",
+      "/img/*",
+      "/produto/*",
+      "/sitemap.xml",
+      "/assets/js/products.js",
+      "/admin/*"
+    ]
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "eloa",
+      // Preenchido por scripts/configurar-cloudflare.sh após criar o banco.
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "kv_namespaces": [
+    {
+      // Fotos dos produtos enviadas pelo painel (WebP/JPEG já otimizados no celular).
+      "binding": "FOTOS",
+      // Preenchido por scripts/configurar-cloudflare.sh após criar o namespace.
+      "id": "00000000000000000000000000000000"
+    }
+  ],
+
+  // E-mail de recuperação de senha. Só entrega para endereços VERIFICADOS
+  // no Email Routing da conta — gratuito em qualquer plano.
+  "send_email": [
+    { "name": "EMAIL" }
+  ],
+
+  // Limpeza diária: fotos órfãs (após 7 dias, mesmo prazo do Time Travel do
+  // D1), sessões e tokens vencidos. Cron Triggers são gratuitos.
+  "triggers": {
+    "crons": ["17 6 * * *"]
+  },
+
+  "vars": {
+    "SITE_URL": "https://perfumariaeloa.com.br",
+    "EMAIL_FROM": "nao-responda@perfumariaeloa.com.br",
+    "EMAIL_MODE": "cloudflare"
+  },
+
+  "observability": {
+    "enabled": true
+  }
+}
