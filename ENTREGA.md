@@ -1,5 +1,15 @@
 # Entrega do projeto — Perfumaria Eloá
 
+> **Atualização (07/11/2026, Sprint 7):** a automação de cadastro descrita na
+> seção 3 (FormSubmit → Gmail do Guido → Hermes → Claude Code) foi **substituída
+> pelo painel administrativo** em `/painel/`, que não depende do Guido, do Mac
+> nem do Gmail dele. A hospedagem passa do GitHub Pages para a Cloudflare
+> (plano gratuito, conta do Guido, sem forma de pagamento). Decisão de 07/11/2026:
+> **nenhuma titularidade muda** — Registro.br, Google, GitHub e Cloudflare seguem com o
+> Guido; o irmão tem apenas login próprio no painel. Roteiro em
+> [`docs/IMPLANTACAO.md`](docs/IMPLANTACAO.md). As seções abaixo sobre
+> repositório e domínio continuam válidas; a seção 3 vale só até a virada.
+
 Guia para transferir a propriedade completa do site (código, domínio e a automação de
 catálogo) do Guido para o novo responsável. Nem o Guido nem o irmão são técnicos — este
 documento existe para a pessoa que for contratada para manutenção conseguir assumir sem

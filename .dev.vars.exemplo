@@ -1,0 +1,5 @@
+# Copie para .dev.vars (o script de testes faz isso sozinho). Só para desenvolvimento local.
+AUTH_PEPPER=desenvolvimento-local-nao-usar-em-producao-0123456789
+ADMIN_EMAILS=dono@exemplo.com,irmao@exemplo.com
+EMAIL_MODE=console
+SITE_URL=http://localhost:8787

@@ -1,0 +1,14 @@
+{
+  "name": "Painel — Perfumaria Eloá",
+  "short_name": "Painel Eloá",
+  "start_url": "/painel/#/produtos",
+  "scope": "/painel/",
+  "display": "standalone",
+  "background_color": "#faf7f8",
+  "theme_color": "#140E10",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/assets/img/logo-eloa-96.png", "sizes": "96x96", "type": "image/png" },
+    { "src": "/assets/img/logo-eloa.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

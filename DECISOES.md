@@ -665,3 +665,108 @@ ficou no repositório, é um script avulso usado nesta publicação.
 `node tools/gerar-paginas.mjs` — 3 páginas novas. `node tools/verificar-seo.mjs`
 — 144 verificações, 0 falhas. Publicado e mergeado direto (`ELOA_AUTO_MERGE`
 não se aplica — publicação manual a pedido do Guido).
+
+---
+
+## Sprint 7 — Painel administrativo e migração para a Cloudflare (07/11/2026)
+
+Objetivo definido pelo Guido: **o irmão administra a loja sozinho**, pelo
+celular, sem VS Code, GitHub, terminal ou ajuda técnica — e sem nenhuma
+cobrança no cartão.
+
+### Arquitetura: Workers + D1 + KV, e não R2
+
+A proposta inicial era D1 + R2. A validação nas páginas oficiais mudou a
+decisão: o **R2 exige cartão e cobra o excedente automaticamente, sem teto**, e
+os "budget alerts" da Cloudflare só avisam por e-mail. Com R2, cobrança zero
+seria provável, não garantida. As fotos foram para o **KV**, que no plano
+gratuito recusa a operação ao passar do limite. Com todos os serviços no Free
+e a conta **sem forma de pagamento**, não há como existir fatura. Detalhes,
+números e fontes em `docs/CUSTOS.md`.
+
+### O site continua o mesmo
+
+- `app.js` continua lendo `CATEGORIES`, `PRODUCTS` e `STORE` de
+  `assets/js/products.js`; o arquivo agora é gerado pelo Worker a partir do banco.
+  Campos novos e opcionais: `thumb`, `images` (galeria), `featuredOrder`
+  (ordem dos destaques) e `home` na categoria. O `app.js` atualizado funciona
+  também com o `products.js` estático antigo — o merge não quebra o GitHub Pages
+  antes da virada (verificado).
+- As 67 páginas `/produto/<id>/` e o `sitemap.xml` são renderizados pelo Worker
+  com o mesmo HTML, SEO e dados estruturados de `tools/gerar-paginas.mjs` (portado
+  para `src/render/paginas.js`). Deixam de ficar desatualizados ou órfãos.
+- Ids preservados (URLs, carrinhos salvos no navegador e SEO).
+- Ordem do catálogo: categoria (na ordem do painel) e, dentro dela, a ordem de
+  cadastro. Antes era a ordem do arquivo; a diferença é pequena e passa a ser
+  controlável pelo painel.
+
+### Fotos
+
+- **Galeria no detalhe do produto** (`assets/js/galeria.js`): deslizar no
+  celular, setas e miniaturas no computador, teclado ← →. Componente em
+  `styles.css`, pelo mesmo motivo das sprints 2 e 4 (Tailwind sem build).
+- **As fotos do catálogo eram PNG de 1–2,5 MB (55 MB no total).** Viraram WebP:
+  1200 px para a página e 600 px para os cards. O que o catálogo baixa caiu de
+  55 MB para ~1 MB. Os PNG continuam no repositório como matriz e não vão para o site.
+- **Fotos novas são otimizadas no próprio celular** antes do envio (WebP, 1600 px +
+  miniatura 600 px, quadradas). Sem serviço de imagem pago e envio rápido no 4G.
+  Enquadramento padrão "mostrar inteira", com fundo da cor das bordas da foto —
+  coerente com a regra da Sprint 6 de nunca cortar o produto; opção "preencher quadro".
+
+### Login sem senha trafegando
+
+- Nada de cadastro público: só e-mails do segredo `ADMIN_EMAILS`.
+- A senha é estirada no celular (PBKDF2, 600 mil iterações) e o servidor guarda
+  `HMAC(pepper, chave)`. Motivo: o plano Free dá 10 ms de CPU, e um hash forte
+  no servidor (100 mil iterações ≈ 13 ms medidos) estouraria o limite.
+- Primeira senha criada pelo próprio dono do e-mail, pelo link de "Primeiro acesso".
+  E-mail enviado pelo Email Routing da Cloudflare, só para endereços verificados.
+- Detalhes em `docs/SEGURANCA.md`.
+
+### Funcionalidades do painel (`/painel/`)
+
+Produtos (cadastrar, editar tudo, excluir com confirmação, mostrar/ocultar, até
+8 fotos com principal e ordem, prévia antes de salvar, ficha, perfil olfativo e
+público para perfumes), categorias (criar, editar, excluir só se vazia,
+ordenar, mostrar na página inicial), página inicial (destaques ordenados,
+categorias visíveis e ordem), conta (troca de senha, sair de todos os aparelhos,
+histórico de alterações, uso do espaço de fotos). Aviso ao sair com alterações não salvas.
+
+### Substituído
+
+O formulário `admin/enviar.html` (FormSubmit → Gmail do Guido → Hermes no Mac →
+PR) dependia do Guido, do Mac e do Gmail dele. Com o Worker no ar, `/admin/*`
+redireciona para `/painel/`. `produto/`, `sitemap.xml` e `tools/` ficam até a
+virada, para o GitHub Pages seguir funcionando; saem no passo 9 de `docs/IMPLANTACAO.md`.
+
+### Problemas encontrados pelos testes e corrigidos
+
+| Problema | Correção |
+|---|---|
+| Descrição com `</script>` quebraria a página do produto (JSON-LD sem escape — já existia no gerador estático) | `<` escapado como `<` no JSON-LD |
+| Avisos do topo do painel bloqueavam toques nos botões logo abaixo por 3 s | Avisos não capturam toques; no máximo 2 empilhados |
+| Mensagem de erro do campo continuava depois de corrigido | Erro some ao começar a corrigir |
+| Selo "Principal" escondido atrás do botão de enquadramento | Botão desceu para o canto inferior da foto |
+| Nomes dos destaques cortados no celular ("1. Kit Pr…") | Botões de ordem vão para uma segunda linha abaixo de 520 px |
+| Fechar a janela "Produto cadastrado" deixava o formulário preenchido (risco de cadastro duplicado) | Fechar leva à página do produto salvo |
+
+### Validação
+
+- 11 testes unitários (validação, preço, slug, criptografia, formato de imagem,
+  páginas de produto e sitemap).
+- 13 testes de API contra o Worker local (primeiro acesso, bloqueio por
+  tentativas, CSRF, fotos, cadastro, edição, ocultar, destaques, categorias,
+  exclusão, sessão), conferindo o reflexo no site público a cada passo.
+- 9 testes de interface no Chrome com tela de celular (390 × 844), do primeiro
+  acesso à exclusão, incluindo a galeria no site. Sem erros de console.
+- Revisão visual das capturas em celular e computador.
+
+**Ainda não validado em produção:** depende da implantação (conta Cloudflare,
+DNS, Email Routing) — roteiro em `docs/IMPLANTACAO.md`.
+
+### Titularidade (decisão do Guido, 07/11/2026)
+
+Nenhum cadastro muda de dono. Registro.br, Google, GitHub e Cloudflare ficam na
+conta do Guido, que segue proprietário de toda a infraestrutura. O irmão tem só
+um login próprio (e-mail e senha) no painel `/painel/` — sem acesso a GitHub,
+Cloudflare, Registro.br ou Google. Operação comercial separada da administração técnica.
