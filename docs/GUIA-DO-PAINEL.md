@@ -26,6 +26,10 @@ muito bem, por exemplo *perfume rosa na vitrine*.
 
 **Esqueceu a senha?** O mesmo caminho: “Esqueci minha senha”.
 
+**Alternativa sem e-mail:** quem já tem acesso pode ir em **Conta → Gerar link
+de acesso**, digitar o e-mail da pessoa autorizada e mandar o link pelo
+WhatsApp. Ela abre o link e cria a própria senha (vale por 3 dias, uma vez).
+
 ---
 
 ## 2. Cadastrar um produto

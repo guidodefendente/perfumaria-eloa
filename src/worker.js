@@ -99,6 +99,8 @@ async function apiAdmin(env, request, caminho) {
   if (recurso === 'historico' && m === 'GET') return json({ itens: await cat.historicoRecente(env) });
   if (recurso === 'uso' && m === 'GET') return json(await usoDeFotos(env));
 
+  if (recurso === 'convites' && !id && m === 'POST') return json(await auth.gerarConvite(env, request, u, await lerJson(request)), 201);
+
   if (recurso === 'fotos' && !id && m === 'POST') return json(await receberFoto(env, request), 201);
 
   if (recurso === 'produtos') {

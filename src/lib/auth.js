@@ -246,3 +246,31 @@ export async function salParaTroca(env, usuario) {
   const u = await env.DB.prepare('SELECT sal, iteracoes FROM usuarios WHERE id = ?1').bind(usuario.id).first();
   return { sal: u.sal, iteracoes: u.iteracoes };
 }
+
+const DURACAO_CONVITE = 3 * DIA;
+
+/**
+ * Link de primeiro acesso gerado por quem já está logado (sem depender de
+ * e-mail). Serve para entregar o acesso por WhatsApp, por exemplo. A pessoa
+ * convidada abre o link e cria a própria senha — ninguém mais a conhece.
+ * Só vale para e-mails autorizados em ADMIN_EMAILS; vale 3 dias e uma vez.
+ */
+export async function gerarConvite(env, request, usuario, dados) {
+  const email = validarEmail(dados.email);
+  if (!email) throw new ErroHttp(422, 'Digite um e-mail válido.', { campos: { email: 'Digite um e-mail válido.' } });
+  if (!emailsAutorizados(env).has(email)) {
+    throw new ErroHttp(422, 'Este e-mail não tem permissão para acessar o painel. A lista de autorizados é mantida pelo Guido.', { campos: { email: 'E-mail sem permissão de acesso.' } });
+  }
+  await limitar(env, `convite:${usuario.id}`, 10, 60 * 60 * 1000, 'Muitos links gerados em pouco tempo. Espere uma hora.');
+  const agora = Date.now();
+  let u = await env.DB.prepare('SELECT id FROM usuarios WHERE email = ?1').bind(email).first();
+  if (!u) u = await env.DB.prepare('INSERT INTO usuarios (email, criado_em) VALUES (?1, ?2) RETURNING id').bind(email, agora).first();
+  const token = tokenAleatorio(32);
+  await env.DB.batch([
+    env.DB.prepare('INSERT INTO redefinicoes (token_hash, usuario_id, criado_em, expira_em) VALUES (?1, ?2, ?3, ?4)')
+      .bind(await sha256(token), u.id, agora, agora + DURACAO_CONVITE),
+    env.DB.prepare('INSERT INTO historico (em, usuario, acao, resumo) VALUES (?1, ?2, ?3, ?4)')
+      .bind(agora, usuario.email, 'acesso.convite', `Gerou link de acesso para ${email}`),
+  ]);
+  return { email, link: `${origemPermitida(env, request)}/painel/#/redefinir/${token}`, validade: '3 dias' };
+}

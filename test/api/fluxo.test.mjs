@@ -256,6 +256,22 @@ test('excluir produto: some do site e as fotos ficam para a limpeza', async () =
   assert.equal(hist.dados.itens[0].usuario, DONO);
 });
 
+test('link de acesso gerado no painel, sem e-mail', async () => {
+  assert.equal((await chamar('POST', '/api/admin/convites', { email: 'intruso@exemplo.com' })).status, 422, 'só e-mails autorizados');
+  const r = await chamar('POST', '/api/admin/convites', { email: IRMAO });
+  assert.equal(r.status, 201, JSON.stringify(r.dados));
+  const token = r.dados.link.match(/#\/redefinir\/([A-Za-z0-9_-]+)$/)[1];
+  const sessaoDono = cookie;
+  const sal = b64(crypto.getRandomValues(new Uint8Array(16)));
+  const senha = 'senha do irmao bem longa';
+  const ok = await chamar('POST', '/api/auth/redefinir', { token, sal, iteracoes: 600000, chave: await derivar(senha, sal, 600000) }, { comCookie: false });
+  assert.equal(ok.status, 200, JSON.stringify(ok.dados));
+  assert.equal((await chamar('GET', '/api/auth/sessao')).dados.usuario.email, IRMAO);
+  const de_novo = await chamar('POST', '/api/auth/redefinir', { token, sal, iteracoes: 600000, chave: await derivar(senha, sal, 600000) });
+  assert.equal(de_novo.status, 410, 'link só vale uma vez');
+  cookie = sessaoDono;
+});
+
 test('sair encerra a sessão', async () => {
   assert.equal((await chamar('POST', '/api/auth/sair', { todas: true })).status, 200);
   assert.equal((await chamar('GET', '/api/admin/catalogo')).status, 401);

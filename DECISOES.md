@@ -781,3 +781,13 @@ vai para o 1º lugar e os demais descem uma posição. A ordem continua ajustáv
 ordem. A migration `0003` reordenou os destaques existentes uma vez, pelo
 `atualizado_em`.
 `0004` descarta o catálogo publicado em cache para a nova ordem aparecer na hora.
+
+## Link de acesso sem e-mail (09/11/2026)
+
+O e-mail de primeiro acesso do irmão falhou: a Cloudflare só entrega para
+destinatários verificados no Email Routing, e o endereço dele ainda estava
+pendente. Em vez de criar senha por terceiros (a senha ficaria exposta no
+WhatsApp), o painel ganhou **Conta → Gerar link de acesso**: um administrador
+logado gera um link de uso único, válido por 3 dias, só para e-mails de
+`ADMIN_EMAILS`, registrado no histórico. A pessoa cria a própria senha.
+O link por e-mail continua valendo 30 minutos.

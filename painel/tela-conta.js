@@ -25,6 +25,19 @@ export async function telaConta() {
     </section>
 
     <section class="cartao">
+      <h2>Gerar link de acesso</h2>
+      <p class="sub" style="margin-bottom:12px">Para outra pessoa autorizada criar a senha sem depender de e-mail. Envie o link por WhatsApp: ela abre e cria a própria senha. Vale por 3 dias e uma única vez.</p>
+      <form id="form-convite" novalidate>
+        <div class="campo" data-campo="email">
+          <label for="convite-email">E-mail da pessoa</label>
+          <input class="entrada" id="convite-email" name="email" type="email" inputmode="email" autocapitalize="off" spellcheck="false">
+        </div>
+        <button type="submit" class="botao botao-secundario botao-largo">Gerar link</button>
+      </form>
+      <div id="convite-resultado"></div>
+    </section>
+
+    <section class="cartao">
       <h2>Trocar senha</h2>
       <form id="form-senha" novalidate>
         <div id="msg-senha"></div>
@@ -58,6 +71,32 @@ export async function telaConta() {
         <button type="button" class="botao botao-perigo-leve" id="sair-todos">Sair de todos os aparelhos</button>
       </div>
     </section>`;
+
+  const formConvite = $('#form-convite');
+  formConvite.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    mostrarErros(formConvite, null);
+    $('#convite-resultado').innerHTML = '';
+    await ocupado($('button[type=submit]', formConvite), 'Gerando…', async () => {
+      try {
+        const r = await api('POST', '/api/admin/convites', { email: formConvite.email.value });
+        const texto = `Oi! Este é o seu link para criar a senha do painel da Perfumaria Eloá (vale por 3 dias, só uma vez):\n${r.link}`;
+        $('#convite-resultado').innerHTML = `<div class="caixa caixa-ok" style="margin-top:14px">Link criado para <strong>${esc(r.email)}</strong>. Envie só para essa pessoa.</div>
+          <input class="entrada" id="convite-link" readonly value="${esc(r.link)}" aria-label="Link de acesso">
+          <div class="duas-colunas" style="margin-top:10px">
+            <button type="button" class="botao botao-secundario" id="convite-copiar">Copiar link</button>
+            <a class="botao botao-primario" href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+          </div>`;
+        $('#convite-copiar').addEventListener('click', async () => {
+          try { await navigator.clipboard.writeText(r.link); avisar('Link copiado', 'ok'); }
+          catch (_) { $('#convite-link').select(); avisar('Selecione e copie o link'); }
+        });
+      } catch (erro) {
+        mostrarErros(formConvite, erro.campos);
+        if (!erro.campos) avisar(erro.message, 'erro');
+      }
+    });
+  });
 
   const form = $('#form-senha');
   ligarMostrarSenha(form);
